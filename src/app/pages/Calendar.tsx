@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BottomSheet from "@/src/components/BottomSheet";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,6 +30,14 @@ export default function Calendar() {
         <WeekdayNames />
         <CalendarContainer date={date} />
       </View>
+      <BottomSheet
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      >
+        <View>
+          <Text>안녕 친구들? 해결사가 왔어~!</Text>
+        </View>
+      </BottomSheet>
     </>
   );
 }
