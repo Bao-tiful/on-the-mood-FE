@@ -6,20 +6,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-
 import CalendarDatePicker from "@/src/components/CalendarDatePicker";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
-  const pressButton = () => {
-    setModalVisible(true);
-  };
   const [date, setDate] = useState(new Date());
 
   return (
     <>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => pressButton()}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Text style={styles.monthPickerButton}>
             {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}
             월
@@ -29,6 +25,7 @@ export default function Calendar() {
         <WeekdayNames />
         <CalendarContainer date={date} />
       </View>
+      {/* ModalVisible에 의해 제어되는 바텀시트 */}
       <CalendarDatePicker
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
@@ -39,6 +36,7 @@ export default function Calendar() {
   );
 }
 
+// 캘린더의 요일 목록
 function WeekdayNames() {
   const weekdayNameList = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
@@ -53,6 +51,7 @@ function WeekdayNames() {
   );
 }
 
+// 유효하지 않은 날짜의 캘린더 칸
 function EmptyCalendarCell() {
   return <View style={styles.emptyCalendarCell}></View>;
 }
@@ -65,13 +64,18 @@ function CalendarCell({ date }: CalendarCellProps) {
   );
 }
 
+/// props로 입력된 Date가 포함된 월의 달력을 보여준다.
 function CalendarContainer({ date }: CalendarProps) {
   // date가 포함된 달의 1일의 요일을 구함
   const firstDay = new Date(date.getFullYear(), date.getMonth());
+  // 해당 달의 1일의 요일
   const firstDayOffset = firstDay.getDay();
+  // 해당 달의 마지막 날짜
   const lastDate = new Date(
     new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1
   ).getDate();
+  // 캘린더의 각 칸에 대한 id를 부여하는 list
+  // 여기에서의 date는 각 칸이 가지는 날짜를 의미한다.
   const items = Array.from({ length: 7 * 6 }, (_, index) => ({
     date: index - firstDayOffset + 1,
   }));
@@ -81,6 +85,7 @@ function CalendarContainer({ date }: CalendarProps) {
       data={items}
       renderItem={({ item }) => {
         if (item.date > 0 && item.date <= lastDate) {
+          // 1일부터 마지막 날까지
           return <CalendarCell date={item.date} />;
         } else {
           return <EmptyCalendarCell />;
