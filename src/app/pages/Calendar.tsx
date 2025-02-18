@@ -12,6 +12,33 @@ export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
 
+  const history = new Map([
+    [
+      1,
+      {
+        id: "4f3398fa-4a6b-48d2-920c-73be06721b3ba",
+        content: "와라라라1",
+        created_at: new Date("2025-01-01T19:33:43.215138Z"),
+      },
+    ],
+    [
+      5,
+      {
+        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bb",
+        content: "와라라라2",
+        created_at: new Date("2025-01-02T19:33:43.215138Z"),
+      },
+    ],
+    [
+      7,
+      {
+        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bc",
+        content: "와라라라3",
+        created_at: new Date("2025-01-03T19:33:43.215138Z"),
+      },
+    ],
+  ]);
+
   return (
     <>
       <View style={styles.container}>
@@ -23,7 +50,7 @@ export default function Calendar() {
         </TouchableOpacity>
         <Text>노트 개수 : N개</Text>
         <WeekdayNames />
-        <CalendarContainer date={date} />
+        <CalendarContainer date={date} history={history} />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
       <CalendarDatePicker
@@ -53,19 +80,26 @@ function WeekdayNames() {
 
 // 유효하지 않은 날짜의 캘린더 칸
 function EmptyCalendarCell() {
-  return <View style={styles.emptyCalendarCell}></View>;
+  return (
+    <View style={[styles.calendarCell, styles.invalidCalendarCell]}>
+      <View />
+    </View>
+  );
 }
 
-function CalendarCell({ date }: CalendarCellProps) {
+function CalendarCell({ date, data }: CalendarCellProps) {
+  const cellStyle = data
+    ? styles.calendarCellWithData
+    : styles.calendarCellWithoutData;
   return (
-    <View style={styles.calendarCell}>
-      <Text>{date}</Text>
+    <View style={[styles.calendarCell, cellStyle]}>
+      <Text style={{ color: cellStyle.color || "black" }}>{date}</Text>
     </View>
   );
 }
 
 /// props로 입력된 Date가 포함된 월의 달력을 보여준다.
-function CalendarContainer({ date }: CalendarProps) {
+function CalendarContainer({ date, history }: CalendarProps) {
   // date가 포함된 달의 1일의 요일을 구함
   const firstDay = new Date(date.getFullYear(), date.getMonth());
   // 해당 달의 1일의 요일
@@ -86,7 +120,9 @@ function CalendarContainer({ date }: CalendarProps) {
       renderItem={({ item }) => {
         if (item.date > 0 && item.date <= lastDate) {
           // 1일부터 마지막 날까지
-          return <CalendarCell date={item.date} />;
+          return (
+            <CalendarCell date={item.date} data={history.get(item.date)} />
+          );
         } else {
           return <EmptyCalendarCell />;
         }
@@ -100,10 +136,12 @@ function CalendarContainer({ date }: CalendarProps) {
 
 interface CalendarProps {
   date: Date;
+  history: Map<number, Object>;
 }
 
 interface CalendarCellProps {
   date: number;
+  data: Object | undefined;
 }
 
 interface CalendarItem {
@@ -137,17 +175,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     margin: 6,
-    backgroundColor: "white",
   },
-  emptyCalendarCell: {
-    flex: 1,
-    aspectRatio: 1,
-    borderRadius: "50%",
-    alignSelf: "center",
-    margin: 6,
+  invalidCalendarCell: {
     backgroundColor: "transparent",
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: "lightgrey",
+  },
+  calendarCellWithData: {
+    backgroundColor: "black",
+    color: "white",
+  },
+  calendarCellWithoutData: {
+    backgroundColor: "white",
+    color: "black",
   },
 });
