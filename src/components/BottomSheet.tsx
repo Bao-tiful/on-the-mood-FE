@@ -1,3 +1,5 @@
+/// https://coding-w00se.tistory.com/33
+
 import React, { useEffect, useRef } from "react";
 import {
   View,
@@ -8,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   PanResponder,
+  TouchableOpacity,
 } from "react-native";
 
 interface BottomSheetProps {
@@ -40,26 +43,29 @@ const BottomSheet = ({
     useNativeDriver: true,
   });
 
-  const panResponders = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => false,
-      onPanResponderMove: (event, gestureState) => {
-        panY.setValue(gestureState.dy);
-      },
-      onPanResponderRelease: (event, gestureState) => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    })
-  ).current;
+  // const panResponders = useRef(
+  //   PanResponder.create({
+  //     onStartShouldSetPanResponder: () => true,
+  //     onMoveShouldSetPanResponder: () => false,
+  //     onPanResponderMove: (event, gestureState) => {
+  //       panY.setValue(gestureState.dy);
+  //     },
+  //     onPanResponderRelease: (event, gestureState) => {
+  //       if (gestureState.dy > 0 && gestureState.vy > 1.5) {
+  //         closeModal();
+  //       } else {
+  //         resetBottomSheet.start();
+  //       }
+  //     },
+  //   })
+  // ).current;
 
   useEffect(() => {
     if (modalVisible) {
       resetBottomSheet.start();
+    } else {
+      // closeBottomSheet.start();
+      closeModal();
     }
   }, [modalVisible]);
 
@@ -85,7 +91,6 @@ const BottomSheet = ({
             ...styles.bottomSheetContainer,
             transform: [{ translateY: translateY }],
           }}
-          {...panResponders.panHandlers}
         >
           {children}
         </Animated.View>
@@ -104,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomSheetContainer: {
-    height: 300,
+    // height: 350,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
