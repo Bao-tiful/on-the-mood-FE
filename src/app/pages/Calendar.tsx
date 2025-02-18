@@ -6,16 +6,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import BottomSheet from "@/src/components/BottomSheet";
+
+import CalendarDatePicker from "@/src/components/CalendarDatePicker";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
   const pressButton = () => {
     setModalVisible(true);
   };
-
-  const date: Date = new Date();
+  const [date, setDate] = useState(new Date());
 
   return (
     <>
@@ -30,14 +29,12 @@ export default function Calendar() {
         <WeekdayNames />
         <CalendarContainer date={date} />
       </View>
-      <BottomSheet
+      <CalendarDatePicker
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-      >
-        <View>
-          <Text>안녕 친구들? 해결사가 왔어~!</Text>
-        </View>
-      </BottomSheet>
+        initialDate={date}
+        setDate={setDate}
+      />
     </>
   );
 }
@@ -60,36 +57,36 @@ function EmptyCalendarCell() {
   return <View style={styles.emptyCalendarCell}></View>;
 }
 
-function CalendarCell({ id }: CalendarCellProps) {
+function CalendarCell({ date }: CalendarCellProps) {
   return (
     <View style={styles.calendarCell}>
-      <Text>{id + 1}</Text>
+      <Text>{date}</Text>
     </View>
   );
 }
 
 function CalendarContainer({ date }: CalendarProps) {
   // date가 포함된 달의 1일의 요일을 구함
-  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
+  const firstDay = new Date(date.getFullYear(), date.getMonth());
   const firstDayOffset = firstDay.getDay();
-  const lastDayOffset = new Date(
+  const lastDate = new Date(
     new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1
   ).getDate();
-  const items = Array.from({ length: 35 }, (_, index) => ({
-    id: index - firstDayOffset,
+  const items = Array.from({ length: 7 * 6 }, (_, index) => ({
+    date: index - firstDayOffset + 1,
   }));
 
   return (
     <FlatList
       data={items}
       renderItem={({ item }) => {
-        if (item.id >= 0 && item.id < lastDayOffset) {
-          return <CalendarCell id={item.id} />;
+        if (item.date > 0 && item.date <= lastDate) {
+          return <CalendarCell date={item.date} />;
         } else {
           return <EmptyCalendarCell />;
         }
       }}
-      keyExtractor={(item) => item.id.toString()}
+      keyExtractor={(item) => item.date.toString()}
       numColumns={7}
       scrollEnabled={false}
     />
@@ -101,7 +98,7 @@ interface CalendarProps {
 }
 
 interface CalendarCellProps {
-  id: number;
+  date: number;
 }
 
 interface CalendarItem {
@@ -109,15 +106,10 @@ interface CalendarItem {
   text: string;
 }
 
-interface CalendarContainerProps {
-  items?: CalendarItem[]; // 배열이 undefined일 수도 있으므로 `?` 사용
-}
-
 const styles = StyleSheet.create({
   monthPickerButton: {
-    fontSize: 16,
+    fontSize: 32,
   },
-
   container: {
     flex: 1,
     flexDirection: "column",
