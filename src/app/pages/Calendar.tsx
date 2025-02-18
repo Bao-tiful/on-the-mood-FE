@@ -6,8 +6,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
-import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
-import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
+
+import CalendarDatePicker from "@/src/components/CalendarDatePicker";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,38 +16,30 @@ export default function Calendar() {
   const changeModalVisible = (isModalOn: boolean) => {
     setModalVisible(isModalOn);
   };
+  const [date, setDate] = useState(new Date());
 
-  const changeCalendarDate = (newDate: Date) => {
-    setDate(newDate);
-  };
-
-  // 테스트를 위한 노트 목데이터
-  const notes = new Map([
-    [
-      1,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3ba",
-        content: "와라라라1",
-        created_at: new Date("2025-01-01T19:33:43.215138Z"),
-      },
-    ],
-    [
-      5,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bb",
-        content: "와라라라2",
-        created_at: new Date("2025-01-02T19:33:43.215138Z"),
-      },
-    ],
-    [
-      7,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bc",
-        content: "와라라라3",
-        created_at: new Date("2025-01-03T19:33:43.215138Z"),
-      },
-    ],
-  ]);
+  return (
+    <>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => pressButton()}>
+          <Text style={styles.monthPickerButton}>
+            {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}
+            월
+          </Text>
+        </TouchableOpacity>
+        <Text>노트 개수 : N개</Text>
+        <WeekdayNames />
+        <CalendarContainer date={date} />
+      </View>
+      <CalendarDatePicker
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        initialDate={date}
+        setDate={setDate}
+      />
+    </>
+  );
+}
 
   // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
   const todayColor = "#d0b0e0";
@@ -62,63 +54,63 @@ export default function Calendar() {
       </View>
     </View>
   );
-  const todayNoteCell = (
-    <View style={styles.todayCell}>
-      <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
-      <View style={{ width: "100%" }}>
-        <TouchableOpacity style={styles.todayWriteButton}>
-          {/* TODO: + 아이콘 변경 */}
-          <Text
-            style={{
-              color: styles.todayWriteButton.color,
-              fontSize: styles.todayWriteButton.fontSize,
-            }}
-          >
-            +
-          </Text>
-        </TouchableOpacity>
-      </View>
+}
+
+function EmptyCalendarCell() {
+  return <View style={styles.emptyCalendarCell}></View>;
+}
+
+function CalendarCell({ date }: CalendarCellProps) {
+  return (
+    <View style={styles.calendarCell}>
+      <Text>{date}</Text>
     </View>
   );
 
+function CalendarContainer({ date }: CalendarProps) {
+  // date가 포함된 달의 1일의 요일을 구함
+  const firstDay = new Date(date.getFullYear(), date.getMonth());
+  const firstDayOffset = firstDay.getDay();
+  const lastDate = new Date(
+    new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1
+  ).getDate();
+  const items = Array.from({ length: 7 * 6 }, (_, index) => ({
+    date: index - firstDayOffset + 1,
+  }));
+
   return (
-    <>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          {/* 캘린더 */}
-          <MoodNoteCalendar
-            changeModalVisible={(isModalOn: boolean) => {
-              setModalVisible(isModalOn);
-            }}
-            date={date}
-            changeCalendarDate={(newDate: Date) => {
-              setDate(newDate);
-            }}
-            notes={notes}
-          />
-          {/* 투데이 셀 */}
-          <View style={styles.todayContainer}>
-            {todayWeatherCell}
-            {todayNoteCell}
-          </View>
-        </View>
-      </SafeAreaView>
-      {/* ModalVisible에 의해 제어되는 바텀시트 */}
-      <CalendarDatePicker
-        initialDate={date}
-        modalVisible={modalVisible}
-        changeModalVisible={changeModalVisible}
-        changeCalendarDate={changeCalendarDate}
-      />
-    </>
+    <FlatList
+      data={items}
+      renderItem={({ item }) => {
+        if (item.date > 0 && item.date <= lastDate) {
+          return <CalendarCell date={item.date} />;
+        } else {
+          return <EmptyCalendarCell />;
+        }
+      }}
+      keyExtractor={(item) => item.date.toString()}
+      numColumns={7}
+      scrollEnabled={false}
+    />
   );
 }
 
+interface CalendarProps {
+  date: Date;
+}
+
+interface CalendarCellProps {
+  date: number;
+}
+
+interface CalendarItem {
+  id: number;
+  text: string;
+}
+
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    margin: 16,
-    alignItems: "center",
+  monthPickerButton: {
+    fontSize: 32,
   },
   container: {
     flex: 1,
