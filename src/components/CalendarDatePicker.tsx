@@ -5,24 +5,25 @@ import { Picker } from "@react-native-picker/picker";
 
 interface BottomSheetProps {
   modalVisible: boolean; // boolean이면 boolean으로 명확하게 타입 지정 가능
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  changeModalVisible: (newState: boolean) => void;
   initialDate: Date;
-  setDate: React.Dispatch<React.SetStateAction<Date>>;
+  changeCalendarDate: (newState: Date) => void;
 }
 
 export default function CalendarDatePicker({
   modalVisible,
-  setModalVisible,
+  changeModalVisible,
   initialDate,
-  setDate,
+  changeCalendarDate,
 }: BottomSheetProps) {
+  // 모달 내에서 사용할 임시 날짜값
   const [tempDate, setTempDate] = useState(initialDate);
 
   return (
     <View>
       <BottomSheet
         modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+        setModalVisible={changeModalVisible}
       >
         <View style={styles.bottomSheetContainer}>
           <Text>다른 날짜 일기 보기</Text>
@@ -55,6 +56,7 @@ export default function CalendarDatePicker({
                   key={index}
                   label={month.label}
                   value={month.value.toString()}
+                  enabled={true}
                 />
               ))}
             </Picker>
@@ -62,8 +64,8 @@ export default function CalendarDatePicker({
           <TouchableOpacity
             style={styles.bottomSheetButton}
             onPress={() => {
-              setDate(tempDate);
-              setModalVisible(false);
+              changeCalendarDate(tempDate);
+              changeModalVisible(false);
             }}
           >
             <Text>변경하기</Text>
