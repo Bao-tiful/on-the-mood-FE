@@ -2,12 +2,12 @@ import {
   StyleSheet,
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import CalendarDatePicker from "@/src/components/CalendarDatePicker";
+import React, { useState } from "react";
+import CalendarDatePicker from "@/src/components/calendar/CalendarDatePicker";
+import CalendarBody from "@/src/components/calendar/CalendarBody";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,6 +21,7 @@ export default function Calendar() {
     setDate(newDate);
   };
 
+  // 테스트를 위한 노트 목데이터
   const notes = new Map([
     [
       1,
@@ -48,9 +49,12 @@ export default function Calendar() {
     ],
   ]);
 
+  // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
+  const todayColor = "#d0b0e0";
+
   const todayWeatherCell = (
-    <View style={[styles.todayBox, { backgroundColor: "lavender" }]}>
-      <Text style={{ width: "100%" }}>{"Today\nweather color"}</Text>
+    <View style={[styles.todayCell, { backgroundColor: todayColor }]}>
+      <Text style={styles.todayCellTitle}>{"Today\nweather color"}</Text>
       <View style={{ width: "100%" }}>
         {/* TODO: 핀 아이콘 변경 */}
         <Text style={styles.todayWeatherLocation}>📍 서울특별시</Text>
@@ -58,10 +62,9 @@ export default function Calendar() {
       </View>
     </View>
   );
-
-  const todayMoodNoteCell = (
-    <View style={styles.todayBox}>
-      <Text style={{ width: "100%" }}>{"Today\nMood Note"}</Text>
+  const todayNoteCell = (
+    <View style={styles.todayCell}>
+      <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
       <View style={{ width: "100%" }}>
         <TouchableOpacity style={styles.todayWriteButton}>
           {/* TODO: + 아이콘 변경 */}
@@ -82,6 +85,7 @@ export default function Calendar() {
     <>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
+          {/* 캘린더 */}
           <MoodNoteCalendar
             changeMoalVisible={function (newState: boolean): void {
               setModalVisible(newState);
@@ -92,9 +96,10 @@ export default function Calendar() {
             }}
             notes={notes}
           />
+          {/* 투데이 셀 */}
           <View style={styles.todayContainer}>
             {todayWeatherCell}
-            {todayMoodNoteCell}
+            {todayNoteCell}
           </View>
         </View>
       </SafeAreaView>
@@ -130,129 +135,11 @@ const MoodNoteCalendar = ({
         </Text>
       </TouchableOpacity>
       <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
-      <View style={{ paddingVertical: 24 }}>
-        <WeekdayNames />
-        <CalendarContainer
-          date={date}
-          changeDate={changeCalendarDate}
-          notes={notes}
-        />
-      </View>
+      <View style={{ height: 24 }} />
+      <CalendarBody date={date} changeDate={changeCalendarDate} notes={notes} />
     </View>
   );
 };
-
-// 캘린더의 요일 목록
-function WeekdayNames() {
-  const weekdayNameList = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-
-  return (
-    <View style={styles.weekdayContainer}>
-      {weekdayNameList.map((item, index) => (
-        <Text style={styles.weekdayCell} key={index}>
-          {item}
-        </Text>
-      ))}
-    </View>
-  );
-}
-
-// 유효하지 않은 날짜의 캘린더 칸
-function EmptyCalendarCell() {
-  return (
-    <View style={[styles.calendarCell, styles.invalidCalendarCell]}>
-      <View />
-    </View>
-  );
-}
-
-function CalendarCell({ date, data, onPress }: CalendarCellProps) {
-  const todayDate = new Date();
-  const isToday =
-    date.getFullYear() == todayDate.getFullYear() &&
-    date.getMonth() == todayDate.getMonth() &&
-    date.getDate() == todayDate.getDate();
-  const cellStyle = data
-    ? styles.calendarCellWithData
-    : styles.calendarCellWithoutData;
-  return (
-    <TouchableOpacity
-      style={[styles.calendarCell, cellStyle]}
-      onPressOut={() => onPress(date)}
-    >
-      <Text style={{ color: cellStyle.color || "black" }}>
-        {date.getDate()}
-      </Text>
-
-      {/* 오늘 날짜인 경우에만 보여주기 */}
-      {isToday ? (
-        <View
-          style={[
-            styles.todayIndicator,
-            { backgroundColor: cellStyle.color || "black" },
-          ]}
-        />
-      ) : null}
-    </TouchableOpacity>
-  );
-}
-
-/// props로 입력된 Date가 포함된 월의 달력을 보여준다.
-function CalendarContainer({ date, changeDate, notes }: CalendarProps) {
-  // date가 포함된 달의 1일의 요일을 구함
-  const firstDay = new Date(date.getFullYear(), date.getMonth());
-  // 해당 달의 1일의 요일
-  const firstDayOffset = firstDay.getDay();
-  // 해당 달의 마지막 날짜
-  const lastDate = new Date(
-    new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1
-  ).getDate();
-  // 캘린더의 각 칸에 대한 id를 부여하는 list
-  // 여기에서의 date는 각 칸이 가지는 날짜를 의미한다.
-  const items = Array.from({ length: 7 * 6 }, (_, index) => ({
-    date: index - firstDayOffset + 1,
-  }));
-
-  return (
-    <FlatList
-      data={items}
-      renderItem={({ item }) => {
-        if (item.date > 0 && item.date <= lastDate) {
-          // 1일부터 마지막 날까지
-          return (
-            <CalendarCell
-              date={new Date(date.getFullYear(), date.getMonth(), item.date)}
-              data={notes.get(item.date)}
-              onPress={changeDate}
-            />
-          );
-        } else {
-          return <EmptyCalendarCell />;
-        }
-      }}
-      keyExtractor={(item) => item.date.toString()}
-      numColumns={7}
-      scrollEnabled={false}
-    />
-  );
-}
-
-interface CalendarProps {
-  date: Date;
-  changeDate: (newDate: Date) => void;
-  notes: Map<number, NoteItem>;
-}
-
-interface CalendarCellProps {
-  date: Date;
-  onPress: (newDate: Date) => void;
-  data: NoteItem | undefined;
-}
-
-interface CalendarItem {
-  id: number;
-  text: string;
-}
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -262,7 +149,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    maxWidth: 500,
+    width: "100%",
+    maxWidth: 450,
     flexDirection: "column",
     justifyContent: "space-between",
     rowGap: 20,
@@ -280,47 +168,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: "grey",
   },
-  weekdayContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  weekdayCell: {
-    flexDirection: "row",
-    flex: 1,
-    textAlign: "center",
-    color: "grey",
-  },
-  calendarCell: {
-    flex: 1,
-    aspectRatio: 1,
-    borderRadius: "50%",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    margin: 6,
-  },
-  invalidCalendarCell: {
-    backgroundColor: "transparent",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "lightgrey",
-  },
-  calendarCellWithData: {
-    backgroundColor: "black",
-    color: "white",
-  },
-  calendarCellWithoutData: {
-    backgroundColor: "white",
-    color: "black",
-  },
-  todayIndicator: {
-    position: "absolute",
-    bottom: "16%",
-    borderRadius: "50%",
-    width: 4,
-    height: 4,
-    fontWeight: "bold",
-  },
   todayContainer: {
     flex: 1,
     flexDirection: "row",
@@ -328,7 +175,7 @@ const styles = StyleSheet.create({
     maxHeight: 250,
     columnGap: 16,
   },
-  todayBox: {
+  todayCell: {
     width: "100%",
     flex: 1,
     flexDirection: "column",
@@ -340,9 +187,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "lightgrey",
   },
+  todayCellTitle: {
+    width: "100%",
+    fontWeight: 600,
+  },
   todayWeatherLocation: {
     fontSize: 14,
-    color: "grey",
+    color: "black",
   },
   todayWeatherTemperature: {
     fontSize: 48,

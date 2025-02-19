@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import BottomSheet from "./BottomSheet";
 import { Picker } from "@react-native-picker/picker";
+import BottomSheet from "@components/BottomSheet";
 
 interface BottomSheetProps {
   modalVisible: boolean; // boolean이면 boolean으로 명확하게 타입 지정 가능
