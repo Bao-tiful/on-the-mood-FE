@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import CalendarDatePicker from "@/src/components/calendar/CalendarDatePicker";
-import CalendarBody from "@/src/components/calendar/CalendarBody";
+import MoodNoteCalendar from "@/src/components/calendar/MoodNoteCalendar";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -87,7 +87,7 @@ export default function Calendar() {
         <View style={styles.container}>
           {/* 캘린더 */}
           <MoodNoteCalendar
-            changeMoalVisible={function (newState: boolean): void {
+            changeModalVisible={function (newState: boolean): void {
               setModalVisible(newState);
             }}
             date={date}
@@ -114,33 +114,6 @@ export default function Calendar() {
   );
 }
 
-interface MoodNoteCalendarProp {
-  changeMoalVisible: (newState: boolean) => void;
-  date: Date;
-  changeCalendarDate: (newDate: Date) => void;
-  notes: Map<number, NoteItem>;
-}
-
-const MoodNoteCalendar = ({
-  changeMoalVisible,
-  date,
-  changeCalendarDate,
-  notes,
-}: MoodNoteCalendarProp) => {
-  return (
-    <View style={styles.calendarContainer}>
-      <TouchableOpacity onPress={() => changeMoalVisible(true)}>
-        <Text style={styles.monthPickerButton}>
-          {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}월
-        </Text>
-      </TouchableOpacity>
-      <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
-      <View style={{ height: 24 }} />
-      <CalendarBody date={date} changeDate={changeCalendarDate} notes={notes} />
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -154,19 +127,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     rowGap: 20,
-  },
-  calendarContainer: {
-    flex: 1,
-    flexDirection: "column",
-    overflow: "hidden",
-  },
-  monthPickerButton: {
-    fontSize: 32,
-    fontWeight: 500,
-  },
-  moodNoteCount: {
-    fontSize: 32,
-    color: "grey",
   },
   todayContainer: {
     flex: 1,
