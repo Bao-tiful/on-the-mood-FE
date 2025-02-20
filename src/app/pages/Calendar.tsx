@@ -13,8 +13,8 @@ export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
 
-  const changeModalVisible = (newState: boolean) => {
-    setModalVisible(newState);
+  const changeModalVisible = (isModalOn: boolean) => {
+    setModalVisible(isModalOn);
   };
 
   const changeCalendarDate = (newDate: Date) => {
@@ -87,11 +87,11 @@ export default function Calendar() {
         <View style={styles.container}>
           {/* 캘린더 */}
           <MoodNoteCalendar
-            changeModalVisible={function (newState: boolean): void {
-              setModalVisible(newState);
+            changeModalVisible={(isModalOn: boolean) => {
+              setModalVisible(isModalOn);
             }}
             date={date}
-            changeCalendarDate={function (newDate: Date): void {
+            changeCalendarDate={(newDate: Date) => {
               setDate(newDate);
             }}
             notes={notes}
@@ -105,9 +105,9 @@ export default function Calendar() {
       </SafeAreaView>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
       <CalendarDatePicker
+        initialDate={date}
         modalVisible={modalVisible}
         changeModalVisible={changeModalVisible}
-        initialDate={date}
         changeCalendarDate={changeCalendarDate}
       />
     </>
