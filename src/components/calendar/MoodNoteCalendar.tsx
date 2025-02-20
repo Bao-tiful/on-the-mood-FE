@@ -3,10 +3,10 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import GridCalendar from "@components/calendar/CalendarBody";
 
 interface MoodNoteCalendarProp {
-  changeModalVisible: (newState: boolean) => void;
   date: Date;
-  changeCalendarDate: (newDate: Date) => void;
   notes: Map<number, NoteItem>;
+  changeCalendarDate: (newDate: Date) => void;
+  changeModalVisible: (isModalOn: boolean) => void;
 }
 
 export default function MoodNoteCalendar({
