@@ -14,7 +14,7 @@ interface CalendarBodyProps {
 }
 
 /// props로 입력된 Date가 포함된 월의 달력을 보여준다.
-function CalendarBody({ date, changeDate, notes }: CalendarBodyProps) {
+function GridCalendar({ date, changeDate, notes }: CalendarBodyProps) {
   // date가 포함된 달의 1일의 요일을 구함
   const firstDay = new Date(date.getFullYear(), date.getMonth());
   // 해당 달의 1일의 요일
@@ -161,4 +161,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CalendarBody;
+export default GridCalendar;
