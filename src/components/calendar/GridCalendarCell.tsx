@@ -1,12 +1,18 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 interface CalendarCellProps {
+  isSelected: boolean;
   date: Date;
   onPress: (newDate: Date) => void;
   data: NoteItem | undefined;
 }
 
-export function CalendarCell({ date, data, onPress }: CalendarCellProps) {
+export function CalendarCell({
+  isSelected,
+  date,
+  data,
+  onPress,
+}: CalendarCellProps) {
   const todayDate = new Date();
   const isToday =
     date.getFullYear() == todayDate.getFullYear() &&
@@ -15,12 +21,15 @@ export function CalendarCell({ date, data, onPress }: CalendarCellProps) {
   const cellStyle = data
     ? styles.calendarCellWithData
     : styles.calendarCellWithoutData;
+  const selectedStyle = isSelected ? styles.calendarCellSelected : null;
   return (
     <TouchableOpacity
-      style={[styles.calendarCell, cellStyle]}
+      style={[styles.calendarCell, cellStyle, selectedStyle]}
       onPressOut={() => onPress(date)}
     >
-      <Text style={{ color: cellStyle.color || "black" }}>
+      <Text
+        style={{ color: selectedStyle?.color || cellStyle.color || "black" }}
+      >
         {date.getDate()}
       </Text>
 
@@ -29,7 +38,10 @@ export function CalendarCell({ date, data, onPress }: CalendarCellProps) {
         <View
           style={[
             styles.todayIndicator,
-            { backgroundColor: cellStyle.color || "black" },
+            {
+              backgroundColor:
+                selectedStyle?.color || cellStyle.color || "black",
+            },
           ]}
         />
       ) : null}
@@ -58,17 +70,27 @@ const styles = StyleSheet.create({
   },
   invalidCalendarCell: {
     backgroundColor: "transparent",
-    borderStyle: "solid",
+    borderStyle: "dashed",
     borderWidth: 1,
-    borderColor: "lightgrey",
+    borderColor: "grey",
   },
   calendarCellWithData: {
     backgroundColor: "black",
     color: "white",
+    borderColor: "black",
   },
   calendarCellWithoutData: {
-    backgroundColor: "white",
+    backgroundColor: "transparent",
     color: "black",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "grey",
+  },
+  calendarCellSelected: {
+    backgroundColor: "white",
+    // TODO: 배경색 가져와서 color 속성에 넣어주기
+    color: "black",
+    borderColor: "white",
   },
   todayIndicator: {
     position: "absolute",
