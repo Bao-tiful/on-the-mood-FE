@@ -10,12 +10,12 @@ interface BottomSheetProps {
   changeModalVisible: (isModalOn: boolean) => void;
 }
 
-export default function CalendarDatePicker({
+export const CalendarDatePicker = ({
   initialDate,
   modalVisible,
   changeCalendarDate,
   changeModalVisible,
-}: BottomSheetProps) {
+}: BottomSheetProps) => {
   // 모달 내에서 사용할 임시 날짜값
   const [tempDate, setTempDate] = useState(initialDate);
 
@@ -74,7 +74,7 @@ export default function CalendarDatePicker({
       </BottomSheet>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {

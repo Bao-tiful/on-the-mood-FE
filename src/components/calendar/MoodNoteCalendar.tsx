@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import GridCalendar from "@components/calendar/CalendarBody";
+import GridCalendar from "@/src/components/calendar/GridCalendar";
 
 interface MoodNoteCalendarProp {
   date: Date;
@@ -9,12 +9,12 @@ interface MoodNoteCalendarProp {
   changeModalVisible: (isModalOn: boolean) => void;
 }
 
-export default function MoodNoteCalendar({
+export const MoodNoteCalendar = ({
   changeModalVisible: changeModalVisible,
   date,
   changeCalendarDate,
   notes,
-}: MoodNoteCalendarProp) {
+}: MoodNoteCalendarProp) => {
   return (
     <View style={styles.calendarContainer}>
       <TouchableOpacity onPress={() => changeModalVisible(true)}>
@@ -27,7 +27,7 @@ export default function MoodNoteCalendar({
       <GridCalendar date={date} changeDate={changeCalendarDate} notes={notes} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   calendarContainer: {
