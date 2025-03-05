@@ -1,46 +1,42 @@
 import typography from "@/constants/Typography";
 import { Link, Stack } from "expo-router";
-import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, SafeAreaView } from "react-native";
 import Calendar from "./pages/Calendar";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Threads from "./pages/Threads";
 import { ToolbarButton } from "../components/ToolbarButton";
 
 export default function HomeScreen() {
-  useEffect(() => {
-    async function loadFonts() {
-      await Font.loadAsync({
-        Pretendard: "./assets/fonts/PretendardVariable.ttf",
-      });
-    }
+  const [isGridMode, setIsGreedMode] = useState(true);
 
-    loadFonts();
-  }, []);
+  // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
+  const todayColor = "#00C7BE";
 
   return (
-    <>
+    <View style={[styles.background, { backgroundColor: todayColor }]}>
       <Stack.Screen options={{ headerShown: false }} />
 
       <SafeAreaView style={styles.safeArea}>
-        {/* Toolbar 아이콘 변경해주기 */}
+        {/* TODO: Toolbar 아이콘 변경해주기 */}
         <View style={styles.topToolbar}>
           <ToolbarButton name="user" onPress={() => {}} />
-          <ToolbarButton name="bars" onPress={() => {}} />
+          <ToolbarButton
+            name="bars"
+            onPress={() => {
+              setIsGreedMode(!isGridMode);
+            }}
+          />
         </View>
-        <Calendar />
+        {isGridMode ? <Calendar /> : <Threads />}
       </SafeAreaView>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   safeArea: {
     flex: 1,
     margin: 16,
