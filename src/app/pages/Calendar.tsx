@@ -49,11 +49,8 @@ export default function Calendar() {
     ],
   ]);
 
-  // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
-  const todayColor = "#d0b0e0";
-
   const todayWeatherCell = (
-    <View style={[styles.todayCell, { backgroundColor: todayColor }]}>
+    <View style={[styles.todayCell]}>
       <Text style={styles.todayCellTitle}>{"Today\nweather color"}</Text>
       <View style={{ width: "100%" }}>
         {/* TODO: 핀 아이콘 변경 */}
@@ -126,7 +123,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     maxHeight: 250,
-    columnGap: 16,
+    backgroundColor: "#ffffff88",
+    borderRadius: "10%",
   },
   todayCell: {
     width: "100%",
@@ -136,9 +134,9 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 32,
     alignItems: "center",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "lightgrey",
+    // borderStyle: "solid",
+    // borderWidth: 1,
+    // borderColor: "lightgrey",
   },
   todayCellTitle: {
     width: "100%",

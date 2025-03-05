@@ -35,8 +35,8 @@ export const CalendarDatePicker = ({
                 setTempDate(new Date(Number(itemValue), tempDate.getMonth()));
               }}
             >
-              <Picker.Item label="2024년" value="2024" />
-              <Picker.Item label="2025년" value="2025" />
+              <Picker.Item label="2024년" value="2024" color="black" />
+              <Picker.Item label="2025년" value="2025" color="black" />
             </Picker>
             <Picker
               style={styles.datePicker}
@@ -57,6 +57,7 @@ export const CalendarDatePicker = ({
                   label={month.label}
                   value={month.value.toString()}
                   enabled={true}
+                  color="black"
                 />
               ))}
             </Picker>
@@ -84,7 +85,6 @@ const styles = StyleSheet.create({
   },
   bottomSheetButton: {
     backgroundColor: "orange",
-
     width: "100%",
     alignContent: "center",
     justifyContent: "center",
