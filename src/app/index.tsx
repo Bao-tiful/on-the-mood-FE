@@ -1,8 +1,17 @@
 import typography from "@/constants/Typography";
 import { Link, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, SafeAreaView, Button } from "react-native";
-import * as Font from "expo-font";
+import React from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import Calendar from "./pages/Calendar";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { ToolbarButton } from "../components/ToolbarButton";
 
 export default function HomeScreen() {
   useEffect(() => {
@@ -19,16 +28,27 @@ export default function HomeScreen() {
     <>
       <Stack.Screen options={{ headerShown: false }} />
 
-      <SafeAreaView>
-        <View style={{ flexDirection: "row" }}>
-          <View style={{ padding: 4, backgroundColor: "skyblue" }}>
-            <Link href="/pages/Calendar">To Calendar</Link>
-          </View>
-          <View style={{ padding: 4, backgroundColor: "orange" }}>
-            <Link href="/pages/Threads">To Threads</Link>
-          </View>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Toolbar 아이콘 변경해주기 */}
+        <View style={styles.topToolbar}>
+          <ToolbarButton name="user" onPress={() => {}} />
+          <ToolbarButton name="bars" onPress={() => {}} />
         </View>
+        <Calendar />
       </SafeAreaView>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    margin: 16,
+    alignItems: "center",
+  },
+  topToolbar: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
+  },
+});

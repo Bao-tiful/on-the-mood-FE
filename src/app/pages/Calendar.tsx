@@ -79,19 +79,33 @@ function CalendarContainer({ date }: CalendarProps) {
   }));
 
   return (
-    <FlatList
-      data={items}
-      renderItem={({ item }) => {
-        if (item.date > 0 && item.date <= lastDate) {
-          return <CalendarCell date={item.date} />;
-        } else {
-          return <EmptyCalendarCell />;
-        }
-      }}
-      keyExtractor={(item) => item.date.toString()}
-      numColumns={7}
-      scrollEnabled={false}
-    />
+    <>
+      <View style={styles.container}>
+        {/* 캘린더 */}
+        <MoodNoteCalendar
+          changeModalVisible={(isModalOn: boolean) => {
+            setModalVisible(isModalOn);
+          }}
+          date={date}
+          changeCalendarDate={(newDate: Date) => {
+            setDate(newDate);
+          }}
+          notes={notes}
+        />
+        {/* 투데이 셀 */}
+        <View style={styles.todayContainer}>
+          {todayWeatherCell}
+          {todayNoteCell}
+        </View>
+      </View>
+      {/* ModalVisible에 의해 제어되는 바텀시트 */}
+      <CalendarDatePicker
+        initialDate={date}
+        modalVisible={modalVisible}
+        changeModalVisible={changeModalVisible}
+        changeCalendarDate={changeCalendarDate}
+      />
+    </>
   );
 }
 
@@ -109,9 +123,6 @@ interface CalendarItem {
 }
 
 const styles = StyleSheet.create({
-  monthPickerButton: {
-    fontSize: 32,
-  },
   container: {
     flex: 1,
     width: "100%",
