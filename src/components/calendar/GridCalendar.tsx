@@ -39,9 +39,19 @@ export const GridCalendar = ({
         renderItem={({ item }) => {
           if (item.date > 0 && item.date <= lastDate) {
             // 1일부터 마지막 날까지
+            let cellDate = new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              item.date
+            );
+            let isSelected =
+              date.getFullYear() == cellDate.getFullYear() &&
+              date.getMonth() == cellDate.getMonth() &&
+              date.getDate() == cellDate.getDate();
             return (
               <CalendarCell
-                date={new Date(date.getFullYear(), date.getMonth(), item.date)}
+                isSelected={isSelected}
+                date={cellDate}
                 data={notes.get(item.date)}
                 onPress={changeDate}
               />

@@ -6,6 +6,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
+import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
+import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
+import CalendarBottomNote from "@/src/components/calendar/CalendarBottomNote";
 
 import CalendarDatePicker from "@/src/components/CalendarDatePicker";
 
@@ -41,39 +44,36 @@ export default function Calendar() {
   );
 }
 
-  const todayWeatherCell = (
-    <View style={[styles.todayCell]}>
-      <Text style={styles.todayCellTitle}>{"Today\nweather color"}</Text>
-      <View style={{ width: "100%" }}>
-        {/* TODO: 핀 아이콘 변경 */}
-        <Text style={styles.todayWeatherLocation}>📍 서울특별시</Text>
-        <Text style={styles.todayWeatherTemperature}>4°</Text>
-      </View>
-    </View>
-  );
-}
-
-function EmptyCalendarCell() {
-  return <View style={styles.emptyCalendarCell}></View>;
-}
-
-function CalendarCell({ date }: CalendarCellProps) {
-  return (
-    <View style={styles.calendarCell}>
-      <Text>{date}</Text>
-    </View>
-  );
-
-function CalendarContainer({ date }: CalendarProps) {
-  // date가 포함된 달의 1일의 요일을 구함
-  const firstDay = new Date(date.getFullYear(), date.getMonth());
-  const firstDayOffset = firstDay.getDay();
-  const lastDate = new Date(
-    new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1
-  ).getDate();
-  const items = Array.from({ length: 7 * 6 }, (_, index) => ({
-    date: index - firstDayOffset + 1,
-  }));
+  // 테스트를 위한 노트 목데이터
+  const notes = new Map<number, NoteItem>([
+    [
+      1,
+      {
+        id: "4f3398fa-4a6b-48d2-920c-73be06721b3ba",
+        content: "와라라라1",
+        temperature: 2,
+        created_at: new Date("2025-01-01T19:33:43.215138Z"),
+      },
+    ],
+    [
+      5,
+      {
+        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bb",
+        content: "와라라라2",
+        temperature: 5,
+        created_at: new Date("2025-01-02T19:33:43.215138Z"),
+      },
+    ],
+    [
+      7,
+      {
+        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bc",
+        content: "와라라라3",
+        temperature: 7,
+        created_at: new Date("2025-01-03T19:33:43.215138Z"),
+      },
+    ],
+  ]);
 
   return (
     <>
@@ -90,10 +90,7 @@ function CalendarContainer({ date }: CalendarProps) {
           notes={notes}
         />
         {/* 투데이 셀 */}
-        <View style={styles.todayContainer}>
-          {todayWeatherCell}
-          {todayNoteCell}
-        </View>
+        <CalendarBottomNote date={date} />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
       <CalendarDatePicker
@@ -133,8 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     maxHeight: 250,
-    backgroundColor: "#ffffff88",
-    borderRadius: "10%",
+    columnGap: 2,
   },
   todayCell: {
     width: "100%",
@@ -142,11 +138,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     padding: 16,
-    borderRadius: 32,
     alignItems: "center",
-    // borderStyle: "solid",
-    // borderWidth: 1,
-    // borderColor: "lightgrey",
+    backgroundColor: "#ffffff88",
+  },
+  todayWeatherCell: {
+    borderTopLeftRadius: 32,
+    borderBottomLeftRadius: 32,
+  },
+  todayNoteCell: {
+    borderTopRightRadius: 32,
+    borderBottomRightRadius: 32,
   },
   todayCellTitle: {
     width: "100%",
