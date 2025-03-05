@@ -6,15 +6,23 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import {
+  CalendarCell,
+  EmptyCalendarCell,
+} from "@components/calendar/GridCalendarCell";
 
-interface CalendarBodyProps {
+interface GridCalendarProps {
   date: Date;
   changeDate: (newDate: Date) => void;
   notes: Map<number, NoteItem>;
 }
 
 /// props로 입력된 Date가 포함된 월의 달력을 보여준다.
-function GridCalendar({ date, changeDate, notes }: CalendarBodyProps) {
+export const GridCalendar = ({
+  date,
+  changeDate,
+  notes,
+}: GridCalendarProps) => {
   // date가 포함된 달의 1일의 요일을 구함
   const firstDay = new Date(date.getFullYear(), date.getMonth());
   // 해당 달의 1일의 요일
@@ -54,7 +62,7 @@ function GridCalendar({ date, changeDate, notes }: CalendarBodyProps) {
       />
     </>
   );
-}
+};
 
 // 캘린더의 요일 목록
 function WeekdayNames() {
@@ -71,52 +79,6 @@ function WeekdayNames() {
   );
 }
 
-interface CalendarCellProps {
-  date: Date;
-  onPress: (newDate: Date) => void;
-  data: NoteItem | undefined;
-}
-
-function CalendarCell({ date, data, onPress }: CalendarCellProps) {
-  const todayDate = new Date();
-  const isToday =
-    date.getFullYear() == todayDate.getFullYear() &&
-    date.getMonth() == todayDate.getMonth() &&
-    date.getDate() == todayDate.getDate();
-  const cellStyle = data
-    ? styles.calendarCellWithData
-    : styles.calendarCellWithoutData;
-  return (
-    <TouchableOpacity
-      style={[styles.calendarCell, cellStyle]}
-      onPressOut={() => onPress(date)}
-    >
-      <Text style={{ color: cellStyle.color || "black" }}>
-        {date.getDate()}
-      </Text>
-
-      {/* 오늘 날짜인 경우에만 보여주기 */}
-      {isToday ? (
-        <View
-          style={[
-            styles.todayIndicator,
-            { backgroundColor: cellStyle.color || "black" },
-          ]}
-        />
-      ) : null}
-    </TouchableOpacity>
-  );
-}
-
-// 유효하지 않은 날짜의 캘린더 칸
-function EmptyCalendarCell() {
-  return (
-    <View style={[styles.calendarCell, styles.invalidCalendarCell]}>
-      <View />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   weekdayContainer: {
     flexDirection: "row",
@@ -127,37 +89,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: "grey",
-  },
-  calendarCell: {
-    flex: 1,
-    aspectRatio: 1,
-    borderRadius: "50%",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    margin: 6,
-  },
-  invalidCalendarCell: {
-    backgroundColor: "transparent",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "lightgrey",
-  },
-  calendarCellWithData: {
-    backgroundColor: "black",
-    color: "white",
-  },
-  calendarCellWithoutData: {
-    backgroundColor: "white",
-    color: "black",
-  },
-  todayIndicator: {
-    position: "absolute",
-    bottom: "16%",
-    borderRadius: "50%",
-    width: 4,
-    height: 4,
-    fontWeight: "bold",
   },
 });
 

@@ -6,8 +6,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
-import CalendarDatePicker from "@/src/components/calendar/CalendarDatePicker";
-import MoodNoteCalendar from "@/src/components/calendar/MoodNoteCalendar";
+import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
+import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
 
 export default function Calendar() {
   const [modalVisible, setModalVisible] = useState(false);
