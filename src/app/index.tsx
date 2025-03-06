@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
   topToolbar: {
     flexDirection: "row",
     width: "100%",
+    paddingVertical: 12,
     justifyContent: "space-between",
   },
 });

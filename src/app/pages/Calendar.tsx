@@ -68,7 +68,8 @@ export default function Calendar() {
       7,
       {
         id: "4f3398fa-4a6b-48d2-920c-73be06721b3bc",
-        content: "와라라라3",
+        content:
+          "소소한 순간들이 만든 좋은 하루 🍵 오랜만에 여유로운 아침, 좋아하는 노래 들으며 기분 좋게 출근. 일하면서 예상치 못한 문제들이 있었지만, 동료들과 협력하며 해결!",
         temperature: 7,
         created_at: new Date("2025-01-03T19:33:43.215138Z"),
       },
@@ -90,7 +91,7 @@ export default function Calendar() {
           notes={notes}
         />
         {/* 투데이 셀 */}
-        <CalendarBottomNote date={date} />
+        <CalendarBottomNote date={date} note={notes.get(date.getDate())} />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
       <CalendarDatePicker
