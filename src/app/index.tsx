@@ -2,8 +2,8 @@ import typography from "@/constants/Typography";
 import { Link, Stack } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
-import Calendar from "./pages/Calendar";
-import Threads from "./pages/Threads";
+import Calendar from "../components/calendar/Calendar";
+import Threads from "../components/calendar/Threads";
 import { ToolbarButton } from "../components/ToolbarButton";
 
 export default function HomeScreen() {

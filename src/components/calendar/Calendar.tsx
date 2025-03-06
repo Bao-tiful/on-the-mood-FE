@@ -82,8 +82,6 @@ const Calendar = () => {
           }}
           notes={notes}
         />
-        {/* 투데이 셀 */}
-        <CalendarBottomNote date={date} note={notes.get(date.getDate())} />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
       <CalendarDatePicker

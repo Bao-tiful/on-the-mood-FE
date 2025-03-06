@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import GridCalendar from "@/src/components/calendar/GridCalendar";
+import CalendarBottomNote from "./CalendarBottomNote";
 
 interface MoodNoteCalendarProp {
   date: Date;
@@ -25,6 +26,9 @@ export const MoodNoteCalendar = ({
       <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
       <View style={{ height: 24 }} />
       <GridCalendar date={date} changeDate={changeCalendarDate} notes={notes} />
+      {/* 투데이 셀 */}
+      <View style={{ height: 30 }} />
+      <CalendarBottomNote date={date} note={notes.get(date.getDate())} />
     </View>
   );
 };

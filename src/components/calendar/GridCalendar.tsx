@@ -32,7 +32,7 @@ export const GridCalendar = ({
   }));
 
   return (
-    <>
+    <View>
       <WeekdayNames />
       <FlatList
         data={items}
@@ -64,7 +64,7 @@ export const GridCalendar = ({
         numColumns={7}
         scrollEnabled={false}
       />
-    </>
+    </View>
   );
 };
 
