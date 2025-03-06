@@ -1,11 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { ToolbarButton } from "../ToolbarButton";
 
 type CalendarBottomNoteProps = {
   date: Date;
+  note: NoteItem | undefined;
 };
 
-const CalendarBottomNote = ({ date }: CalendarBottomNoteProps) => {
+const CalendarBottomNote = ({ date, note }: CalendarBottomNoteProps) => {
   const todayWeatherCell = (
     <View style={[styles.todayCell, styles.todayWeatherCell]}>
       <Text style={styles.todayCellTitle}>
@@ -14,25 +16,39 @@ const CalendarBottomNote = ({ date }: CalendarBottomNoteProps) => {
       <View style={{ width: "100%" }}>
         {/* TODO: 핀 아이콘 변경 */}
         <Text style={styles.todayWeatherLocation}>📍 서울특별시</Text>
-        <Text style={styles.todayWeatherTemperature}>4°</Text>
+        <Text style={styles.todayWeatherTemperature}>
+          {note?.temperature ?? "-"}°
+        </Text>
       </View>
     </View>
   );
   const todayNoteCell = (
     <View style={[styles.todayCell, styles.todayNoteCell]}>
-      <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
+      <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
+        <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
+        {note != undefined ? (
+          <ToolbarButton name="arrow-right" onPress={() => {}} />
+        ) : (
+          <View />
+        )}
+      </View>
       <View style={{ width: "100%" }}>
-        <TouchableOpacity style={styles.todayWriteButton}>
-          {/* TODO: + 아이콘 변경 */}
-          <Text
-            style={{
-              color: styles.todayWriteButton.color,
-              fontSize: styles.todayWriteButton.fontSize,
-            }}
-          >
-            +
-          </Text>
-        </TouchableOpacity>
+        {note != undefined ? (
+          <View />
+        ) : (
+          <TouchableOpacity style={styles.todayWriteButton}>
+            <Text
+              style={{
+                color: styles.todayWriteButton.color,
+                fontSize: styles.todayWriteButton.fontSize,
+              }}
+            >
+              {/* // TODO: 아이콘 변경  */}+
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        <Text style={styles.todayCellContent}>{note?.content}</Text>
       </View>
     </View>
   );
@@ -81,8 +97,16 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 32,
   },
   todayCellTitle: {
-    width: "100%",
+    flex: 1,
+    flexDirection: "row",
+    textAlign: "left",
     fontWeight: 600,
+    width: "100%",
+  },
+  todayCellContent: {
+    overflow: "hidden",
+    textOverflow: "...",
+    maxHeight: 100,
   },
   todayWeatherLocation: {
     fontSize: 14,
