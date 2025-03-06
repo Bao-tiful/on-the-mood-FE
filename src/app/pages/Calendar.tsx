@@ -1,18 +1,10 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
 import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
 import CalendarBottomNote from "@/src/components/calendar/CalendarBottomNote";
 
-import CalendarDatePicker from "@/src/components/CalendarDatePicker";
-
-export default function Calendar() {
+const Calendar = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
 
@@ -102,20 +94,9 @@ export default function Calendar() {
       />
     </>
   );
-}
+};
 
-interface CalendarProps {
-  date: Date;
-}
-
-interface CalendarCellProps {
-  date: number;
-}
-
-interface CalendarItem {
-  id: number;
-  text: string;
-}
+export default Calendar;
 
 const styles = StyleSheet.create({
   container: {
