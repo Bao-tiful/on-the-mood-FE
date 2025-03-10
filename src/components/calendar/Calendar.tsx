@@ -11,30 +11,6 @@ const Calendar = () => {
   const changeModalVisible = (isModalOn: boolean) => {
     setModalVisible(isModalOn);
   };
-  const [date, setDate] = useState(new Date());
-
-  return (
-    <>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => pressButton()}>
-          <Text style={styles.monthPickerButton}>
-            {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}
-            월
-          </Text>
-        </TouchableOpacity>
-        <Text>노트 개수 : N개</Text>
-        <WeekdayNames />
-        <CalendarContainer date={date} />
-      </View>
-      <CalendarDatePicker
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        initialDate={date}
-        setDate={setDate}
-      />
-    </>
-  );
-}
 
   // 테스트를 위한 노트 목데이터
   const notes = new Map<number, NoteItem>([
@@ -88,7 +64,9 @@ const Calendar = () => {
         initialDate={date}
         modalVisible={modalVisible}
         changeModalVisible={changeModalVisible}
-        changeCalendarDate={changeCalendarDate}
+        changeCalendarDate={(newDate: Date) => {
+          setDate(newDate);
+        }}
       />
     </>
   );
