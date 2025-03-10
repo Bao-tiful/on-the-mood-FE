@@ -2,6 +2,9 @@ import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import GridCalendar from "@/src/components/calendar/GridCalendar";
 import CalendarBottomNote from "./CalendarBottomNote";
+import typography from "@/constants/Typography";
+import Icon, { IconName } from "../Icon";
+import { Colors } from "@/constants/Colors";
 
 interface MoodNoteCalendarProp {
   date: Date;
@@ -16,18 +19,35 @@ export const MoodNoteCalendar = ({
   changeCalendarDate,
   notes,
 }: MoodNoteCalendarProp) => {
-  return (
-    <View style={styles.calendarContainer}>
-      <TouchableOpacity onPress={() => changeModalVisible(true)}>
-        <Text style={styles.monthPickerButton}>
+  const MonthPicker = (
+    <TouchableOpacity onPress={() => changeModalVisible(true)}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={styles.monthPickerLabel}>
+          {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
           {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}월
         </Text>
-      </TouchableOpacity>
-      <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
-      <View style={{ height: 24 }} />
-      <GridCalendar date={date} changeDate={changeCalendarDate} notes={notes} />
-      {/* 투데이 셀 */}
-      <View style={{ height: 30 }} />
+
+        <View style={styles.monthPickerIcon}>
+          <Icon name={IconName.downWhite} size={12} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.calendarContainer}>
+      <View>
+        {/* 년,월 선택 버튼 */}
+        {MonthPicker}
+        <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
+        <View style={{ height: 16 }} />
+        <GridCalendar
+          date={date}
+          changeDate={changeCalendarDate}
+          notes={notes}
+        />
+        {/* 투데이 셀 */}
+      </View>
       <CalendarBottomNote date={date} note={notes.get(date.getDate())} />
     </View>
   );
@@ -37,14 +57,25 @@ const styles = StyleSheet.create({
   calendarContainer: {
     flex: 1,
     flexDirection: "column",
+    justifyContent: "space-between",
     overflow: "hidden",
   },
-  monthPickerButton: {
-    fontSize: 32,
-    fontWeight: 500,
+  monthPickerLabel: {
+    ...typography.title3,
+    fontWeight: 800,
+  },
+  monthPickerIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.black100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
   },
   moodNoteCount: {
-    fontSize: 32,
-    color: "grey",
+    ...typography.title3,
+    fontWeight: 600,
+    color: Colors.black40,
   },
 });
