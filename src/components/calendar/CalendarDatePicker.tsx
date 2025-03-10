@@ -2,6 +2,8 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import BottomSheet from "@components/BottomSheet";
+import typography from "@/constants/Typography";
+import { Colors } from "@/constants/Colors";
 
 interface BottomSheetProps {
   initialDate: Date;
@@ -26,7 +28,7 @@ export const CalendarDatePicker = ({
         setModalVisible={changeModalVisible}
       >
         <View style={styles.bottomSheetContainer}>
-          <Text>다른 날짜 일기 보기</Text>
+          <Text style={styles.titleLable}>다른 날짜 일기 보기</Text>
           <View style={styles.pickerContainer}>
             <Picker
               style={styles.datePicker}
@@ -35,8 +37,26 @@ export const CalendarDatePicker = ({
                 setTempDate(new Date(Number(itemValue), tempDate.getMonth()));
               }}
             >
-              <Picker.Item label="2024년" value="2024" color="black" />
-              <Picker.Item label="2025년" value="2025" color="black" />
+              <Picker.Item
+                label="2024년"
+                value="2024"
+                color={Colors.black100}
+                style={{
+                  ...typography.body,
+                  fontWeight: 600,
+                  color: Colors.black100,
+                }}
+              />
+              <Picker.Item
+                label="2025년"
+                value="2025"
+                color={Colors.black100}
+                style={{
+                  ...typography.body,
+                  fontWeight: 600,
+                  color: Colors.black100,
+                }}
+              />
             </Picker>
             <Picker
               style={styles.datePicker}
@@ -57,7 +77,12 @@ export const CalendarDatePicker = ({
                   label={month.label}
                   value={month.value.toString()}
                   enabled={true}
-                  color="black"
+                  color={Colors.black100}
+                  style={{
+                    ...typography.body,
+                    fontWeight: 600,
+                    color: Colors.black100,
+                  }}
                 />
               ))}
             </Picker>
@@ -69,7 +94,7 @@ export const CalendarDatePicker = ({
               changeModalVisible(false);
             }}
           >
-            <Text>변경하기</Text>
+            <Text style={styles.bottomSheetButtonLabel}>보러가기</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>
@@ -84,13 +109,18 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   bottomSheetButton: {
-    backgroundColor: "orange",
+    backgroundColor: Colors.black100,
     width: "100%",
     alignContent: "center",
     justifyContent: "center",
     alignItems: "center",
-    height: 50,
-    borderRadius: 16,
+    height: 56,
+    borderRadius: 28,
+  },
+  bottomSheetButtonLabel: {
+    ...typography.body,
+    fontWeight: 600,
+    color: Colors.white100,
   },
   pickerContainer: {
     width: "100%",
@@ -101,5 +131,9 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     flex: 1,
+  },
+  titleLable: {
+    ...typography.headline,
+    color: Colors.black100,
   },
 });
