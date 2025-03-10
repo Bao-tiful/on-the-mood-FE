@@ -1,10 +1,11 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import GridCalendar from "@/src/components/calendar/GridCalendar";
-import CalendarBottomNote from "./CalendarBottomNote";
+import ThreadCalendarCell from "./ThreadCalendarCell";
 import typography from "@/constants/Typography";
 import Icon, { IconName } from "../Icon";
 import { Colors } from "@/constants/Colors";
+import TodayNoteCell from "./TodayNoteCell";
 
 interface MoodNoteCalendarProp {
   date: Date;
@@ -19,6 +20,12 @@ export const MoodNoteCalendar = ({
   changeCalendarDate,
   notes,
 }: MoodNoteCalendarProp) => {
+  const todayDate = new Date();
+  const isToday =
+    date.getFullYear() == todayDate.getFullYear() &&
+    date.getMonth() == todayDate.getMonth() &&
+    date.getDate() == todayDate.getDate();
+
   const MonthPicker = (
     <TouchableOpacity onPress={() => changeModalVisible(true)}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -35,8 +42,8 @@ export const MoodNoteCalendar = ({
   );
 
   return (
-    <View style={styles.calendarContainer}>
-      <View>
+    <View style={{ justifyContent: "space-between", flex: 1 }}>
+      <View style={styles.calendarContainer}>
         {/* 년,월 선택 버튼 */}
         {MonthPicker}
         <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
@@ -48,16 +55,22 @@ export const MoodNoteCalendar = ({
         />
         {/* 투데이 셀 */}
       </View>
-      <CalendarBottomNote date={date} note={notes.get(date.getDate())} />
+      <View style={[{ height: 224, borderRadius: 16, overflow: "hidden" }]}>
+        {isToday && notes.get(todayDate.getDate()) == undefined ? (
+          <TodayNoteCell date={date} location={"서울특별시"} temperature={12} />
+        ) : (
+          <ThreadCalendarCell date={date} note={notes.get(date.getDate())} />
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   calendarContainer: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     overflow: "hidden",
   },
   monthPickerLabel: {
