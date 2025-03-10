@@ -3,6 +3,7 @@ import React from "react";
 import { Colors } from "@/constants/Colors";
 import typography from "@/constants/Typography";
 import Icon, { IconName } from "../Icon";
+import { router } from "expo-router";
 
 type TodayNoteCellProps = {
   date: Date;
@@ -39,7 +40,10 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
             {"오늘의 하루를 \n+버튼을 눌러 기록해보세요."}
           </Text>
         </View>
-        <TouchableOpacity style={styles.todayWriteButton}>
+        <TouchableOpacity
+          style={styles.todayWriteButton}
+          onPress={() => router.push("/pages/EditPage")}
+        >
           {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 */}
           <Text
             style={{
