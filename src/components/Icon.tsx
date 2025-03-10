@@ -13,7 +13,10 @@ import Plus from "@assets/icons/plus.svg";
 import Profile from "@assets/icons/profile.svg";
 import Temperature from "@assets/icons/temperature.svg";
 import Trash from "@assets/icons/trash.svg";
+import DownWhite from "@assets/icons/down_white.svg";
 import { Colors } from "@/constants/Colors";
+import { ColorValue } from "react-native";
+import Svg, { Mask, Rect } from "react-native-svg";
 
 export enum IconName {
   arrow = "arrow",
@@ -29,6 +32,7 @@ export enum IconName {
   profile = "profile",
   temperature = "temperature",
   trash = "trash",
+  downWhite = "down_white",
 }
 
 const icons = {
@@ -45,17 +49,17 @@ const icons = {
   [IconName.profile]: Profile,
   [IconName.temperature]: Temperature,
   [IconName.trash]: Trash,
+  [IconName.downWhite]: DownWhite,
 };
 
 interface IconProps {
   name: IconName;
   size?: number;
-  color?: string;
 }
 
-const Icon = ({ name, size = 24, color = Colors.black100 }: IconProps) => {
-  const Svg = icons[name];
-  return <Svg width={size} height={size} />;
+const Icon = ({ name, size = 24 }: IconProps) => {
+  const SvgIcon = icons[name];
+  return <SvgIcon width={size} height={size} />;
 };
 
 export default Icon;
