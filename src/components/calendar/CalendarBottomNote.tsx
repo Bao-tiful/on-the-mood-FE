@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { ToolbarButton } from "../ToolbarButton";
+import { IconName } from "../Icon";
 
 type CalendarBottomNoteProps = {
   date: Date;
@@ -14,7 +15,6 @@ const CalendarBottomNote = ({ date, note }: CalendarBottomNoteProps) => {
         {date.getDate() + " Day \nOndo"}
       </Text>
       <View style={{ width: "100%" }}>
-        {/* TODO: 핀 아이콘 변경 */}
         <Text style={styles.todayWeatherLocation}>📍 서울특별시</Text>
         <Text style={styles.todayWeatherTemperature}>
           {note?.temperature ?? "-"}°
@@ -27,7 +27,7 @@ const CalendarBottomNote = ({ date, note }: CalendarBottomNoteProps) => {
       <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
         <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
         {note != undefined ? (
-          <ToolbarButton name="arrow-right" onPress={() => {}} />
+          <ToolbarButton name={IconName.arrow} onPress={() => {}} />
         ) : (
           <View />
         )}
