@@ -5,6 +5,7 @@ import { StyleSheet, View, SafeAreaView } from "react-native";
 import Calendar from "../components/calendar/Calendar";
 import Threads from "../components/calendar/Threads";
 import { ToolbarButton } from "../components/ToolbarButton";
+import { IconName } from "../components/Icon";
 
 export default function HomeScreen() {
   const [isGridMode, setIsGreedMode] = useState(true);
@@ -17,11 +18,10 @@ export default function HomeScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <SafeAreaView style={styles.safeArea}>
-        {/* TODO: Toolbar 아이콘 변경해주기 */}
         <View style={styles.topToolbar}>
-          <ToolbarButton name="user" onPress={() => {}} />
+          <ToolbarButton name={IconName.profile} onPress={() => {}} />
           <ToolbarButton
-            name="bars"
+            name={IconName.list}
             onPress={() => {
               setIsGreedMode(!isGridMode);
             }}
