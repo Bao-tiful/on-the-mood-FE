@@ -11,10 +11,12 @@ import {
 import React from "react";
 import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
-import Icon, { IconName } from "@/src/components/Icon";
+import { IconName } from "@/src/components/Icon";
 import { router, useLocalSearchParams } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import typography from "@/constants/Typography";
+import LocationAndTemperature from "@/src/components/editpage/LocationAndTemperature";
+import Keywords from "@/src/components/editpage/Keywords";
 
 const EditPage = () => {
   const { date, temperature } = useLocalSearchParams();
@@ -32,7 +34,7 @@ const EditPage = () => {
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
+          style={{ flex: 1, gap: 12 }}
         >
           <View>
             <View style={styles.topToolbar}>
@@ -47,45 +49,13 @@ const EditPage = () => {
               </Text>
               <ToolbarButton name={IconName.check} onPress={() => {}} />
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 8,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 2,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name={IconName.location} size={14} />
-                <Text style={[typography.label1, { fontWeight: 600 }]}>
-                  서울특별시
-                </Text>
-              </View>
-              <Text>|</Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 2,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name={IconName.temperature} size={14} />
-                <Text style={[typography.label1, { fontWeight: 600 }]}>
-                  체감온도 {temperature}°
-                </Text>
-              </View>
-            </View>
+            <LocationAndTemperature
+              location={"서울특별시"}
+              temperature={parsedTemperature}
+            />
           </View>
-          <View style={{ height: 12 }} />
-          <View style={{ marginVertical: 16 }}>
+
+          <View style={{ marginTop: 16 }}>
             <View style={{ alignItems: "center" }}>
               <TemperatureSlider
                 feelsLikeTemp={parsedTemperature}
@@ -94,40 +64,10 @@ const EditPage = () => {
             </View>
           </View>
           <View style={{ flex: 1 }}>
-            <View
-              style={{
-                paddingVertical: 24,
-                paddingHorizontal: 16,
-                gap: 16,
-                backgroundColor: Colors.white40,
-                borderRadius: 16,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  gap: 16,
-                }}
-              >
-                <View style={styles.keywordContainer}>
-                  <Text style={[typography.label2]}>키워드</Text>
-                </View>
-                <View style={styles.keywordContainer}>
-                  <Text style={[typography.label2]}>키워드</Text>
-                </View>
-                <View style={styles.keywordContainer}>
-                  <Text style={[typography.label2]}>키워드</Text>
-                </View>
-              </View>
+            <View style={styles.noteEditorContainer}>
+              <Keywords keywordList={["키워드 1", "키워드 2", "키워드 3"]} />
               <TextInput
-                style={[
-                  typography.body,
-                  {
-                    textAlignVertical: "top",
-                    minHeight: 64,
-                  },
-                ]}
+                style={styles.noteEditor}
                 multiline={true}
                 numberOfLines={3}
                 maxLength={100}
@@ -139,8 +79,8 @@ const EditPage = () => {
               <View
                 style={{ flexDirection: "row", justifyContent: "flex-end" }}
               >
-                <Text>0</Text>
-                <Text> /100</Text>
+                <Text style={styles.noteCountingLabel}>0</Text>
+                <Text style={styles.noteMaxLabel}> /100</Text>
               </View>
             </View>
           </View>
@@ -164,10 +104,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  keywordContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 100,
-    backgroundColor: Colors.black18,
+
+  noteEditorContainer: {
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+    gap: 16,
+    backgroundColor: Colors.white40,
+    borderRadius: 16,
   },
+  noteEditor: {
+    ...typography.body,
+    textAlignVertical: "top",
+    minHeight: 64,
+  },
+  noteCountingLabel: { ...typography.label1, color: Colors.black100 },
+  noteMaxLabel: { ...typography.label1, color: Colors.black40 },
 });

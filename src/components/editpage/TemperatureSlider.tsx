@@ -49,7 +49,11 @@ const TemperatureSlider = ({
                 style={[
                   styles.feelsLikeTempLabelRow,
                   // 체감온도 레이블을 표시할 위치 지정
-                  { left: `${((feelsLikeTemp + 40) / 80) * 100}%` },
+                  {
+                    left: `${
+                      ((feelsLikeTemp - minValue) / (maxValue - minValue)) * 100
+                    }%`,
+                  },
                 ]}
               >
                 <Icon name={IconName.temperatureGray} size={16} />
@@ -61,6 +65,7 @@ const TemperatureSlider = ({
           </View>
           <Slider
             containerStyle={{ height: 20 }}
+            trackRightPadding={-1}
             minimumValue={minValue}
             maximumValue={maxValue}
             value={temperature}
@@ -84,7 +89,9 @@ const TemperatureSlider = ({
         style={[
           styles.sliderThumbContainer,
           {
-            left: `${((temperature + 40) / 80) * 100}%`,
+            left: `${
+              ((temperature - minValue) / (maxValue - minValue)) * 100
+            }%`,
           },
         ]}
       >
@@ -134,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position: "absolute",
     bottom: -54,
-    transform: [{ translateX: "-25%" }],
+    transform: [{ translateX: "-22%" }],
     alignItems: "center",
   },
   feelsLikeTempLabel: {
@@ -173,7 +180,7 @@ const styles = StyleSheet.create({
     borderRightColor: "transparent",
     backgroundColor: "transparent",
     position: "absolute",
-    transform: [{ translateY: 98 }, { translateX: "-50%" }],
+    transform: [{ translateY: 98 }, { translateX: "-35%" }],
   },
   backgroundTrack: {
     height: 32,
