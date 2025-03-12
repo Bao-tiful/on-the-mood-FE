@@ -75,6 +75,7 @@ const EditPage = () => {
                   "오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요."
                 }
                 placeholderTextColor={Colors.black40}
+                autoFocus
               />
               <View
                 style={{ flexDirection: "row", justifyContent: "flex-end" }}
