@@ -28,7 +28,24 @@ export default function HomeScreen() {
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
-          <ToolbarButton name={IconName.profile} onPress={() => {}} />
+          <ToolbarButton
+            name={IconName.profile}
+            onPress={async () => {
+              try {
+                const prop = {
+                  username: "박성민",
+                  // email: "moktak072@naver.com",
+                  password: "qwer1234!",
+                  // password2: "qwer1234!",
+                  // nickname: "박선미",
+                };
+                const result = await logIn(prop);
+                console.log("SUCCESS : ", result);
+              } catch (error) {
+                console.error("ERROR : ", error);
+              }
+            }}
+          />
           <ToolbarButton
             name={IconName.list}
             onPress={() => {
