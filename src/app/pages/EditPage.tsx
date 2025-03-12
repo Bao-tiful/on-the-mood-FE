@@ -88,4 +88,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  keywordContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 100,
+    backgroundColor: Colors.black18,
+  },
 });
