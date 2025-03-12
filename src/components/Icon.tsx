@@ -15,7 +15,7 @@ import Temperature from "@assets/icons/temperature.svg";
 import Trash from "@assets/icons/trash.svg";
 import DownWhite from "@assets/icons/down_white.svg";
 import TemperatureGray from "@assets/icons/temperature_gray.svg";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/src/styles/Colors";
 import { ColorValue } from "react-native";
 import Svg, { Mask, Rect } from "react-native-svg";
 

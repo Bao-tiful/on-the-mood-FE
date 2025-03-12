@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Colors } from "@/constants/Colors";
-import typography from "@/constants/Typography";
+import { Colors } from "@/src/styles/Colors";
+import typography from "@/src/styles/Typography";
 
 type KeywordsProps = {
   keywordList: string[];

@@ -1,4 +1,4 @@
-import typography from "@/constants/Typography";
+import typography from "@/src/styles/Typography";
 import { Link, Stack } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";

@@ -1,4 +1,4 @@
-import typography from "@/constants/Typography";
+import typography from "@/src/styles/Typography";
 import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 

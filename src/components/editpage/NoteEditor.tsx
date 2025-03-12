@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/src/styles/Colors";
 import Keywords from "./Keywords";
-import typography from "@/constants/Typography";
+import typography from "@/src/styles/Typography";
 
 type NoteEditorProps = {
   keywordList: string[];

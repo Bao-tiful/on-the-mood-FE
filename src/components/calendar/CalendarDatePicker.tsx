@@ -2,8 +2,8 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import BottomSheet from "@components/BottomSheet";
-import typography from "@/constants/Typography";
-import { Colors } from "@/constants/Colors";
+import typography from "@/src/styles/Typography";
+import { Colors } from "@/src/styles/Colors";
 
 interface BottomSheetProps {
   initialDate: Date;

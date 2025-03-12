@@ -1,9 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors } from "@/src/styles/Colors";
+import typography from "@/src/styles/Typography";
 import React from "react";
-import { ToolbarButton } from "../ToolbarButton";
+import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
-import { Colors } from "@/constants/Colors";
-import typography from "@/constants/Typography";
+import { ToolbarButton } from "../ToolbarButton";
 
 type ThreadCalendarCellProps = {
   date: Date;

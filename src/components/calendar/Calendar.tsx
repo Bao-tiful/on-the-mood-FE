@@ -1,8 +1,7 @@
-import { StyleSheet, View } from "react-native";
-import React, { useState } from "react";
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
 import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
-import ThreadCalendarCell from "@/src/components/calendar/ThreadCalendarCell";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 const Calendar = () => {
   const [modalVisible, setModalVisible] = useState(false);

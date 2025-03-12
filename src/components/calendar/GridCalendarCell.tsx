@@ -1,5 +1,5 @@
-import { Colors } from "@/constants/Colors";
-import typography from "@/constants/Typography";
+import { Colors } from "@/src/styles/Colors";
+import typography from "@/src/styles/Typography";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 interface CalendarCellProps {
