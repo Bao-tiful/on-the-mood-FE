@@ -88,19 +88,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-
-  noteEditorContainer: {
-    paddingVertical: 24,
-    paddingHorizontal: 16,
-    gap: 16,
-    backgroundColor: Colors.white40,
-    borderRadius: 16,
-  },
-  noteEditor: {
-    ...typography.body,
-    textAlignVertical: "top",
-    minHeight: 64,
-  },
-  noteCountingLabel: { ...typography.label1, color: Colors.black100 },
-  noteMaxLabel: { ...typography.label1, color: Colors.black40 },
 });
