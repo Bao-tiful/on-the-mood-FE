@@ -31,19 +31,20 @@ export default function HomeScreen() {
           <ToolbarButton
             name={IconName.profile}
             onPress={async () => {
-              try {
-                const prop = {
-                  username: "박성민",
-                  // email: "moktak072@naver.com",
-                  password: "qwer1234!",
-                  // password2: "qwer1234!",
-                  // nickname: "박선미",
-                };
-                const result = await logIn(prop);
-                console.log("SUCCESS : ", result);
-              } catch (error) {
-                console.error("ERROR : ", error);
-              }
+              // try {
+              //   const prop = {
+              //     username: "박성민",
+              //     // email: "moktak072@naver.com",
+              //     password: "qwer1234!",
+              //     // password2: "qwer1234!",
+              //     // nickname: "박선미",
+              //   };
+              //   const result = await logIn(prop);
+              //   console.log("SUCCESS : ", result);
+              // } catch (error) {
+              //   console.error("ERROR : ", error);
+              // }
+              router.push("/pages/MyPage");
             }}
           />
           <ToolbarButton
