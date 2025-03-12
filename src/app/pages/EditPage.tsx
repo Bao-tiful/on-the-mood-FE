@@ -27,109 +27,126 @@ const EditPage = () => {
     : Number(temperature);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <View>
-          <View style={styles.topToolbar}>
-            <ToolbarButton
-              name={IconName.back}
-              onPress={() => {
-                router.back();
-              }}
-            />
-            <Text>{parsedDate?.toLocaleDateString("ko-KR")}</Text>
-            <ToolbarButton name={IconName.check} onPress={() => {}} />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 8,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+    // TODO: 여기에서 색상 변경해주기
+    <View style={{ flex: 1, backgroundColor: "#a0d2ffff" }}>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          <View>
+            <View style={styles.topToolbar}>
+              <ToolbarButton
+                name={IconName.back}
+                onPress={() => {
+                  router.back();
+                }}
+              />
+              <Text style={typography.heading2}>
+                {parsedDate?.toLocaleDateString("ko-KR")}
+              </Text>
+              <ToolbarButton name={IconName.check} onPress={() => {}} />
+            </View>
             <View
               style={{
                 flexDirection: "row",
-                gap: 2,
+                gap: 8,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Icon name={IconName.location} size={14} />
-              <Text>서울특별시</Text>
-            </View>
-            <Text>|</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 2,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Icon name={IconName.temperature} size={14} />
-              <Text>체감온도 {temperature}°</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name={IconName.location} size={14} />
+                <Text style={[typography.label1, { fontWeight: 600 }]}>
+                  서울특별시
+                </Text>
+              </View>
+              <Text>|</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name={IconName.temperature} size={14} />
+                <Text style={[typography.label1, { fontWeight: 600 }]}>
+                  체감온도 {temperature}°
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={{ height: 12 }} />
-        <View style={{ marginVertical: 16 }}>
-          <View style={{ alignItems: "center" }}>
-            <TemperatureSlider
-              feelsLikeTemp={parsedTemperature}
-              changeMoodTemp={() => {}}
-            />
+          <View style={{ height: 12 }} />
+          <View style={{ marginVertical: 16 }}>
+            <View style={{ alignItems: "center" }}>
+              <TemperatureSlider
+                feelsLikeTemp={parsedTemperature}
+                changeMoodTemp={() => {}}
+              />
+            </View>
           </View>
-        </View>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              paddingVertical: 24,
-              paddingHorizontal: 16,
-              gap: 24,
-              backgroundColor: Colors.white40,
-              borderRadius: 16,
-            }}
-          >
+          <View style={{ flex: 1 }}>
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "center",
+                paddingVertical: 24,
+                paddingHorizontal: 16,
                 gap: 16,
+                backgroundColor: Colors.white40,
+                borderRadius: 16,
               }}
             >
-              <Text>키워드</Text>
-              <Text>키워드</Text>
-              <Text>키워드</Text>
-            </View>
-            <TextInput
-              style={[
-                typography.body,
-                {
-                  textAlignVertical: "top",
-                  minHeight: 64,
-                },
-              ]}
-              multiline={true}
-              numberOfLines={3}
-              maxLength={100}
-              placeholder={
-                "오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요."
-              }
-              placeholderTextColor={Colors.black40}
-            />
-            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-              <Text>0</Text>
-              <Text> /100</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 16,
+                }}
+              >
+                <View style={styles.keywordContainer}>
+                  <Text style={[typography.label2]}>키워드</Text>
+                </View>
+                <View style={styles.keywordContainer}>
+                  <Text style={[typography.label2]}>키워드</Text>
+                </View>
+                <View style={styles.keywordContainer}>
+                  <Text style={[typography.label2]}>키워드</Text>
+                </View>
+              </View>
+              <TextInput
+                style={[
+                  typography.body,
+                  {
+                    textAlignVertical: "top",
+                    minHeight: 64,
+                  },
+                ]}
+                multiline={true}
+                numberOfLines={3}
+                maxLength={100}
+                placeholder={
+                  "오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요."
+                }
+                placeholderTextColor={Colors.black40}
+              />
+              <View
+                style={{ flexDirection: "row", justifyContent: "flex-end" }}
+              >
+                <Text>0</Text>
+                <Text> /100</Text>
+              </View>
             </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 };
 
@@ -139,7 +156,6 @@ const styles = StyleSheet.create({
   container: {
     margin: 12,
     flex: 1,
-    backgroundColor: "#a0d2ffff",
   },
   topToolbar: {
     flexDirection: "row",
@@ -147,5 +163,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  keywordContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 100,
+    backgroundColor: Colors.black18,
   },
 });
