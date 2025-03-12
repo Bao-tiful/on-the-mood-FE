@@ -20,7 +20,7 @@ const TemperatureSlider = ({
   const maxValue = 40;
 
   return (
-    <View style={{ width: "100%" }}>
+    <View style={{ width: "100%", marginTop: 16, marginBottom: 32 }}>
       <View style={styles.sliderContainer}>
         <View>
           <View style={styles.backgroundContainer}>

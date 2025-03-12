@@ -11,7 +11,7 @@ export default function HomeScreen() {
   const [isGridMode, setIsGreedMode] = useState(true);
 
   // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
-  const todayColor = "#00C7BE";
+  const todayColor = "#D7F5BA";
 
   return (
     <View style={[styles.background, { backgroundColor: todayColor }]}>

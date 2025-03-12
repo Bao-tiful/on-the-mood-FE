@@ -42,7 +42,12 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
         </View>
         <TouchableOpacity
           style={styles.todayWriteButton}
-          onPress={() => router.push("/pages/EditPage")}
+          onPress={() =>
+            router.push({
+              pathname: "/pages/EditPage",
+              params: { temperature: temperature, date: date.toISOString() },
+            })
+          }
         >
           {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 */}
           <Text
