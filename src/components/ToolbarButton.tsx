@@ -1,25 +1,26 @@
-import { TouchableOpacity, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { TouchableOpacity, StyleSheet, Image } from "react-native";
+import Icon, { IconName } from "./Icon";
+import { Colors } from "@/constants/Colors";
 
 type ToolbarButtonProps = {
-  name: string;
+  name: IconName;
   onPress: () => void;
 };
 
 export const ToolbarButton = ({ name, onPress }: ToolbarButtonProps) => (
   <TouchableOpacity onPress={onPress} style={styles.toolbarButton}>
-    <Icon name={name} size={20} color="black" />
+    <Icon name={name} />
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
   toolbarButton: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
 
     borderRadius: "50%",
-    backgroundColor: "#aaaaaaaa",
+    backgroundColor: Colors.black18,
   },
 });

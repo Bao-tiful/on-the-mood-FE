@@ -4,6 +4,8 @@ import {
   CalendarCell,
   EmptyCalendarCell,
 } from "@components/calendar/GridCalendarCell";
+import { Colors } from "@/constants/Colors";
+import typography from "@/constants/Typography";
 
 interface GridCalendarProps {
   date: Date;
@@ -89,10 +91,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   weekdayCell: {
+    ...typography.label2,
     flexDirection: "row",
     flex: 1,
     textAlign: "center",
-    color: "grey",
+    color: Colors.black100,
   },
 });
 
