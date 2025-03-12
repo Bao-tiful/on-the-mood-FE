@@ -14,6 +14,7 @@ import Profile from "@assets/icons/profile.svg";
 import Temperature from "@assets/icons/temperature.svg";
 import Trash from "@assets/icons/trash.svg";
 import DownWhite from "@assets/icons/down_white.svg";
+import TemperatureGray from "@assets/icons/temperature_gray.svg";
 import { Colors } from "@/constants/Colors";
 import { ColorValue } from "react-native";
 import Svg, { Mask, Rect } from "react-native-svg";
@@ -33,6 +34,7 @@ export enum IconName {
   temperature = "temperature",
   trash = "trash",
   downWhite = "down_white",
+  temperatureGray = "temperature_gray",
 }
 
 const icons = {
@@ -50,6 +52,7 @@ const icons = {
   [IconName.temperature]: Temperature,
   [IconName.trash]: Trash,
   [IconName.downWhite]: DownWhite,
+  [IconName.temperatureGray]: TemperatureGray,
 };
 
 interface IconProps {
