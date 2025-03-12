@@ -1,6 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
+import { Colors } from "@/constants/Colors";
+import Icon, { IconName } from "../Icon";
+import typography from "@/constants/Typography";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
@@ -11,63 +14,60 @@ const TemperatureSlider = ({
   feelsLikeTemp,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
-  const [myValue, setMyValue] = useState(feelsLikeTemp);
+  const [temperature, setTemperature] = useState(feelsLikeTemp);
+
+  const minValue = -40;
+  const maxValue = 40;
 
   return (
     <View style={{ width: "100%" }}>
       <View style={styles.sliderContainer}>
         <View>
-          <View
-            style={{
-              flexDirection: "column",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                position: "absolute",
-                justifyContent: "space-between",
-                top: -20,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            >
-              <Text>-40°</Text>
-              <Text>40°</Text>
+          <View style={styles.backgroundContainer}>
+            <View style={styles.minMaxLabelRow}>
+              <Text style={styles.minMaxLabel}>{minValue}°</Text>
+              <Text style={styles.minMaxLabel}>{maxValue}°</Text>
             </View>
-            <View style={styles.trackBackground}>
-              {Array.from({ length: 81 }).map((_, index) => (
-                <View
-                  style={[
-                    styles.trackItem,
-                    index === 40 + feelsLikeTemp
-                      ? { backgroundColor: "#888888" }
-                      : null,
-                  ]}
-                  key={index}
-                />
-              ))}
+            <View style={styles.backgroundTrack}>
+              {Array.from({ length: maxValue - minValue + 1 }).map(
+                (_, index) => (
+                  <View
+                    style={[
+                      styles.backgroundTrackItem,
+                      // 해당 체감온도에 해당하는 칸은 색상 구분
+                      index === feelsLikeTemp - minValue
+                        ? { backgroundColor: Colors.black40 }
+                        : null,
+                    ]}
+                    key={index}
+                  />
+                )
+              )}
             </View>
-            <View
-              style={{
-                position: "absolute",
-                bottom: -54,
-                left: `${((feelsLikeTemp + 40) / 80) * 100}%`,
-                transform: [{ translateX: "-50%" }],
-              }}
-            >
-              <Text>
-                {myValue === feelsLikeTemp ? "" : feelsLikeTemp + "°"}
-              </Text>
-            </View>
+            {temperature === feelsLikeTemp ? null : (
+              <View
+                style={[
+                  styles.feelsLikeTempLabelRow,
+                  // 체감온도 레이블을 표시할 위치 지정
+                  { left: `${((feelsLikeTemp + 40) / 80) * 100}%` },
+                ]}
+              >
+                <Icon name={IconName.temperatureGray} size={16} />
+                <Text style={styles.feelsLikeTempLabel}>
+                  {feelsLikeTemp + "°"}
+                </Text>
+              </View>
+            )}
           </View>
           <Slider
             containerStyle={{ height: 20 }}
-            minimumValue={-40}
-            maximumValue={40}
-            value={myValue}
-            onValueChange={(value) => setMyValue(value[0])}
+            minimumValue={minValue}
+            maximumValue={maxValue}
+            value={temperature}
+            onValueChange={(value) => {
+              setTemperature(value[0]);
+              changeMoodTemp(temperature);
+            }}
             maximumTrackTintColor="transparent"
             minimumTrackTintColor="transparent"
             thumbStyle={styles.thumb}
@@ -81,35 +81,25 @@ const TemperatureSlider = ({
         </View>
       </View>
       <View
-        style={{
-          position: "absolute",
-          left: `${((myValue + 40) / 80) * 100}%`,
-        }}
+        style={[
+          styles.sliderThumbContainer,
+          {
+            left: `${((temperature + 40) / 80) * 100}%`,
+          },
+        ]}
       >
         <View style={[styles.degreeTag]}>
-          <Text
-            style={{
-              position: "absolute",
-              fontSize: 10,
-              transform: [{ translateY: -34 }],
-              top: -14,
-            }}
-          >
-            {myValue === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
+          <Text style={[styles.degreeTopLabel]}>
+            {temperature === feelsLikeTemp
+              ? "오늘의 체감온도"
+              : "나의 온도무드"}
           </Text>
-          <Text style={styles.degreeTagLabel}>{myValue}°</Text>
+          {/* TODO: 온도에 따라 색상 변경되도록 수정하기 */}
+          <Text style={[styles.degreeTagLabel, { color: Colors.white100 }]}>
+            {temperature}°
+          </Text>
         </View>
-        {/* 슬라이더 하단 점 */}
-        {/* TODO: 삼각형 이미지로 변경해주기 */}
-        <View
-          style={{
-            width: 4,
-            height: 4,
-            backgroundColor: "black",
-            position: "absolute",
-            transform: [{ translateY: 100 }, { translateX: "-50%" }],
-          }}
-        />
+        <View style={styles.degreeBottomTriangle} />
       </View>
     </View>
   );
@@ -124,6 +114,37 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-end",
   },
+  backgroundContainer: {
+    flexDirection: "column",
+  },
+  minMaxLabelRow: {
+    flexDirection: "row",
+    position: "absolute",
+    justifyContent: "space-between",
+    top: -30,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  minMaxLabel: {
+    color: Colors.black40,
+    ...typography.body,
+  },
+  feelsLikeTempLabelRow: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: -54,
+    transform: [{ translateX: "-25%" }],
+    alignItems: "center",
+  },
+  feelsLikeTempLabel: {
+    ...typography.label1,
+    fontWeight: 600,
+    color: Colors.black40,
+  },
+  sliderThumbContainer: {
+    position: "absolute",
+  },
   degreeTag: {
     position: "absolute",
     width: 82,
@@ -134,22 +155,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  degreeTagLabel: {
-    color: "white",
-    fontWeight: 600,
-    fontSize: 20,
+  degreeTopLabel: {
+    ...typography.label4,
+    position: "absolute",
+    top: -14,
   },
-  trackBackground: {
+  degreeTagLabel: {
+    ...typography.heading1,
+  },
+  degreeBottomTriangle: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 8 / 2,
+    borderRightWidth: 8 / 2,
+    borderBottomWidth: (Math.sqrt(3) / 2) * 8, // 정삼각형 높이
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    backgroundColor: "transparent",
+    position: "absolute",
+    transform: [{ translateY: 98 }, { translateX: "-50%" }],
+  },
+  backgroundTrack: {
     height: 32,
     width: "100%",
     position: "absolute",
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  trackItem: {
-    backgroundColor: "#cccccc",
+  backgroundTrackItem: {
+    backgroundColor: Colors.black18,
     height: "100%",
     width: 2,
+    borderRadius: "50%",
   },
   thumb: {
     width: 2,
