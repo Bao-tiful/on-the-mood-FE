@@ -1,5 +1,6 @@
 import { TouchableOpacity, StyleSheet, Image } from "react-native";
 import Icon, { IconName } from "./Icon";
+import { Colors } from "@/constants/Colors";
 
 type ToolbarButtonProps = {
   name: IconName;
@@ -20,6 +21,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
 
     borderRadius: "50%",
-    backgroundColor: "#aaaaaaaa",
+    backgroundColor: Colors.black18,
   },
 });
