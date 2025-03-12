@@ -4,6 +4,8 @@ import {
   CalendarCell,
   EmptyCalendarCell,
 } from "@components/calendar/GridCalendarCell";
+import { Colors } from "@/constants/Colors";
+import typography from "@/constants/Typography";
 
 interface GridCalendarProps {
   date: Date;
@@ -32,16 +34,26 @@ export const GridCalendar = ({
   }));
 
   return (
-    <>
+    <View>
       <WeekdayNames />
       <FlatList
         data={items}
         renderItem={({ item }) => {
           if (item.date > 0 && item.date <= lastDate) {
             // 1일부터 마지막 날까지
+            let cellDate = new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              item.date
+            );
+            let isSelected =
+              date.getFullYear() == cellDate.getFullYear() &&
+              date.getMonth() == cellDate.getMonth() &&
+              date.getDate() == cellDate.getDate();
             return (
               <CalendarCell
-                date={new Date(date.getFullYear(), date.getMonth(), item.date)}
+                isSelected={isSelected}
+                date={cellDate}
                 data={notes.get(item.date)}
                 onPress={changeDate}
               />
@@ -54,7 +66,7 @@ export const GridCalendar = ({
         numColumns={7}
         scrollEnabled={false}
       />
-    </>
+    </View>
   );
 };
 
@@ -79,10 +91,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   weekdayCell: {
+    ...typography.label2,
     flexDirection: "row",
     flex: 1,
     textAlign: "center",
-    color: "grey",
+    color: Colors.black100,
   },
 });
 

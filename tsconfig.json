@@ -4,6 +4,7 @@
     "strict": true,
     "paths": {
       "@/*": ["./*"],
+      "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"] // components 폴더를 @components 별칭으로 설정
     }
   },

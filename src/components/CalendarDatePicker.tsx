@@ -1,34 +1,31 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
+import BottomSheet from "./BottomSheet";
 import { Picker } from "@react-native-picker/picker";
-import BottomSheet from "@components/BottomSheet";
-import typography from "@/constants/Typography";
-import { Colors } from "@/constants/Colors";
 
 interface BottomSheetProps {
-  initialDate: Date;
   modalVisible: boolean; // boolean이면 boolean으로 명확하게 타입 지정 가능
-  changeCalendarDate: (newDate: Date) => void;
-  changeModalVisible: (isModalOn: boolean) => void;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  initialDate: Date;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
-export const CalendarDatePicker = ({
-  initialDate,
+export default function CalendarDatePicker({
   modalVisible,
-  changeCalendarDate,
-  changeModalVisible,
-}: BottomSheetProps) => {
-  // 모달 내에서 사용할 임시 날짜값
+  setModalVisible,
+  initialDate,
+  setDate,
+}: BottomSheetProps) {
   const [tempDate, setTempDate] = useState(initialDate);
 
   return (
     <View>
       <BottomSheet
         modalVisible={modalVisible}
-        setModalVisible={changeModalVisible}
+        setModalVisible={setModalVisible}
       >
         <View style={styles.bottomSheetContainer}>
-          <Text style={styles.titleLable}>다른 날짜 일기 보기</Text>
+          <Text>다른 날짜 일기 보기</Text>
           <View style={styles.pickerContainer}>
             <Picker
               style={styles.datePicker}
@@ -37,26 +34,8 @@ export const CalendarDatePicker = ({
                 setTempDate(new Date(Number(itemValue), tempDate.getMonth()));
               }}
             >
-              <Picker.Item
-                label="2024년"
-                value="2024"
-                color={Colors.black100}
-                style={{
-                  ...typography.body,
-                  fontWeight: 600,
-                  color: Colors.black100,
-                }}
-              />
-              <Picker.Item
-                label="2025년"
-                value="2025"
-                color={Colors.black100}
-                style={{
-                  ...typography.body,
-                  fontWeight: 600,
-                  color: Colors.black100,
-                }}
-              />
+              <Picker.Item label="2024년" value="2024" />
+              <Picker.Item label="2025년" value="2025" />
             </Picker>
             <Picker
               style={styles.datePicker}
@@ -76,13 +55,6 @@ export const CalendarDatePicker = ({
                   key={index}
                   label={month.label}
                   value={month.value.toString()}
-                  enabled={true}
-                  color={Colors.black100}
-                  style={{
-                    ...typography.body,
-                    fontWeight: 600,
-                    color: Colors.black100,
-                  }}
                 />
               ))}
             </Picker>
@@ -90,17 +62,17 @@ export const CalendarDatePicker = ({
           <TouchableOpacity
             style={styles.bottomSheetButton}
             onPress={() => {
-              changeCalendarDate(tempDate);
-              changeModalVisible(false);
+              setDate(tempDate);
+              setModalVisible(false);
             }}
           >
-            <Text style={styles.bottomSheetButtonLabel}>보러가기</Text>
+            <Text>변경하기</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {
@@ -109,31 +81,22 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   bottomSheetButton: {
-    backgroundColor: Colors.black100,
+    backgroundColor: "orange",
+
     width: "100%",
     alignContent: "center",
     justifyContent: "center",
     alignItems: "center",
-    height: 56,
-    borderRadius: 28,
-  },
-  bottomSheetButtonLabel: {
-    ...typography.body,
-    fontWeight: 600,
-    color: Colors.white100,
+    height: 50,
+    borderRadius: 16,
   },
   pickerContainer: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 12,
   },
   datePicker: {
     flex: 1,
-  },
-  titleLable: {
-    ...typography.headline,
-    color: Colors.black100,
   },
 });
