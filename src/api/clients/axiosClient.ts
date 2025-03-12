@@ -1,24 +1,42 @@
 // GPT
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://3.35.230.131:8000", // 기본 API URL
+  baseURL: "http://3.35.230.131:8000",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// 예: 인증 토큰 설정
+// 요청 인터셉터 설정
 axiosClient.interceptors.request.use(
-  (config) => {
-    // const token = "your_token_here"; // 로컬 저장소에서 가져오거나 상태 관리에서 가져옴
-    // if (token) {
-    //   config.headers["Authorization"] = `Bearer ${token}`;
-    // }
+  async (config) => {
+    // AsyncStorage에서 토큰을 가져옵니다
+    const token = await AsyncStorage.getItem("accessToken");
+
+    // 토큰이 있으면 Authorization 헤더에 추가
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 응답 인터셉터 설정 (필요시 토큰 갱신 등)
+axiosClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // 응답 에러 처리 (예: 토큰 만료 시 토큰 갱신 요청)
+    return Promise.reject(error);
+  }
 );
 
 export default axiosClient;

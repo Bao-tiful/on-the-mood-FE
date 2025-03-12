@@ -1,5 +1,6 @@
 import axios from "axios";
 import axiosClient from "../clients/axiosClient";
+import { handleApiError } from "../apiUtils";
 
 interface SignUpProps {
   username: string;
@@ -14,14 +15,7 @@ export const signUp = async (postData: SignUpProps) => {
     const response = await axiosClient.post("/auth/register", postData);
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Axios Error fetching posts:",
-        error.response?.data || error.message
-      );
-    } else {
-      console.error("Error occurred :", error);
-    }
+    handleApiError(error);
     throw error;
   }
 };
@@ -31,19 +25,30 @@ interface LogInProps {
   password: string;
 }
 
+interface AuthTokens {
+  access: string;
+  refresh: string;
+}
+
 export const logIn = async (postData: LogInProps) => {
   try {
-    const response = await axiosClient.post("/auth/login", postData);
+    const response = await axiosClient.post<AuthTokens>(
+      "/auth/login",
+      postData
+    );
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Axios Error fetching posts:",
-        error.response?.data || error.message
-      );
-    } else {
-      console.error("Error occurred :", error);
-    }
+    handleApiError(error);
+    throw error;
+  }
+};
+
+export const getProfile = async () => {
+  try {
+    const response = await axiosClient.get("/auth/profile");
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
     throw error;
   }
 };

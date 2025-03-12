@@ -7,7 +7,8 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { logIn, signUp } from "@/src/api/endpoints/authApi";
+import { getProfile, logIn, signUp } from "@/src/api/endpoints/authApi";
+import { saveAccessToken } from "@/src/utils/storage";
 
 const MyPage = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +17,7 @@ const MyPage = () => {
 
   const [signUpResult, setSignUpResult] = useState("");
   const [logInResult, setLogInResult] = useState("");
+  const [getProfileResult, setGetProfileResult] = useState("");
 
   return (
     <SafeAreaView style={{ gap: 20, margin: 12 }}>
@@ -89,6 +91,8 @@ const MyPage = () => {
               };
               const result = await logIn(prop);
               setLogInResult("성공");
+
+              saveAccessToken(result.access);
             } catch (error) {
               setLogInResult("error");
               console.error("ERROR : ", error);
@@ -98,6 +102,24 @@ const MyPage = () => {
           color="blue"
         />
         <Text> - 결과 : {logInResult}</Text>
+      </View>
+      <View style={{ gap: 4 }}>
+        <Text>내 정보 조회</Text>
+
+        <Button
+          onPress={async () => {
+            try {
+              const result = await getProfile();
+              setGetProfileResult(result["username"]);
+            } catch (error) {
+              setGetProfileResult("error");
+              console.error("ERROR : ", error);
+            }
+          }}
+          title="조회하기"
+          color="blue"
+        />
+        <Text> - 결과 : {getProfileResult}</Text>
       </View>
     </SafeAreaView>
   );
