@@ -5,6 +5,7 @@ import Back from "@assets/icons/back.svg";
 import Calendar from "@assets/icons/calendar.svg";
 import Check from "@assets/icons/check.svg";
 import Down from "@assets/icons/down.svg";
+import DownWhite from "@assets/icons/down_white.svg";
 import Edit from "@assets/icons/edit.svg";
 import Info from "@assets/icons/info.svg";
 import List from "@assets/icons/list.svg";
@@ -12,12 +13,8 @@ import Location from "@assets/icons/location.svg";
 import Plus from "@assets/icons/plus.svg";
 import Profile from "@assets/icons/profile.svg";
 import Temperature from "@assets/icons/temperature.svg";
-import Trash from "@assets/icons/trash.svg";
-import DownWhite from "@assets/icons/down_white.svg";
 import TemperatureGray from "@assets/icons/temperature_gray.svg";
-import { Colors } from "@/src/styles/Colors";
-import { ColorValue } from "react-native";
-import Svg, { Mask, Rect } from "react-native-svg";
+import Trash from "@assets/icons/trash.svg";
 
 export enum IconName {
   arrow = "arrow",
