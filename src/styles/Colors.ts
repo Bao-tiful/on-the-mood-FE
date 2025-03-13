@@ -15,7 +15,7 @@ export const Colors = {
   modalBackground: "#383838BF",
 };
 
-export const TempColors = new Map<number, string>([
+export const OndoColors = new Map<number, string>([
   [-40, "#6267F8"],
   [-39, "#8185F9"],
   [-38, "#A1A4FB"],
