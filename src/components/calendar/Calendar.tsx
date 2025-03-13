@@ -3,9 +3,13 @@ import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-const Calendar = () => {
+interface CalendarProps {
+  date: Date;
+  updateDate: (newDate: Date) => void;
+}
+
+const Calendar = ({ date, updateDate }: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [date, setDate] = useState(new Date());
 
   const changeModalVisible = (isModalOn: boolean) => {
     setModalVisible(isModalOn);
@@ -52,9 +56,7 @@ const Calendar = () => {
             setModalVisible(isModalOn);
           }}
           date={date}
-          changeCalendarDate={(newDate: Date) => {
-            setDate(newDate);
-          }}
+          changeCalendarDate={updateDate}
           notes={notes}
         />
       </View>
@@ -63,9 +65,7 @@ const Calendar = () => {
         initialDate={date}
         modalVisible={modalVisible}
         changeModalVisible={changeModalVisible}
-        changeCalendarDate={(newDate: Date) => {
-          setDate(newDate);
-        }}
+        changeCalendarDate={updateDate}
       />
     </>
   );
