@@ -21,7 +21,7 @@ export function CalendarCell({
   const cellStyle = data
     ? {
         ...styles.calendarCellWithData,
-        color: OndoColors.get(data.temperature) ?? Colors.white100,
+        color: OndoColors.get(data.custom_temp) ?? Colors.white100,
       }
     : styles.calendarCellWithoutData;
   const selectedStyle = isSelected ? styles.calendarCellSelected : null;

@@ -1,6 +1,8 @@
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
 import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
-import React, { useState } from "react";
+import ThreadCalendarCell from "@/src/components/calendar/ThreadCalendarCell";
+import { getNotes } from "@/src/api/endpoints/noteApi";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 interface CalendarProps {
@@ -10,42 +12,32 @@ interface CalendarProps {
 
 const Calendar = ({ date, updateDate }: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [notes, setNotes] = useState<Map<number, NoteItem>>(
+    new Map<number, NoteItem>()
+  );
 
   const changeModalVisible = (isModalOn: boolean) => {
     setModalVisible(isModalOn);
   };
 
-  // 테스트를 위한 노트 목데이터
-  const notes = new Map<number, NoteItem>([
-    [
-      1,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3ba",
-        content: "와라라라1",
-        temperature: 2,
-        created_at: new Date("2025-01-01T19:33:43.215138Z"),
-      },
-    ],
-    [
-      5,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bb",
-        content: "와라라라2",
-        temperature: 5,
-        created_at: new Date("2025-01-02T19:33:43.215138Z"),
-      },
-    ],
-    [
-      7,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bc",
-        content:
-          "소소한 순간들이 만든 좋은 하루 🍵 오랜만에 여유로운 아침, 좋아하는 노래 들으며 기분 좋게 출근. 일하면서 예상치 못한 문제들이 있었지만, 동료들과 협력하며 해결!",
-        temperature: 7,
-        created_at: new Date("2025-01-03T19:33:43.215138Z"),
-      },
-    ],
-  ]);
+  useEffect(() => {
+    getNotes().then((result) => {
+      const fetchedNotes = new Map<number, NoteItem>(
+        result.map((note, _): [number, NoteItem] => [
+          new Date(note.created_at).getDate(),
+          {
+            id: note.id,
+            location: note.location,
+            custom_temp: note.custom_temp,
+            content: note.content,
+            created_at: new Date(note.created_at),
+            updated_at: new Date(note.updated_at),
+          },
+        ])
+      );
+      setNotes(fetchedNotes);
+    });
+  }, []);
 
   return (
     <>

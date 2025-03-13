@@ -16,6 +16,7 @@ import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
+import { postNote } from "@/src/api/endpoints/noteApi";
 
 const EditPage = () => {
   const { date, temperature } = useLocalSearchParams();
@@ -49,7 +50,23 @@ const EditPage = () => {
               <Text style={typography.heading2}>
                 {parsedDate?.toLocaleDateString("ko-KR")}
               </Text>
-              <ToolbarButton name={IconName.check} onPress={() => {}} />
+              <ToolbarButton
+                name={IconName.check}
+                onPress={async () => {
+                  try {
+                    const prop = {
+                      location: "Seoul",
+                      content: memo,
+                      custom_temp: myMoodOndo,
+                    };
+                    const result = await postNote(prop);
+                    console.log(result);
+                    router.back();
+                  } catch (error) {
+                    console.error("ERROR : ", error);
+                  }
+                }}
+              />
             </View>
             <LocationAndTemperature
               location={"서울특별시"}
@@ -60,8 +77,8 @@ const EditPage = () => {
           <View style={{ marginTop: 16 }}>
             <TemperatureSlider
               feelsLikeTemp={parsedTemperature}
-              changeMoodTemp={(v) => {
-                setMyMoodOndo(v);
+              changeMoodTemp={(temperature) => {
+                setMyMoodOndo(temperature);
               }}
             />
           </View>

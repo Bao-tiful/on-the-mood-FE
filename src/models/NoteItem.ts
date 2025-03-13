@@ -1,6 +1,8 @@
 type NoteItem = {
   id: string;
+  location: string;
   content: string;
-  temperature: number;
+  custom_temp: number;
   created_at: Date;
+  updated_at: Date;
 };
