@@ -49,7 +49,7 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
             })
           }
         >
-          {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 */}
+          {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 => svgIcon 의 컬러값에 currentColor 사용후 적용 가능함*/}
           <Text
             style={{
               color: styles.todayWriteButton.color,
