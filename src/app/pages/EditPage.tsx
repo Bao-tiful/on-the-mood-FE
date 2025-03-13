@@ -4,20 +4,17 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 
-import React, { useEffect, useState } from "react";
-import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
-import { ToolbarButton } from "@/src/components/ToolbarButton";
 import { IconName } from "@/src/components/Icon";
-import { router, useLocalSearchParams } from "expo-router";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+import { ToolbarButton } from "@/src/components/ToolbarButton";
 import LocationAndTemperature from "@/src/components/editpage/LocationAndTemperature";
-import Keywords from "@/src/components/editpage/Keywords";
 import NoteEditor from "@/src/components/editpage/NoteEditor";
+import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
+import typography from "@/src/styles/Typography";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
 
 const EditPage = () => {
   const { date, temperature } = useLocalSearchParams();
