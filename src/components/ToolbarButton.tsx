@@ -1,6 +1,6 @@
 import { TouchableOpacity, StyleSheet, Image } from "react-native";
 import Icon, { IconName } from "./Icon";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/src/styles/Colors";
 
 type ToolbarButtonProps = {
   name: IconName;

@@ -2,10 +2,10 @@ import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import GridCalendar from "@/src/components/calendar/GridCalendar";
 import ThreadCalendarCell from "./ThreadCalendarCell";
-import typography from "@/constants/Typography";
 import Icon, { IconName } from "../Icon";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/src/styles/Colors";
 import TodayNoteCell from "./TodayNoteCell";
+import typography from "@/src/styles/Typography";
 
 interface MoodNoteCalendarProp {
   date: Date;

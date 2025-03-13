@@ -1,17 +1,21 @@
-import typography from "@/constants/Typography";
-import { Link, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, View, SafeAreaView } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import { IconName } from "../components/Icon";
+import { ToolbarButton } from "../components/ToolbarButton";
 import Calendar from "../components/calendar/Calendar";
 import Threads from "../components/calendar/Threads";
-import { ToolbarButton } from "../components/ToolbarButton";
-import { IconName } from "../components/Icon";
 
 export default function HomeScreen() {
   const [isGridMode, setIsGreedMode] = useState(true);
+  const [date, setDate] = useState(new Date());
 
   // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
   const todayColor = "#D7F5BA";
+
+  const updateDate = (newDate: Date) => {
+    setDate(newDate);
+  };
 
   return (
     <View style={[styles.background, { backgroundColor: todayColor }]}>
@@ -27,7 +31,11 @@ export default function HomeScreen() {
             }}
           />
         </View>
-        {isGridMode ? <Calendar /> : <Threads />}
+        {isGridMode ? (
+          <Calendar date={date} updateDate={updateDate} />
+        ) : (
+          <Threads />
+        )}
       </SafeAreaView>
     </View>
   );

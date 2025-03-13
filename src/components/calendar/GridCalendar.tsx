@@ -4,8 +4,8 @@ import {
   CalendarCell,
   EmptyCalendarCell,
 } from "@components/calendar/GridCalendarCell";
-import { Colors } from "@/constants/Colors";
-import typography from "@/constants/Typography";
+import { Colors } from "@/src/styles/Colors";
+import typography from "@/src/styles/Typography";
 
 interface GridCalendarProps {
   date: Date;

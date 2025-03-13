@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Colors } from "@/constants/Colors";
-import typography from "@/constants/Typography";
+import { Colors } from "@/src/styles/Colors";
+import typography from "@/src/styles/Typography";
 import Icon, { IconName } from "../Icon";
 import { router } from "expo-router";
 
@@ -49,7 +49,7 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
             })
           }
         >
-          {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 */}
+          {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 => svgIcon 의 컬러값에 currentColor 사용후 적용 가능함*/}
           <Text
             style={{
               color: styles.todayWriteButton.color,

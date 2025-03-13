@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/src/styles/Colors";
 import Icon, { IconName } from "../Icon";
-import typography from "@/constants/Typography";
+import typography from "@/src/styles/Typography";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
