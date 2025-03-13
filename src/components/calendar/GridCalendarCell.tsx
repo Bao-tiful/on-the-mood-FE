@@ -1,5 +1,6 @@
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
+import { isDateToday } from "@/src/utils/dateUtils";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 interface CalendarCellProps {
@@ -15,11 +16,8 @@ export function CalendarCell({
   data,
   onPress,
 }: CalendarCellProps) {
-  const todayDate = new Date();
-  const isToday =
-    date.getFullYear() == todayDate.getFullYear() &&
-    date.getMonth() == todayDate.getMonth() &&
-    date.getDate() == todayDate.getDate();
+  const isToday = isDateToday(date);
+
   const cellStyle = data
     ? styles.calendarCellWithData
     : styles.calendarCellWithoutData;

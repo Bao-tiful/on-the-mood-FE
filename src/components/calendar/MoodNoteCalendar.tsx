@@ -6,6 +6,7 @@ import Icon, { IconName } from "../Icon";
 import { Colors } from "@/src/styles/Colors";
 import TodayNoteCell from "./TodayNoteCell";
 import typography from "@/src/styles/Typography";
+import { isDateToday } from "@/src/utils/dateUtils";
 
 interface MoodNoteCalendarProp {
   date: Date;
@@ -20,11 +21,7 @@ export const MoodNoteCalendar = ({
   changeCalendarDate,
   notes,
 }: MoodNoteCalendarProp) => {
-  const todayDate = new Date();
-  const isToday =
-    date.getFullYear() == todayDate.getFullYear() &&
-    date.getMonth() == todayDate.getMonth() &&
-    date.getDate() == todayDate.getDate();
+  const isToday = isDateToday(date);
 
   const MonthPicker = (
     <TouchableOpacity onPress={() => changeModalVisible(true)}>
@@ -56,7 +53,7 @@ export const MoodNoteCalendar = ({
         {/* 투데이 셀 */}
       </View>
       <View style={[{ height: 224, borderRadius: 16, overflow: "hidden" }]}>
-        {isToday && notes.get(todayDate.getDate()) == undefined ? (
+        {isToday && notes.get(date.getDate()) == undefined ? (
           <TodayNoteCell date={date} location={"서울특별시"} temperature={12} />
         ) : (
           <ThreadCalendarCell date={date} note={notes.get(date.getDate())} />

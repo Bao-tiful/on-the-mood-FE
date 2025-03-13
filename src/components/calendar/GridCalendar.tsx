@@ -6,6 +6,11 @@ import {
 } from "@components/calendar/GridCalendarCell";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
+import {
+  firstDayOfMonth,
+  isSameDay,
+  lastDayOfMonth,
+} from "@/src/utils/dateUtils";
 
 interface GridCalendarProps {
   date: Date;
@@ -19,16 +24,13 @@ export const GridCalendar = ({
   changeDate,
   notes,
 }: GridCalendarProps) => {
-  // date가 포함된 달의 1일의 요일을 구함
-  const firstDay = new Date(date.getFullYear(), date.getMonth());
-  // 해당 달의 1일의 요일
-  const firstDayOffset = firstDay.getDay();
-  // 해당 달의 마지막 날짜
-  const lastDate = new Date(
-    new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime() - 1
-  ).getDate();
+  // date가 포함된 달의 첫째 날의 요일
+  const firstDayOffset = firstDayOfMonth(date).getDay();
+  // date가 포함된 달의 마지막 날짜
+  const lastDate = lastDayOfMonth(date).getDate();
+
   // 캘린더의 각 칸에 대한 id를 부여하는 list
-  // 여기에서의 date는 각 칸이 가지는 날짜를 의미한다.
+  // 여기에서의 date는 각 칸이 가지는 날짜(N일)를 의미한다.
   const items = Array.from({ length: 7 * 6 }, (_, index) => ({
     date: index - firstDayOffset + 1,
   }));
@@ -46,10 +48,7 @@ export const GridCalendar = ({
               date.getMonth(),
               item.date
             );
-            let isSelected =
-              date.getFullYear() == cellDate.getFullYear() &&
-              date.getMonth() == cellDate.getMonth() &&
-              date.getDate() == cellDate.getDate();
+            let isSelected = isSameDay(date, cellDate);
             return (
               <CalendarCell
                 isSelected={isSelected}
