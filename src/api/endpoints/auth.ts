@@ -43,9 +43,11 @@ export const logIn = async (postData: LogInProps) => {
   }
 };
 
+interface Profile {}
+
 export const getProfile = async () => {
   try {
-    const response = await axiosClient.get("/auth/profile");
+    const response = await axiosClient.get<Profile>("/auth/profile");
     return response.data;
   } catch (error) {
     handleApiError(error);

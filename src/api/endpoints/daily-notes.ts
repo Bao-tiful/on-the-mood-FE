@@ -36,3 +36,40 @@ export const getNotes = async () => {
     throw error;
   }
 };
+
+interface GetNoteDetailProp {
+  id: string;
+}
+
+export const getNoteDetail = async ({ id }: GetNoteDetailProp) => {
+  try {
+    const response = await axiosClient.get<Note>(`daily-notes/${id}`);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+    throw error;
+  }
+};
+
+interface EditNoteDetailProp {
+  id: string;
+  content?: string;
+  custom_temp?: number;
+}
+
+export const editNote = async ({
+  id,
+  content,
+  custom_temp,
+}: EditNoteDetailProp) => {
+  try {
+    const response = await axiosClient.patch(`daily-notes/${id}`, {
+      content: content,
+      custom_temp: custom_temp,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+    throw error;
+  }
+};
