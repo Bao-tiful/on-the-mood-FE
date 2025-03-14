@@ -1,8 +1,9 @@
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
 import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
 import { getNotes } from "@/src/api/endpoints/daily-notes";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useNotes } from "@/src/hooks/useNotes";
 
 interface CalendarProps {
   date: Date;
@@ -11,32 +12,20 @@ interface CalendarProps {
 
 const Calendar = ({ date, updateDate }: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [notes, setNotes] = useState<Map<number, NoteItem>>(
-    new Map<number, NoteItem>()
-  );
 
   const changeModalVisible = (isModalOn: boolean) => {
     setModalVisible(isModalOn);
   };
 
-  useEffect(() => {
-    getNotes().then((result) => {
-      const fetchedNotes = new Map<number, NoteItem>(
-        result.map((note, _): [number, NoteItem] => [
-          new Date(note.created_at).getDate(),
-          {
-            id: note.id,
-            location: note.location,
-            custom_temp: note.custom_temp,
-            content: note.content,
-            created_at: new Date(note.created_at),
-            updated_at: new Date(note.updated_at),
-          },
-        ])
-      );
-      setNotes(fetchedNotes);
-    });
-  }, []);
+  const { notes, reloadNotes } = useNotes();
+
+  const notesMap = useMemo(() => {
+    const map = new Map<number, NoteItem>();
+    for (const note of notes) {
+      map.set(note.created_at.getDate(), note);
+    }
+    return map;
+  }, [notes]);
 
   useEffect(() => {
     // getWeather({ latitude: 128.59, longitude: 35.87 }).then((result) => {
@@ -54,7 +43,7 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
           }}
           date={date}
           changeCalendarDate={updateDate}
-          notes={notes}
+          notes={notesMap}
         />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}

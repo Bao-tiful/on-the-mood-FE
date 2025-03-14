@@ -18,7 +18,7 @@ export const postNote = async (prop: PostNotesProps) => {
   }
 };
 
-interface Note {
+export interface Note {
   id: string;
   location: string;
   content: string;
