@@ -7,7 +7,7 @@ import typography from "@/src/styles/Typography";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
-  changeMoodTemp: Function;
+  changeMoodTemp: (temperature: number) => void;
 };
 
 const TemperatureSlider = ({

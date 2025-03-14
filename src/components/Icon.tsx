@@ -15,6 +15,9 @@ import Profile from "@assets/icons/profile.svg";
 import Temperature from "@assets/icons/temperature.svg";
 import TemperatureGray from "@assets/icons/temperature_gray.svg";
 import Trash from "@assets/icons/trash.svg";
+import { Colors } from "@/src/styles/Colors";
+import { ColorValue } from "react-native";
+import Svg, { Mask, Rect } from "react-native-svg";
 
 export enum IconName {
   arrow = "arrow",

@@ -15,6 +15,7 @@ import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
 import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import { OndoColors } from "@/src/styles/Colors";
 
 const EditPage = () => {
   const { date, temperature } = useLocalSearchParams();
@@ -26,11 +27,12 @@ const EditPage = () => {
     ? Number(temperature[0])
     : Number(temperature);
 
+  const [myMoodOndo, setMyMoodOndo] = useState(parsedTemperature);
   const [memo, setMemo] = useState("");
 
   return (
     // TODO: 여기에서 색상 변경해주기
-    <View style={{ flex: 1, backgroundColor: "#a0d2ffff" }}>
+    <View style={{ flex: 1, backgroundColor: OndoColors.get(myMoodOndo) }}>
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -58,7 +60,9 @@ const EditPage = () => {
           <View style={{ marginTop: 16 }}>
             <TemperatureSlider
               feelsLikeTemp={parsedTemperature}
-              changeMoodTemp={() => {}}
+              changeMoodTemp={(v) => {
+                setMyMoodOndo(v);
+              }}
             />
           </View>
           <View style={{ flex: 1 }}>
