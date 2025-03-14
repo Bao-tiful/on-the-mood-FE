@@ -22,7 +22,7 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
           <Text style={styles.todayWeatherLocation}> 서울특별시</Text>
         </View>
         <Text style={styles.todayWeatherTemperature}>
-          {note?.temperature ?? "-"}°
+          {note?.custom_temp ?? "-"}°
         </Text>
       </View>
     </View>

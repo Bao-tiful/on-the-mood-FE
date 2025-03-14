@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { IconName } from "../components/Icon";
@@ -28,7 +28,12 @@ export default function HomeScreen() {
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
-          <ToolbarButton name={IconName.profile} onPress={() => {}} />
+          <ToolbarButton
+            name={IconName.profile}
+            onPress={async () => {
+              router.push("/pages/MyPage");
+            }}
+          />
           <ToolbarButton
             name={IconName.list}
             onPress={() => {

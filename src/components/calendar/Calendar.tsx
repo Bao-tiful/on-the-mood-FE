@@ -1,7 +1,9 @@
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
 import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
-import React, { useState } from "react";
+import { getNotes } from "@/src/api/endpoints/daily-notes";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useNotes } from "@/src/hooks/useNotes";
 
 interface CalendarProps {
   date: Date;
@@ -15,37 +17,21 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
     setModalVisible(isModalOn);
   };
 
-  // 테스트를 위한 노트 목데이터
-  const notes = new Map<number, NoteItem>([
-    [
-      1,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3ba",
-        content: "와라라라1",
-        temperature: 2,
-        created_at: new Date("2025-01-01T19:33:43.215138Z"),
-      },
-    ],
-    [
-      5,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bb",
-        content: "와라라라2",
-        temperature: 5,
-        created_at: new Date("2025-01-02T19:33:43.215138Z"),
-      },
-    ],
-    [
-      7,
-      {
-        id: "4f3398fa-4a6b-48d2-920c-73be06721b3bc",
-        content:
-          "소소한 순간들이 만든 좋은 하루 🍵 오랜만에 여유로운 아침, 좋아하는 노래 들으며 기분 좋게 출근. 일하면서 예상치 못한 문제들이 있었지만, 동료들과 협력하며 해결!",
-        temperature: 7,
-        created_at: new Date("2025-01-03T19:33:43.215138Z"),
-      },
-    ],
-  ]);
+  const { notes, reloadNotes } = useNotes();
+
+  const notesMap = useMemo(() => {
+    const map = new Map<number, NoteItem>();
+    for (const note of notes) {
+      map.set(note.created_at.getDate(), note);
+    }
+    return map;
+  }, [notes]);
+
+  useEffect(() => {
+    // getWeather({ latitude: 128.59, longitude: 35.87 }).then((result) => {
+    //   // 날씨 데이터 받아와서 처리해주기
+    // });
+  }, []);
 
   return (
     <>
@@ -57,7 +43,7 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
           }}
           date={date}
           changeCalendarDate={updateDate}
-          notes={notes}
+          notes={notesMap}
         />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
