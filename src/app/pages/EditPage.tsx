@@ -2,6 +2,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -16,7 +17,7 @@ import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
-import { postNote } from "@/src/api/endpoints/noteApi";
+import { postNote } from "@/src/api/endpoints/daily-notes";
 
 const EditPage = () => {
   const { date, temperature } = useLocalSearchParams();

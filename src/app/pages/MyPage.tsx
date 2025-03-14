@@ -7,8 +7,8 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { getProfile, logIn, signUp } from "@/src/api/endpoints/authApi";
 import { saveAccessToken } from "@/src/utils/storage";
+import { getProfile, logIn, signUp } from "@/src/api/endpoints/auth";
 
 const MyPage = () => {
   const [email, setEmail] = useState("");

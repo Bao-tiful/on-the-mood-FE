@@ -1,7 +1,6 @@
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
 import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
-import ThreadCalendarCell from "@/src/components/calendar/ThreadCalendarCell";
-import { getNotes } from "@/src/api/endpoints/noteApi";
+import { getNotes } from "@/src/api/endpoints/daily-notes";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -37,6 +36,12 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
       );
       setNotes(fetchedNotes);
     });
+  }, []);
+
+  useEffect(() => {
+    // getWeather({ latitude: 128.59, longitude: 35.87 }).then((result) => {
+    //   // 날씨 데이터 받아와서 처리해주기
+    // });
   }, []);
 
   return (
