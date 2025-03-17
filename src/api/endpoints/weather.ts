@@ -24,7 +24,7 @@ interface WeatherData {
 export const getWeather = async ({ latitude, longitude }: GetWeatherProps) => {
   try {
     const response = await axiosClient.get<WeatherData>(
-      `/weather?lon=${longitude}&lat=${latitude}`
+      `/weather?lat=${latitude}&lon=${longitude}`
     );
     return response.data;
   } catch (error) {
