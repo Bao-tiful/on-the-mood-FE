@@ -6,6 +6,7 @@ import { ToolbarButton } from "@/src/components/ToolbarButton";
 import Icon, { IconName } from "@/src/components/Icon";
 import typography from "@/src/styles/Typography";
 import { Colors, OndoColors } from "@/src/styles/Colors";
+import { toDateString } from "@/src/utils/dateUtils";
 
 const DetailPage = () => {
   const { noteData } = useLocalSearchParams();
@@ -60,7 +61,7 @@ const DetailPage = () => {
             {/* 날짜 / 지역 */}
             <View style={{ flex: 1, gap: 8 }}>
               <Text style={[typography.heading1, { color: Colors.black100 }]}>
-                {note.created_at.toDateString()}
+                {toDateString(note.created_at)}
               </Text>
 
               <View
