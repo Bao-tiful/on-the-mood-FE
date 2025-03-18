@@ -4,6 +4,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
+import { router } from "expo-router";
 
 type ThreadCalendarCellProps = {
   date: Date;
@@ -32,7 +33,15 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
       <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
         <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
         {note != undefined ? (
-          <ToolbarButton name={IconName.arrow} onPress={() => {}} />
+          <ToolbarButton
+            name={IconName.arrow}
+            onPress={() => {
+              router.push({
+                pathname: "/pages/DetailPage",
+                params: { noteData: JSON.stringify(note) },
+              });
+            }}
+          />
         ) : (
           <View />
         )}
