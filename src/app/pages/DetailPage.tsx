@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
 import Icon, { IconName } from "@/src/components/Icon";
@@ -19,6 +19,7 @@ const DetailPage = () => {
 
       if (noteData) {
         const parsedNote = JSON.parse(noteData);
+        // TODO: JSON -> NoteItem 만드는 Util 함수 추가하기
         setNote({
           id: parsedNote.id,
           location: parsedNote.location,
@@ -33,13 +34,22 @@ const DetailPage = () => {
     }
   }, []);
 
-  console.log("Type:", typeof note?.created_at);
+  const Divider = () => (
+    <View
+      style={{
+        height: 1,
+        backgroundColor: Colors.black18,
+        marginVertical: 24,
+      }}
+    />
+  );
 
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: OndoColors.get(15),
+        // 작성한 온도에 따른 배경색 지정
+        backgroundColor: OndoColors.get(note?.custom_temp ?? 0),
       }}
     >
       <Stack.Screen options={{ headerShown: false }} />
@@ -47,82 +57,181 @@ const DetailPage = () => {
       <SafeAreaView style={styles.container}>
         {/* 툴바 */}
         <View style={styles.topToolbar}>
-          <ToolbarButton name={IconName.back} onPress={() => {}} />
-          <ToolbarButton name={IconName.trash} onPress={() => {}} />
+          <ToolbarButton
+            name={IconName.back}
+            onPress={() => {
+              router.back();
+            }}
+          />
+          <ToolbarButton
+            name={IconName.trash}
+            onPress={() => {
+              // TODO: 노트 삭제 기능이 필요할 지 논의하기
+            }}
+          />
         </View>
         {/* 컨텐츠 */}
         {note !== undefined && note.created_at instanceof Date && (
-          <View
-            style={{
-              justifyContent: "space-between",
-              flex: 1,
-            }}
-          >
+          <View style={styles.contentContainer}>
             {/* 날짜 / 지역 */}
-            <View style={{ flex: 1, gap: 8 }}>
-              <Text style={[typography.heading1, { color: Colors.black100 }]}>
-                {toDateString(note.created_at)}
-              </Text>
-
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
-              >
-                <Icon name={IconName.location} size={14} />
-                <Text style={[typography.label1, { color: Colors.black100 }]}>
-                  {note?.location}
-                </Text>
-              </View>
-            </View>
+            <DetailDateLocationCell
+              createdAt={note.created_at}
+              location={note.location}
+            />
             {/* 노트 정보 */}
             <View>
-              {/* 코드 */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <Text>{"Note\nMood Code"}</Text>
-                  <Icon name={IconName.info} />
-                </View>
-                <Text>#C7FBEE</Text>
-              </View>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: "gray",
-                  marginVertical: 10,
+              <DetailColorCodeCell ondo={note.custom_temp} />
+              <Divider />
+              <DetailOndoCell ondo={note.custom_temp} />
+              <Divider />
+              <DetailNoteCell
+                note={note}
+                onPressEdit={() => {
+                  router.push({
+                    pathname: "/pages/EditPage",
+                    params: { temperature: note.custom_temp },
+                  });
                 }}
               />
-              {/* 온도 */}
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text>{"Note\nOnde"}</Text>
-
-                  <Text>2°</Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: "gray",
-                  marginVertical: 10,
-                }}
-              />
-              {/* 노트 */}
-              <View>
-                <Text>{note?.content}</Text>
-              </View>
             </View>
           </View>
         )}
       </SafeAreaView>
+    </View>
+  );
+};
+
+const DetailDateLocationCell = ({
+  createdAt,
+  location,
+}: {
+  createdAt: Date;
+  location: string;
+}) => (
+  <View style={{ flex: 1, gap: 4 }}>
+    <Text style={[typography.heading1, { color: Colors.black100 }]}>
+      {toDateString(createdAt)}
+    </Text>
+
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+      <Icon name={IconName.location} size={14} />
+      <Text style={[typography.label1, { color: Colors.black100 }]}>
+        {location}
+      </Text>
+    </View>
+  </View>
+);
+
+const DetailColorCodeCell = ({ ondo }: { ondo: number }) => (
+  <View
+    style={{
+      flexDirection: "row",
+      justifyContent: "space-between",
+    }}
+  >
+    <View style={{ flexDirection: "row" }}>
+      <Text
+        style={[
+          typography.label1,
+          { color: Colors.black100, fontWeight: "bold" },
+        ]}
+      >
+        {"Note\nMood Code"}
+      </Text>
+
+      <TouchableOpacity
+        style={{ marginHorizontal: 8 }}
+        onPress={() => {
+          // TODO: tooltip 추가하기
+        }}
+      >
+        <Icon name={IconName.info} />
+      </TouchableOpacity>
+    </View>
+    <Text
+      style={[
+        typography.title2,
+        {
+          color: Colors.black100,
+          fontWeight: "bold",
+          textDecorationLine: "underline",
+        },
+      ]}
+    >
+      {OndoColors.get(ondo)}
+    </Text>
+  </View>
+);
+
+const DetailOndoCell = ({ ondo }: { ondo: number }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
+      <Text
+        style={[
+          typography.label1,
+          { color: Colors.black100, fontWeight: "bold" },
+        ]}
+      >
+        {"Note\nOndo"}
+      </Text>
+
+      <View style={{ flexDirection: "row" }}>
+        <Text style={[typography.display1]}>{ondo}</Text>
+        <Text style={[typography.display2]}>°</Text>
+      </View>
+    </View>
+  );
+};
+
+const DetailNoteCell = ({
+  note,
+  onPressEdit,
+}: {
+  note: NoteItem;
+  onPressEdit: () => void;
+}) => {
+  return (
+    <View>
+      <View
+        style={{
+          backgroundColor: Colors.white40,
+          paddingHorizontal: 16,
+          paddingVertical: 24,
+          borderRadius: 16,
+          gap: 40,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 0,
+            justifyContent: "space-between",
+          }}
+        >
+          <Text
+            style={[
+              typography.label1,
+              { color: Colors.black100, fontWeight: "bold" },
+            ]}
+          >
+            {"Note\nOnthemood"}
+          </Text>
+          <ToolbarButton name={IconName.edit} onPress={onPressEdit} />
+        </View>
+        <View style={{ width: "100%" }}>
+          <Text
+            numberOfLines={4}
+            style={[typography.body, { height: 25.6 * 4, textOverflow: "..." }]}
+          >
+            {note?.content}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
@@ -140,5 +249,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  contentContainer: {
+    justifyContent: "space-between",
+    flex: 1,
   },
 });

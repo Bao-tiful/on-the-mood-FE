@@ -28,8 +28,11 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
   }, [notes]);
 
   useEffect(() => {
-    // getWeather({ latitude: 128.59, longitude: 35.87 }).then((result) => {
-    //   // 날씨 데이터 받아와서 처리해주기
+    // getWeather({
+    //   latitude: 35.87,
+    //   longitude: 128.59,
+    // }).then((result) => {
+    //   console.log(result);
     // });
   }, []);
 

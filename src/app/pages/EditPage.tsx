@@ -18,12 +18,15 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
 import { postNote } from "@/src/api/endpoints/daily-notes";
+import { toDateString } from "@/src/utils/dateUtils";
 
 const EditPage = () => {
-  const { date, temperature } = useLocalSearchParams();
+  const { temperature } = useLocalSearchParams();
 
-  const isoDateString = Array.isArray(date) ? date[0] : date;
-  const parsedDate = isoDateString ? new Date(isoDateString) : null;
+  // const isoDateString = Array.isArray(date) ? date[0] : date;
+  // const parsedDate = isoDateString ? new Date(isoDateString) : null;
+
+  const date = new Date();
 
   const parsedTemperature = Array.isArray(temperature)
     ? Number(temperature[0])
@@ -48,9 +51,7 @@ const EditPage = () => {
                   router.back();
                 }}
               />
-              <Text style={typography.heading2}>
-                {parsedDate?.toLocaleDateString("ko-KR")}
-              </Text>
+              <Text style={typography.heading2}>{toDateString(date)}</Text>
               <ToolbarButton
                 name={IconName.check}
                 onPress={async () => {
