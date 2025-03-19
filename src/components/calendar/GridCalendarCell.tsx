@@ -1,4 +1,4 @@
-import { Colors } from "@/src/styles/Colors";
+import { Colors, OndoColors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import { isDateToday } from "@/src/utils/dateUtils";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
@@ -19,7 +19,10 @@ export function CalendarCell({
   const isToday = isDateToday(date);
 
   const cellStyle = data
-    ? styles.calendarCellWithData
+    ? {
+        ...styles.calendarCellWithData,
+        color: OndoColors.get(data.custom_temp) ?? Colors.white100,
+      }
     : styles.calendarCellWithoutData;
   const selectedStyle = isSelected ? styles.calendarCellSelected : null;
 
@@ -94,7 +97,7 @@ const styles = StyleSheet.create({
   },
   calendarCellWithData: {
     backgroundColor: "black",
-    color: "white",
+    // color: "white",
     borderColor: Colors.black100,
   },
   calendarCellWithoutData: {

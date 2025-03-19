@@ -1,17 +1,22 @@
-import { Stack } from "expo-router";
-import React, { useState } from "react";
+import { router, Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { IconName } from "../components/Icon";
 import { ToolbarButton } from "../components/ToolbarButton";
 import Calendar from "../components/calendar/Calendar";
 import Threads from "../components/calendar/Threads";
+import { Colors, OndoColors } from "../styles/Colors";
 
 export default function HomeScreen() {
   const [isGridMode, setIsGreedMode] = useState(true);
   const [date, setDate] = useState(new Date());
 
-  // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
-  const todayColor = "#D7F5BA";
+  const [todayColor, setTodayColor] = useState(Colors.white100);
+
+  useEffect(() => {
+    // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
+    setTodayColor(OndoColors.get(4) ?? Colors.white100);
+  }, []);
 
   const updateDate = (newDate: Date) => {
     setDate(newDate);
@@ -23,7 +28,12 @@ export default function HomeScreen() {
 
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
-          <ToolbarButton name={IconName.profile} onPress={() => {}} />
+          <ToolbarButton
+            name={IconName.profile}
+            onPress={async () => {
+              router.push("/pages/MyPage");
+            }}
+          />
           <ToolbarButton
             name={IconName.list}
             onPress={() => {
