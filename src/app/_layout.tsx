@@ -15,8 +15,14 @@ export default function RootLayout() {
         {/* Link를 사용하면 push가 가능하다 */}
         <AuthCheck>
           <Stack>
-            <Stack.Screen name="pages/EditPage" />
-            <Stack.Screen name="pages/LoginPage" />
+            <Stack.Screen
+              name="pages/EditPage"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="pages/LoginPage"
+              options={{ headerShown: false }}
+            />
           </Stack>
         </AuthCheck>
       </ThemeProvider>

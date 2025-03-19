@@ -13,7 +13,7 @@ import LocationAndTemperature from "@/src/components/editpage/LocationAndTempera
 import NoteEditor from "@/src/components/editpage/NoteEditor";
 import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
 import typography from "@/src/styles/Typography";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 
 const EditPage = () => {
@@ -30,46 +30,49 @@ const EditPage = () => {
 
   return (
     // TODO: 여기에서 색상 변경해주기
-    <View style={{ flex: 1, backgroundColor: "#a0d2ffff" }}>
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1, gap: 12 }}
-        >
-          <View>
-            <View style={styles.topToolbar}>
-              <ToolbarButton
-                name={IconName.back}
-                onPress={() => {
-                  router.back();
-                }}
+    <View>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={{ flex: 1, backgroundColor: "#a0d2ffff" }}>
+        <SafeAreaView style={styles.container}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1, gap: 12 }}
+          >
+            <View>
+              <View style={styles.topToolbar}>
+                <ToolbarButton
+                  name={IconName.back}
+                  onPress={() => {
+                    router.back();
+                  }}
+                />
+                <Text style={typography.heading2}>
+                  {parsedDate?.toLocaleDateString("ko-KR")}
+                </Text>
+                <ToolbarButton name={IconName.check} onPress={() => {}} />
+              </View>
+              <LocationAndTemperature
+                location={"서울특별시"}
+                temperature={parsedTemperature}
               />
-              <Text style={typography.heading2}>
-                {parsedDate?.toLocaleDateString("ko-KR")}
-              </Text>
-              <ToolbarButton name={IconName.check} onPress={() => {}} />
             </View>
-            <LocationAndTemperature
-              location={"서울특별시"}
-              temperature={parsedTemperature}
-            />
-          </View>
 
-          <View style={{ marginTop: 16 }}>
-            <TemperatureSlider
-              feelsLikeTemp={parsedTemperature}
-              changeMoodTemp={() => {}}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <NoteEditor
-              keywordList={["키워드 1", "keyword", "hello"]}
-              memo={memo}
-              onMemoChanged={(memo) => setMemo(memo)}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+            <View style={{ marginTop: 16 }}>
+              <TemperatureSlider
+                feelsLikeTemp={parsedTemperature}
+                changeMoodTemp={() => {}}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <NoteEditor
+                keywordList={["키워드 1", "keyword", "hello"]}
+                memo={memo}
+                onMemoChanged={(memo) => setMemo(memo)}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </View>
     </View>
   );
 };

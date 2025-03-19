@@ -15,9 +15,8 @@ import Profile from "@assets/icons/profile.svg";
 import Temperature from "@assets/icons/temperature.svg";
 import TemperatureGray from "@assets/icons/temperature_gray.svg";
 import Trash from "@assets/icons/trash.svg";
-import { Colors } from "@/src/styles/Colors";
-import { ColorValue } from "react-native";
-import Svg, { Mask, Rect } from "react-native-svg";
+import GoogleLogo from "@assets/icons/google_logo.svg";
+import AppleLogo from "@assets/icons/apple_logo.svg";
 
 export enum IconName {
   arrow = "arrow",
@@ -35,6 +34,8 @@ export enum IconName {
   trash = "trash",
   downWhite = "down_white",
   temperatureGray = "temperature_gray",
+  googleLogo = "google_logo",
+  appleLogo = "apple_logo",
 }
 
 const icons = {
@@ -53,6 +54,8 @@ const icons = {
   [IconName.trash]: Trash,
   [IconName.downWhite]: DownWhite,
   [IconName.temperatureGray]: TemperatureGray,
+  [IconName.googleLogo]: GoogleLogo,
+  [IconName.appleLogo]: AppleLogo,
 };
 
 interface IconProps {
