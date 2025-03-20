@@ -6,33 +6,16 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import { Stack } from "expo-router";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
-import Icon, { IconName } from "@/src/components/Icon";
+import SignInButton, { SignInType } from "@/src/components/login/SignInButton";
 
 const LoginPage = () => {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.lightGray }}>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          marginHorizontal: 16,
-          marginVertical: 120,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <SafeAreaView style={styles.container}>
         <View style={{ flex: 1 }}>
-          <View
-            style={{
-              top: "25%",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 16,
-            }}
-          >
+          <View style={styles.logoContainer}>
             <Text style={[typography.title2, { color: Colors.black100 }]}>
               OntheMood
             </Text>
@@ -41,66 +24,49 @@ const LoginPage = () => {
             </Text>
           </View>
         </View>
-        <View
-          style={{
-            width: "100%",
-            gap: 16,
-          }}
-        >
-          <TouchableOpacity
+        <View style={styles.signInButtonContainer}>
+          <SignInButton
+            type={SignInType.google}
+            onPress={() => {
+              console.log("google");
+            }}
+          />
+          <SignInButton
+            type={SignInType.apple}
+            onPress={() => {
+              console.log("apple");
+            }}
+          />
+          {/* TODO: 이메일로 로그인 부분은 나중에 디자인 나오면 수정하기 */}
+          <View
             style={{
-              height: 56,
-              width: "100%",
-              backgroundColor: Colors.white100,
+              flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 100,
-              flexDirection: "row", // 아이콘과 텍스트를 가로 정렬
+              gap: 16,
+              paddingHorizontal: 40,
             }}
           >
-            <View style={{ position: "absolute", left: 16 }}>
-              <Icon name={IconName.googleLogo} />
-            </View>
-            <Text
-              style={[
-                typography.body,
-                {
-                  fontWeight: "700",
-                  color: Colors.black100,
-                  textAlign: "center", // 텍스트 중앙 정렬
-                },
-              ]}
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              Google로 로그인
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              height: 56,
-              width: "100%",
-              backgroundColor: Colors.black100,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 100,
-              flexDirection: "row", // 아이콘과 텍스트를 가로 정렬
-            }}
-          >
-            <View style={{ position: "absolute", left: 16 }}>
-              <Icon name={IconName.appleLogo} />
-            </View>
-            <Text
-              style={[
-                typography.body,
-                {
-                  fontWeight: "700",
-                  color: Colors.white100,
-                  textAlign: "center", // 텍스트 중앙 정렬
-                },
-              ]}
+              <Text>회원가입</Text>
+            </TouchableOpacity>
+            <Text>|</Text>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              Apple로 로그인
-            </Text>
-          </TouchableOpacity>
+              <Text>이메일로 로그인</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -109,4 +75,23 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginHorizontal: 16,
+    marginVertical: 120,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  logoContainer: {
+    top: "25%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
+  },
+  signInButtonContainer: {
+    width: "100%",
+    gap: 16,
+  },
+});
