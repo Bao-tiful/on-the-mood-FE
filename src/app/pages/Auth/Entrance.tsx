@@ -9,6 +9,7 @@ import React from "react";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import SignInButton, { SignInType } from "@/src/components/login/SignInButton";
+import { router } from "expo-router";
 
 const LoginPage = () => {
   return (
@@ -53,6 +54,9 @@ const LoginPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => {
+                router.push("/pages/Auth/SignUp");
+              }}
             >
               <Text>회원가입</Text>
             </TouchableOpacity>
@@ -62,6 +66,9 @@ const LoginPage = () => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+              }}
+              onPress={() => {
+                router.push("/pages/Auth/SignIn");
               }}
             >
               <Text>이메일로 로그인</Text>
