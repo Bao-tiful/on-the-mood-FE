@@ -13,16 +13,10 @@ export default function RootLayout() {
         <StatusBar style="dark" />
         {/* RN expo-router를 사용하면, Stack을 사용해서 depth를 가지는 navigation이 가능하다*/}
         {/* Link를 사용하면 push가 가능하다 */}
-        <AuthCheck>
-          <Stack>
-            <Stack.Screen
-              name="pages/EditPage"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="pages/LoginPage"
-              options={{ headerShown: false }}
-            />
+        <AuthCheck redirectPath="/pages/Auth/Entrance">
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="pages/EditPage" />
+            <Stack.Screen name="pages/Auth/Entrance" />
           </Stack>
         </AuthCheck>
       </ThemeProvider>
