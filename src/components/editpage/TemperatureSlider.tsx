@@ -4,6 +4,7 @@ import { Slider } from "@miblanchard/react-native-slider";
 import { Colors } from "@/src/styles/Colors";
 import Icon, { IconName } from "../Icon";
 import typography from "@/src/styles/Typography";
+import * as Haptic from "expo-haptics";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
@@ -70,7 +71,14 @@ const TemperatureSlider = ({
             maximumValue={maxValue}
             value={moodTemp}
             onValueChange={(value) => {
-              changeMoodTemp(value[0]);
+              // step 크기와 관계없이 소숫점 단위의 변화에 대해서도 onValueChange 콜백이 호출되고 있어,
+              // 이미 value가 같은 경우에는 로직 호출 방지
+              if (temperature == value[0]) return;
+
+              Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
+
+              setTemperature(value[0]);
+              changeMoodTemp(temperature);
             }}
             maximumTrackTintColor="transparent"
             minimumTrackTintColor="transparent"
