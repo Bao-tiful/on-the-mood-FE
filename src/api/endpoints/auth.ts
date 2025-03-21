@@ -43,7 +43,14 @@ export const logIn = async (postData: LogInProps) => {
   }
 };
 
-interface Profile {}
+interface Profile {
+  id: number;
+  nickname?: string;
+  username: string;
+  email: string;
+  is_active: boolean;
+  date_joined: string;
+}
 
 export const getProfile = async () => {
   try {
