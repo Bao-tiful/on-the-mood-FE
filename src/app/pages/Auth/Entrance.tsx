@@ -11,7 +11,7 @@ import typography from "@/src/styles/Typography";
 import SignInButton, { SignInType } from "@/src/components/login/SignInButton";
 import { router } from "expo-router";
 
-const LoginPage = () => {
+const EntrancePage = () => {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.lightGray }}>
       <SafeAreaView style={styles.container}>
@@ -80,7 +80,7 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default EntrancePage;
 
 const styles = StyleSheet.create({
   container: {

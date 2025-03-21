@@ -17,9 +17,9 @@ const AuthCheck = ({
     const checkAuthState = async () => {
       try {
         const token = await AsyncStorage.getItem("accessToken");
-        // if (!token) {
-        router.replace(redirectPath);
-        // }
+        if (!token) {
+          router.replace(redirectPath);
+        }
       } catch (error) {
         console.error("토큰 확인 중 오류 발생 :", error);
       }
