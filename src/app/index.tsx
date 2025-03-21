@@ -31,7 +31,8 @@ export default function HomeScreen() {
           <ToolbarButton
             name={IconName.profile}
             onPress={async () => {
-              router.push("/pages/MyPage");
+              // 디버깅을 위해 해당 버튼을 누르면 로그인 페이지로 이동하도록 연결
+              router.replace("/pages/Auth/Entrance");
             }}
           />
           <ToolbarButton
