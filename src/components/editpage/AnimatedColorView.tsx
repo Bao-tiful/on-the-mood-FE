@@ -27,8 +27,12 @@ export default class AnimatedColorView extends Component<AnimatedColorViewProps>
     easing: Easing.linear,
   };
 
+  // 애니메이션을 적용할 색상 팔레트
+  // Value는 투명도(opacity) -> 1이면 색상이 보이고 0이면 색상이 보이지 않음
   animatedValues: Animated.Value[] = [];
   setInterval: any = null;
+
+  // prop으로 들어온 색상 hex 코드 목록을 animatedValues에 적용
   constructor(props: any) {
     super(props);
     const { colors, activeIndex } = props;
@@ -40,9 +44,11 @@ export default class AnimatedColorView extends Component<AnimatedColorViewProps>
     }
   }
 
+  // 특정 index의 색상을 업데이트 시킬 때
+  // 에니메이션을 적용하며 해당 색상의 투명도를 1으로, 나머지 색상은 0으로 set
   setActive = async (index: number) => {
     const { duration, easing } = this.props;
-    this.animatedValues.map((item, i) => {
+    this.animatedValues.map((_, i) => {
       if (index !== i) {
         Animated.timing(this.animatedValues[i], {
           toValue: 0,
@@ -63,7 +69,7 @@ export default class AnimatedColorView extends Component<AnimatedColorViewProps>
 
   componentDidUpdate(props: any) {
     const { activeIndex } = this.props;
-    console.log(activeIndex);
+
     if (props.activeIndex !== activeIndex) {
       this.setActive(activeIndex);
     }
@@ -76,6 +82,7 @@ export default class AnimatedColorView extends Component<AnimatedColorViewProps>
     return (
       <View {...props}>
         {colors.map((item, index) => {
+          // opacity
           const opacity = this.animatedValues[index];
           return (
             <Animated.View

@@ -125,6 +125,7 @@ const EditPage = () => {
                 <ToolbarButton
                   name={IconName.check}
                   onPress={async () => {
+                    // TODO: 지역 정보 가져오는 API 및 로직 추가 후 수정 예정
                     try {
                       const prop = {
                         location: "Seoul",
@@ -132,7 +133,6 @@ const EditPage = () => {
                         custom_temp: myMoodOndo,
                       };
                       const result = await postNote(prop);
-                      console.log(result);
                       router.back();
                     } catch (error) {
                       console.error("ERROR : ", error);
