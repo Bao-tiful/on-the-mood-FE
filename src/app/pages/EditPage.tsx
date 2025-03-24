@@ -2,7 +2,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -17,7 +16,7 @@ import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
-import { postNote } from "@/src/api/endpoints/daily-notes";
+import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 
 const EditPage = () => {
@@ -28,6 +27,9 @@ const EditPage = () => {
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [editable, setEditable] = useState(true);
+
+  const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
+  const [memo, setMemo] = useState(note ? note.content : "");
 
   useEffect(() => {
     try {
@@ -59,6 +61,7 @@ const EditPage = () => {
           updated_at: new Date(parsedNote.updated_at),
         });
         setMyMoodOndo(parsedNote.custom_temp);
+        setMemo(parsedNote.content);
       } else {
         setMyMoodOndo(Number(feelsLikeTempData));
       }
@@ -80,8 +83,36 @@ const EditPage = () => {
     }
   }, [editableData]);
 
-  const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
-  const [memo, setMemo] = useState("");
+  const submit = () => {
+    return async () => {
+      try {
+        // 노트를 수정하려는 경우
+        if (note) {
+          const prop = {
+            id: note.id,
+            content: memo,
+            custom_temp: myMoodOndo,
+          };
+          await editNote(prop);
+        }
+
+        // 오늘 노트를 처음 작성하는 경우
+        else {
+          // TODO: location 변경해주기
+          const prop = {
+            location: "Seoul",
+            content: memo,
+            custom_temp: myMoodOndo,
+          };
+          await postNote(prop);
+        }
+
+        router.back();
+      } catch (error) {
+        console.error("ERROR : ", error);
+      }
+    };
+  };
 
   return (
     // TODO: 여기에서 색상 변경해주기
@@ -101,33 +132,7 @@ const EditPage = () => {
               />
               <Text style={typography.heading2}>{toDateString(date)}</Text>
               {editable ? (
-                <ToolbarButton
-                  name={IconName.check}
-                  onPress={async () => {
-                    try {
-                      // 노트를 수정하려는 경우
-                      if (note) {
-                        const prop = {
-                          content: memo,
-                        };
-                      }
-                      // 오늘 노트를 처음 작성하는 경우
-                      else {
-                        const prop = {
-                          location: "Seoul",
-                          content: memo,
-                          custom_temp: myMoodOndo,
-                        };
-                        const result = await postNote(prop);
-                        console.log(result);
-                      }
-
-                      router.back();
-                    } catch (error) {
-                      console.error("ERROR : ", error);
-                    }
-                  }}
-                />
+                <ToolbarButton name={IconName.check} onPress={submit()} />
               ) : (
                 <View style={{ width: 44 }} />
               )}
@@ -139,6 +144,7 @@ const EditPage = () => {
           </View>
 
           <View
+            // 수정 불가능한 경우에는 터치 이벤트를 제한
             pointerEvents={editable ? "auto" : "none"}
             style={{ marginTop: 16, flex: 1, gap: 12 }}
           >
