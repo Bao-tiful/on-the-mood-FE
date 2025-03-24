@@ -82,7 +82,7 @@ export default class AnimatedColorView extends Component<AnimatedColorViewProps>
     return (
       <View {...props}>
         {colors.map((item, index) => {
-          // opacity
+          // 애니메이션이 적용된 opacity 값으로 색상을 렌더링
           const opacity = this.animatedValues[index];
           return (
             <Animated.View

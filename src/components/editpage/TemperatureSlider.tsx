@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
-import { Colors } from "@/src/styles/Colors";
+import { Colors, OndoColors } from "@/src/styles/Colors";
 import Icon, { IconName } from "../Icon";
 import typography from "@/src/styles/Typography";
 import * as Haptic from "expo-haptics";
@@ -104,9 +104,13 @@ const TemperatureSlider = ({
           <Text style={[styles.degreeTopLabel]}>
             {moodTemp === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
           </Text>
-          {/* TODO: 온도에 따라 색상 변경되도록 수정하기 */}
-          <Text style={[styles.degreeTagLabel, { color: Colors.white100 }]}>
-            {moodTemp}°
+          <Text
+            style={[
+              styles.degreeTagLabel,
+              { color: OndoColors.get(temperature) },
+            ]}
+          >
+            {temperature}°
           </Text>
         </View>
         <View style={styles.degreeBottomTriangle} />
