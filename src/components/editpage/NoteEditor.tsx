@@ -8,14 +8,23 @@ type NoteEditorProps = {
   keywordList: string[];
   memo: string;
   onMemoChanged: (memo: string) => void;
+  autoFocus?: boolean;
+  defaultValue?: string;
 };
 
-const NoteEditor = ({ keywordList, memo, onMemoChanged }: NoteEditorProps) => {
+const NoteEditor = ({
+  keywordList,
+  memo,
+  onMemoChanged,
+  autoFocus = true,
+  defaultValue = "",
+}: NoteEditorProps) => {
   return (
     <View style={styles.noteEditorContainer}>
       <View style={{ flex: 1 }}>
         <Keywords keywordList={keywordList} />
         <TextInput
+          defaultValue={defaultValue}
           style={styles.noteEditor}
           multiline={true}
           numberOfLines={3}
@@ -24,7 +33,7 @@ const NoteEditor = ({ keywordList, memo, onMemoChanged }: NoteEditorProps) => {
             "오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요."
           }
           placeholderTextColor={Colors.black40}
-          autoFocus
+          autoFocus={autoFocus}
           onChangeText={(memo) => {
             onMemoChanged(memo);
           }}

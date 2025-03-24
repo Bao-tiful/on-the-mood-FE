@@ -7,14 +7,16 @@ import typography from "@/src/styles/Typography";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
+  initialTemp?: number;
   changeMoodTemp: (temperature: number) => void;
 };
 
 const TemperatureSlider = ({
   feelsLikeTemp,
+  initialTemp = feelsLikeTemp,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
-  const [temperature, setTemperature] = useState(feelsLikeTemp);
+  const [temperature, setTemperature] = useState(initialTemp);
 
   const minValue = -40;
   const maxValue = 40;
@@ -68,7 +70,7 @@ const TemperatureSlider = ({
             trackRightPadding={-1}
             minimumValue={minValue}
             maximumValue={maxValue}
-            value={temperature}
+            value={initialTemp}
             onValueChange={(value) => {
               setTemperature(value[0]);
               changeMoodTemp(temperature);

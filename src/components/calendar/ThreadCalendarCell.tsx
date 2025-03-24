@@ -5,6 +5,8 @@ import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
 import { router } from "expo-router";
+import { isDateToday } from "@/src/utils/dateUtils";
+import EditPage from "@/src/app/pages/EditPage";
 
 type ThreadCalendarCellProps = {
   date: Date;
@@ -36,10 +38,17 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
           <ToolbarButton
             name={IconName.arrow}
             onPress={() => {
-              router.push({
-                pathname: "/pages/DetailPage",
-                params: { noteData: JSON.stringify(note) },
-              });
+              if (isDateToday(note.created_at)) {
+                router.push({
+                  pathname: "/pages/EditPage",
+                  params: { temperature: 30 },
+                });
+              } else {
+                router.push({
+                  pathname: "/pages/DetailPage",
+                  params: { noteData: JSON.stringify(note) },
+                });
+              }
             }}
           />
         ) : (
