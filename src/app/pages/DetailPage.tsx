@@ -32,7 +32,7 @@ const DetailPage = () => {
     } catch (error) {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
-  }, []);
+  }, [noteData]);
 
   const Divider = () => (
     <View
@@ -89,7 +89,10 @@ const DetailPage = () => {
                 onPressEdit={() => {
                   router.push({
                     pathname: "/pages/EditPage",
-                    params: { temperature: note.custom_temp },
+                    params: {
+                      feelsLikeTempData: 30,
+                      noteData: JSON.stringify(note),
+                    },
                   });
                 }}
               />

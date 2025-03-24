@@ -15,24 +15,62 @@ import NoteEditor from "@/src/components/editpage/NoteEditor";
 import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
 import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
 import { postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 
 const EditPage = () => {
-  const { temperature } = useLocalSearchParams();
-
-  // const isoDateString = Array.isArray(date) ? date[0] : date;
-  // const parsedDate = isoDateString ? new Date(isoDateString) : null;
+  const { feelsLikeTempData, noteData } = useLocalSearchParams();
 
   const date = new Date();
 
-  const parsedTemperature = Array.isArray(temperature)
-    ? Number(temperature[0])
-    : Number(temperature);
+  const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
+  let note: NoteItem | undefined;
 
-  const [myMoodOndo, setMyMoodOndo] = useState(parsedTemperature);
+  useEffect(() => {
+    console.log(feelsLikeTempData);
+    console.log(noteData);
+
+    try {
+      if (Array.isArray(feelsLikeTempData))
+        throw new Error("feelsLikeTempData가 string[] 타입입니다");
+      console.log(feelsLikeTempData);
+
+      if (feelsLikeTempData) {
+        setFeelsLikeTemp(Number(feelsLikeTempData));
+      }
+    } catch (error) {
+      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
+    }
+  }, [feelsLikeTempData]);
+
+  useEffect(() => {
+    try {
+      if (Array.isArray(noteData))
+        throw new Error("noteData가 string[] 타입입니다");
+
+      if (noteData) {
+        const parsedNote = JSON.parse(noteData);
+        // TODO: JSON -> NoteItem 만드는 Util 함수 추가하기
+        note = {
+          id: parsedNote.id,
+          location: parsedNote.location,
+          custom_temp: parsedNote.custom_temp,
+          content: parsedNote.content,
+          created_at: new Date(parsedNote.created_at),
+          updated_at: new Date(parsedNote.updated_at),
+        };
+        setMyMoodOndo(note.custom_temp);
+      } else {
+        setMyMoodOndo(feelsLikeTemp);
+      }
+    } catch (error) {
+      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
+    }
+  }, [noteData]);
+
+  const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
   const [memo, setMemo] = useState("");
 
   return (
@@ -72,13 +110,15 @@ const EditPage = () => {
             </View>
             <LocationAndTemperature
               location={"서울특별시"}
-              temperature={parsedTemperature}
+              temperature={feelsLikeTemp}
             />
           </View>
 
           <View style={{ marginTop: 16 }}>
             <TemperatureSlider
-              feelsLikeTemp={parsedTemperature}
+              feelsLikeTemp={feelsLikeTemp}
+              moodTemp={myMoodOndo}
+              // TODO: 만약 note 정보가 있다면 해당 날짜에 선택한 온도 넣어주기
               changeMoodTemp={(temperature) => {
                 setMyMoodOndo(temperature);
               }}

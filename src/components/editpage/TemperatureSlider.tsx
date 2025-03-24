@@ -7,17 +7,15 @@ import typography from "@/src/styles/Typography";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
-  initialTemp?: number;
+  moodTemp: number;
   changeMoodTemp: (temperature: number) => void;
 };
 
 const TemperatureSlider = ({
   feelsLikeTemp,
-  initialTemp = feelsLikeTemp,
+  moodTemp,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
-  const [temperature, setTemperature] = useState(initialTemp);
-
   const minValue = -40;
   const maxValue = 40;
 
@@ -46,7 +44,7 @@ const TemperatureSlider = ({
                 )
               )}
             </View>
-            {temperature === feelsLikeTemp ? null : (
+            {moodTemp === feelsLikeTemp ? null : (
               <View
                 style={[
                   styles.feelsLikeTempLabelRow,
@@ -70,10 +68,9 @@ const TemperatureSlider = ({
             trackRightPadding={-1}
             minimumValue={minValue}
             maximumValue={maxValue}
-            value={initialTemp}
+            value={moodTemp}
             onValueChange={(value) => {
-              setTemperature(value[0]);
-              changeMoodTemp(temperature);
+              changeMoodTemp(value[0]);
             }}
             maximumTrackTintColor="transparent"
             minimumTrackTintColor="transparent"
@@ -91,21 +88,17 @@ const TemperatureSlider = ({
         style={[
           styles.sliderThumbContainer,
           {
-            left: `${
-              ((temperature - minValue) / (maxValue - minValue)) * 100
-            }%`,
+            left: `${((moodTemp - minValue) / (maxValue - minValue)) * 100}%`,
           },
         ]}
       >
         <View style={[styles.degreeTag]}>
           <Text style={[styles.degreeTopLabel]}>
-            {temperature === feelsLikeTemp
-              ? "오늘의 체감온도"
-              : "나의 온도무드"}
+            {moodTemp === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
           </Text>
           {/* TODO: 온도에 따라 색상 변경되도록 수정하기 */}
           <Text style={[styles.degreeTagLabel, { color: Colors.white100 }]}>
-            {temperature}°
+            {moodTemp}°
           </Text>
         </View>
         <View style={styles.degreeBottomTriangle} />

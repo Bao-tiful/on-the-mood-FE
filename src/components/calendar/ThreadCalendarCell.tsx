@@ -41,7 +41,12 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
               if (isDateToday(note.created_at)) {
                 router.push({
                   pathname: "/pages/EditPage",
-                  params: { temperature: 30 },
+                  // TODO: feelsLikeTempData를 오늘의 체감온도로 수정해주기
+                  // 이 데이터는 note에 들어있을 예정이라, note에서 값 가져와도 좋을 것 같음
+                  params: {
+                    feelsLikeTempData: 30,
+                    noteData: JSON.stringify(note),
+                  },
                 });
               } else {
                 router.push({
