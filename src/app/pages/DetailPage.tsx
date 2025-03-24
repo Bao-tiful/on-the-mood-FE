@@ -1,12 +1,15 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
-import Icon, { IconName } from "@/src/components/Icon";
-import typography from "@/src/styles/Typography";
-import { Colors, OndoColors } from "@/src/styles/Colors";
-import { toDateString } from "@/src/utils/dateUtils";
+import { IconName } from "@/src/components/Icon";
+import { OndoColors } from "@/src/styles/Colors";
+import DateLocationCell from "@/src/components/detailPage/DateLocationCell";
+import PageDivider from "@/src/components/detailPage/PageDivider";
+import ColorCodeCell from "@/src/components/detailPage/ColorCodeCell";
+import OndoCell from "@/src/components/detailPage/OndoCell";
+import NoteCell from "@/src/components/detailPage/NoteCell";
 
 const DetailPage = () => {
   const { noteData } = useLocalSearchParams();
@@ -34,16 +37,6 @@ const DetailPage = () => {
     }
   }, [noteData]);
 
-  const Divider = () => (
-    <View
-      style={{
-        height: 1,
-        backgroundColor: Colors.black18,
-        marginVertical: 24,
-      }}
-    />
-  );
-
   return (
     <View
       style={{
@@ -68,17 +61,17 @@ const DetailPage = () => {
         {note !== undefined && note.created_at instanceof Date && (
           <View style={styles.contentContainer}>
             {/* 날짜 / 지역 */}
-            <DetailDateLocationCell
+            <DateLocationCell
               createdAt={note.created_at}
               location={note.location}
             />
             {/* 노트 정보 */}
             <View>
-              <DetailColorCodeCell ondo={note.custom_temp} />
-              <Divider />
-              <DetailOndoCell ondo={note.custom_temp} />
-              <Divider />
-              <DetailNoteCell
+              <ColorCodeCell ondo={note.custom_temp} />
+              <PageDivider />
+              <OndoCell ondo={note.custom_temp} />
+              <PageDivider />
+              <NoteCell
                 note={note}
                 onPress={() => {
                   router.push({
@@ -96,140 +89,6 @@ const DetailPage = () => {
         )}
       </SafeAreaView>
     </View>
-  );
-};
-
-const DetailDateLocationCell = ({
-  createdAt,
-  location,
-}: {
-  createdAt: Date;
-  location: string;
-}) => (
-  <View style={{ flex: 1, gap: 4 }}>
-    <Text style={[typography.heading1, { color: Colors.black100 }]}>
-      {toDateString(createdAt)}
-    </Text>
-
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-      <Icon name={IconName.location} size={14} />
-      <Text style={[typography.label1, { color: Colors.black100 }]}>
-        {location}
-      </Text>
-    </View>
-  </View>
-);
-
-const DetailColorCodeCell = ({ ondo }: { ondo: number }) => (
-  <View
-    style={{
-      flexDirection: "row",
-      justifyContent: "space-between",
-    }}
-  >
-    <View style={{ flexDirection: "row" }}>
-      <Text
-        style={[
-          typography.label1,
-          { color: Colors.black100, fontWeight: "bold" },
-        ]}
-      >
-        {"Note\nMood Code"}
-      </Text>
-
-      <TouchableOpacity
-        style={{ marginHorizontal: 8 }}
-        onPress={() => {
-          // TODO: tooltip 추가하기
-        }}
-      >
-        <Icon name={IconName.info} />
-      </TouchableOpacity>
-    </View>
-    <Text
-      style={[
-        typography.title2,
-        {
-          color: Colors.black100,
-          fontWeight: "bold",
-          textDecorationLine: "underline",
-        },
-      ]}
-    >
-      {OndoColors.get(ondo)}
-    </Text>
-  </View>
-);
-
-const DetailOndoCell = ({ ondo }: { ondo: number }) => {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-      }}
-    >
-      <Text
-        style={[
-          typography.label1,
-          { color: Colors.black100, fontWeight: "bold" },
-        ]}
-      >
-        {"Note\nOndo"}
-      </Text>
-
-      <View style={{ flexDirection: "row" }}>
-        <Text style={[typography.display1]}>{ondo}</Text>
-        <Text style={[typography.display2]}>°</Text>
-      </View>
-    </View>
-  );
-};
-
-const DetailNoteCell = ({
-  note,
-  onPress,
-}: {
-  note: NoteItem;
-  onPress: () => void;
-}) => {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          backgroundColor: Colors.white40,
-          paddingHorizontal: 16,
-          paddingVertical: 24,
-          borderRadius: 16,
-          gap: 40,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: 0,
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            style={[
-              typography.label1,
-              { color: Colors.black100, fontWeight: "bold" },
-            ]}
-          >
-            {"Note\nOnthemood"}
-          </Text>
-        </View>
-        <View style={{ width: "100%" }}>
-          <Text
-            numberOfLines={4}
-            style={[typography.body, { height: 25.6 * 4, textOverflow: "..." }]}
-          >
-            {note?.content}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
   );
 };
 
