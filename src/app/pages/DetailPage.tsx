@@ -63,12 +63,6 @@ const DetailPage = () => {
               router.back();
             }}
           />
-          <ToolbarButton
-            name={IconName.trash}
-            onPress={() => {
-              // TODO: 노트 삭제 기능이 필요할 지 논의하기
-            }}
-          />
         </View>
         {/* 컨텐츠 */}
         {note !== undefined && note.created_at instanceof Date && (
@@ -86,10 +80,11 @@ const DetailPage = () => {
               <Divider />
               <DetailNoteCell
                 note={note}
-                onPressEdit={() => {
+                onPress={() => {
                   router.push({
                     pathname: "/pages/EditPage",
                     params: {
+                      editableData: JSON.stringify(false),
                       feelsLikeTempData: 30,
                       noteData: JSON.stringify(note),
                     },
@@ -193,13 +188,13 @@ const DetailOndoCell = ({ ondo }: { ondo: number }) => {
 
 const DetailNoteCell = ({
   note,
-  onPressEdit,
+  onPress,
 }: {
   note: NoteItem;
-  onPressEdit: () => void;
+  onPress: () => void;
 }) => {
   return (
-    <View>
+    <TouchableOpacity onPress={onPress}>
       <View
         style={{
           backgroundColor: Colors.white40,
@@ -224,7 +219,6 @@ const DetailNoteCell = ({
           >
             {"Note\nOnthemood"}
           </Text>
-          <ToolbarButton name={IconName.edit} onPress={onPressEdit} />
         </View>
         <View style={{ width: "100%" }}>
           <Text
@@ -235,7 +229,7 @@ const DetailNoteCell = ({
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -244,7 +238,7 @@ export default DetailPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 12,
+    marginHorizontal: 12,
   },
   topToolbar: {
     flexDirection: "row",
@@ -256,5 +250,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     justifyContent: "space-between",
     flex: 1,
+    marginTop: 16,
   },
 });

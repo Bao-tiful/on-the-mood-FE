@@ -21,21 +21,18 @@ import { postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 
 const EditPage = () => {
-  const { feelsLikeTempData, noteData } = useLocalSearchParams();
+  const { feelsLikeTempData, noteData, editableData } = useLocalSearchParams();
 
   const date = new Date();
 
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
-  let note: NoteItem | undefined;
+  const [note, setNote] = useState<NoteItem | undefined>(undefined);
+  const [editable, setEditable] = useState(true);
 
   useEffect(() => {
-    console.log(feelsLikeTempData);
-    console.log(noteData);
-
     try {
       if (Array.isArray(feelsLikeTempData))
         throw new Error("feelsLikeTempData가 string[] 타입입니다");
-      console.log(feelsLikeTempData);
 
       if (feelsLikeTempData) {
         setFeelsLikeTemp(Number(feelsLikeTempData));
@@ -53,22 +50,35 @@ const EditPage = () => {
       if (noteData) {
         const parsedNote = JSON.parse(noteData);
         // TODO: JSON -> NoteItem 만드는 Util 함수 추가하기
-        note = {
+        setNote({
           id: parsedNote.id,
           location: parsedNote.location,
           custom_temp: parsedNote.custom_temp,
           content: parsedNote.content,
           created_at: new Date(parsedNote.created_at),
           updated_at: new Date(parsedNote.updated_at),
-        };
-        setMyMoodOndo(note.custom_temp);
+        });
+        setMyMoodOndo(parsedNote.custom_temp);
       } else {
-        setMyMoodOndo(feelsLikeTemp);
+        setMyMoodOndo(Number(feelsLikeTempData));
       }
     } catch (error) {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
   }, [noteData]);
+
+  useEffect(() => {
+    try {
+      if (Array.isArray(editableData))
+        throw new Error("editableData가 string[] 타입입니다");
+
+      if (editableData) {
+        setEditable(JSON.parse(editableData.toLowerCase()));
+      }
+    } catch (error) {
+      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
+    }
+  }, [editableData]);
 
   const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
   const [memo, setMemo] = useState("");
@@ -94,13 +104,23 @@ const EditPage = () => {
                 name={IconName.check}
                 onPress={async () => {
                   try {
-                    const prop = {
-                      location: "Seoul",
-                      content: memo,
-                      custom_temp: myMoodOndo,
-                    };
-                    const result = await postNote(prop);
-                    console.log(result);
+                    // 노트를 수정하려는 경우
+                    if (note) {
+                      const prop = {
+                        content: memo,
+                      };
+                    }
+                    // 오늘 노트를 처음 작성하는 경우
+                    else {
+                      const prop = {
+                        location: "Seoul",
+                        content: memo,
+                        custom_temp: myMoodOndo,
+                      };
+                      const result = await postNote(prop);
+                      console.log(result);
+                    }
+
                     router.back();
                   } catch (error) {
                     console.error("ERROR : ", error);
@@ -129,6 +149,8 @@ const EditPage = () => {
               keywordList={["키워드 1", "keyword", "hello"]}
               memo={memo}
               onMemoChanged={(memo) => setMemo(memo)}
+              defaultValue={note?.content}
+              autoFocus={!note}
             />
           </View>
         </KeyboardAvoidingView>
