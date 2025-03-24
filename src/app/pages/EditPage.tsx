@@ -100,33 +100,37 @@ const EditPage = () => {
                 }}
               />
               <Text style={typography.heading2}>{toDateString(date)}</Text>
-              <ToolbarButton
-                name={IconName.check}
-                onPress={async () => {
-                  try {
-                    // 노트를 수정하려는 경우
-                    if (note) {
-                      const prop = {
-                        content: memo,
-                      };
-                    }
-                    // 오늘 노트를 처음 작성하는 경우
-                    else {
-                      const prop = {
-                        location: "Seoul",
-                        content: memo,
-                        custom_temp: myMoodOndo,
-                      };
-                      const result = await postNote(prop);
-                      console.log(result);
-                    }
+              {editable ? (
+                <ToolbarButton
+                  name={IconName.check}
+                  onPress={async () => {
+                    try {
+                      // 노트를 수정하려는 경우
+                      if (note) {
+                        const prop = {
+                          content: memo,
+                        };
+                      }
+                      // 오늘 노트를 처음 작성하는 경우
+                      else {
+                        const prop = {
+                          location: "Seoul",
+                          content: memo,
+                          custom_temp: myMoodOndo,
+                        };
+                        const result = await postNote(prop);
+                        console.log(result);
+                      }
 
-                    router.back();
-                  } catch (error) {
-                    console.error("ERROR : ", error);
-                  }
-                }}
-              />
+                      router.back();
+                    } catch (error) {
+                      console.error("ERROR : ", error);
+                    }
+                  }}
+                />
+              ) : (
+                <View style={{ width: 44 }} />
+              )}
             </View>
             <LocationAndTemperature
               location={"서울특별시"}
@@ -134,24 +138,29 @@ const EditPage = () => {
             />
           </View>
 
-          <View style={{ marginTop: 16 }}>
-            <TemperatureSlider
-              feelsLikeTemp={feelsLikeTemp}
-              moodTemp={myMoodOndo}
-              // TODO: 만약 note 정보가 있다면 해당 날짜에 선택한 온도 넣어주기
-              changeMoodTemp={(temperature) => {
-                setMyMoodOndo(temperature);
-              }}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <NoteEditor
-              keywordList={["키워드 1", "keyword", "hello"]}
-              memo={memo}
-              onMemoChanged={(memo) => setMemo(memo)}
-              defaultValue={note?.content}
-              autoFocus={!note}
-            />
+          <View
+            pointerEvents={editable ? "auto" : "none"}
+            style={{ marginTop: 16, flex: 1, gap: 12 }}
+          >
+            <View>
+              <TemperatureSlider
+                feelsLikeTemp={feelsLikeTemp}
+                moodTemp={myMoodOndo}
+                // TODO: 만약 note 정보가 있다면 해당 날짜에 선택한 온도 넣어주기
+                changeMoodTemp={(temperature) => {
+                  setMyMoodOndo(temperature);
+                }}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <NoteEditor
+                keywordList={["키워드 1", "keyword", "hello"]}
+                memo={memo}
+                onMemoChanged={(memo) => setMemo(memo)}
+                defaultValue={note?.content}
+                autoFocus={!note}
+              />
+            </View>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
