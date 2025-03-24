@@ -75,10 +75,10 @@ const TemperatureSlider = ({
               // 이미 value가 같은 경우에는 로직 호출 방지
               if (temperature == value[0]) return;
 
-              Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
-
               setTemperature(value[0]);
-              changeMoodTemp(temperature);
+              changeMoodTemp(value[0]);
+
+              Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
             }}
             maximumTrackTintColor="transparent"
             minimumTrackTintColor="transparent"
