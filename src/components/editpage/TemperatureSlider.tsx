@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
 import { Colors, OndoColors } from "@/src/styles/Colors";
 import Icon, { IconName } from "../Icon";
@@ -19,6 +19,10 @@ const TemperatureSlider = ({
 }: TemperatureSliderProps) => {
   const minValue = -40;
   const maxValue = 40;
+
+  useEffect(() => {
+    changeMoodTemp(temperature);
+  }, [temperature]);
 
   return (
     <View style={{ width: "100%", marginTop: 16, marginBottom: 32 }}>
@@ -76,7 +80,6 @@ const TemperatureSlider = ({
               if (temperature == value[0]) return;
 
               setTemperature(value[0]);
-              changeMoodTemp(value[0]);
 
               Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
             }}
