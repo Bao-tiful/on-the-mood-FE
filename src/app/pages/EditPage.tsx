@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 
@@ -14,12 +15,15 @@ import NoteEditor from "@/src/components/editpage/NoteEditor";
 import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
 import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
 import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 
 const EditPage = () => {
+  // 화면 진입 시 TextInput에 focus를 부여할 때 사용
+  const inputRef = useRef<TextInput>(null);
+
   const { feelsLikeTempData, noteData, editableData } = useLocalSearchParams();
 
   const date = new Date();
@@ -49,6 +53,7 @@ const EditPage = () => {
       if (Array.isArray(noteData))
         throw new Error("noteData가 string[] 타입입니다");
 
+      // 노트 데이터가 있는 경우 (기존 작성 데이터 O)
       if (noteData) {
         const parsedNote = JSON.parse(noteData);
         // TODO: JSON -> NoteItem 만드는 Util 함수 추가하기
@@ -62,7 +67,16 @@ const EditPage = () => {
         });
         setMyMoodOndo(parsedNote.custom_temp);
         setMemo(parsedNote.content);
-      } else {
+      }
+      // 노트 데이터가 없는 경우 (처음 작성하는 경우)
+      else {
+        // 페이지가 로드되고 잠시 후 키보드에 포커스를 부여하기
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            inputRef.current?.focus();
+          });
+        }, 500);
+
         setMyMoodOndo(Number(feelsLikeTempData));
       }
     } catch (error) {
@@ -164,7 +178,8 @@ const EditPage = () => {
                 memo={memo}
                 onMemoChanged={(memo) => setMemo(memo)}
                 defaultValue={note?.content}
-                autoFocus={!note}
+                ref={inputRef}
+                autoFocus={false}
               />
             </View>
           </View>
