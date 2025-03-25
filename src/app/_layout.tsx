@@ -3,6 +3,8 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../components/feedback/ToastMessage";
 
 export default function RootLayout() {
   return (
@@ -18,6 +20,7 @@ export default function RootLayout() {
             options={{ headerShown: false }}
           />
         </Stack>
+        <Toast position="bottom" config={toastConfig} />
       </ThemeProvider>
     </>
   );
