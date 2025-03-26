@@ -4,6 +4,10 @@ import Popover, { PopoverMode } from "react-native-popover-view";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 
+/// 사용법
+/// children으로 Tooltip을 열 때 사용할 컴포넌트를 전달 (<Icon /> 등)
+/// title, content를 전달하면 툴팁을 화면에 띄워줍니다.
+
 type TooltipProp = {
   title: string;
   content: string;
