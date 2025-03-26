@@ -1,6 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import Popover, { PopoverMode } from "react-native-popover-view";
+import Popover, {
+  PopoverMode,
+  PopoverPlacement,
+} from "react-native-popover-view";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 
@@ -29,6 +32,7 @@ const Tooltip = ({ title, content, children }: TooltipProp) => {
         shadowRadius: 24,
         elevation: 6,
       }}
+      placement={PopoverPlacement.BOTTOM}
     >
       <View style={[styles.container]}>
         <Text style={styles.titleLabel}>{title}</Text>
