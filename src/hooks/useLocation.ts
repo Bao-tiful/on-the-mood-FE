@@ -13,15 +13,12 @@ export function useLocation() {
     longitude: 126.9996417,
   };
 
-  // 권한 허용 여부
-  const [granted, setGranted] = useState(false);
   const [location, setLocation] = useState<geoLocation | null>(null);
 
   // 위치정보 제공에 대한 요청
-  const askPermission = async () => {
+  const askPermission = async (): Promise<boolean> => {
     const { granted } = await Location.requestForegroundPermissionsAsync();
-    console.log("DEBUG");
-    setGranted(granted);
+    return granted;
   };
 
   // 사용자의 위도, 경도 위치 정보 가져오기
@@ -34,19 +31,24 @@ export function useLocation() {
   };
 
   useEffect(() => {
-    askPermission();
+    const updateGeoLocation = async () => {
+      // 위치 정보 권한 요청
+      const permissionGranted = await askPermission();
 
-    // 사용자가 위치 정보 접근 권한을 부여한 경우 위경도를 가져와 location에 담기
-    if (granted) {
-      getGeoLocation().then((geoLocation) => {
-        setLocation(geoLocation);
-      });
-    }
-    // 사용자가 위치 정보 접근 권한을 부여하지 않은 경우 기본 위경도를 location에 담기
-    else {
-      setLocation(defaultLocation);
-    }
-  }, [granted]);
+      // 사용자가 위치 정보 접근 권한을 부여한 경우 위경도를 가져와 location에 담기
+      if (permissionGranted) {
+        getGeoLocation().then((geoLocation) => {
+          setLocation(geoLocation);
+        });
+      }
+      // 사용자가 위치 정보 접근 권한을 부여하지 않은 경우 기본 위경도를 location에 담기
+      else {
+        setLocation(defaultLocation);
+      }
+    };
 
-  return { granted, location };
+    updateGeoLocation();
+  }, []);
+
+  return { location };
 }
