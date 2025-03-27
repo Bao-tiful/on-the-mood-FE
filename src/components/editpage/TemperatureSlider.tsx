@@ -8,21 +8,17 @@ import * as Haptic from "expo-haptics";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
-  moodTemp: number;
+  myMoodOndo: number;
   changeMoodTemp: (temperature: number) => void;
 };
 
 const TemperatureSlider = ({
   feelsLikeTemp,
-  moodTemp,
+  myMoodOndo,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
   const minValue = -40;
   const maxValue = 40;
-
-  useEffect(() => {
-    changeMoodTemp(temperature);
-  }, [temperature]);
 
   return (
     <View style={{ width: "100%", marginTop: 16, marginBottom: 32 }}>
@@ -49,7 +45,7 @@ const TemperatureSlider = ({
                 )
               )}
             </View>
-            {moodTemp === feelsLikeTemp ? null : (
+            {myMoodOndo === feelsLikeTemp ? null : (
               <View
                 style={[
                   styles.feelsLikeTempLabelRow,
@@ -73,13 +69,13 @@ const TemperatureSlider = ({
             trackRightPadding={-1}
             minimumValue={minValue}
             maximumValue={maxValue}
-            value={moodTemp}
+            value={myMoodOndo}
             onValueChange={(value) => {
               // step 크기와 관계없이 소숫점 단위의 변화에 대해서도 onValueChange 콜백이 호출되고 있어,
               // 이미 value가 같은 경우에는 로직 호출 방지
-              if (temperature == value[0]) return;
+              if (myMoodOndo == value[0]) return;
 
-              setTemperature(value[0]);
+              changeMoodTemp(value[0]);
 
               Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
             }}
@@ -99,21 +95,21 @@ const TemperatureSlider = ({
         style={[
           styles.sliderThumbContainer,
           {
-            left: `${((moodTemp - minValue) / (maxValue - minValue)) * 100}%`,
+            left: `${((myMoodOndo - minValue) / (maxValue - minValue)) * 100}%`,
           },
         ]}
       >
         <View style={[styles.degreeTag]}>
           <Text style={[styles.degreeTopLabel]}>
-            {moodTemp === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
+            {myMoodOndo === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
           </Text>
           <Text
             style={[
               styles.degreeTagLabel,
-              { color: OndoColors.get(temperature) },
+              { color: OndoColors.get(myMoodOndo) },
             ]}
           >
-            {temperature}°
+            {myMoodOndo}°
           </Text>
         </View>
         <View style={styles.degreeBottomTriangle} />
