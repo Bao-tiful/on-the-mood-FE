@@ -3,6 +3,8 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../components/feedback/ToastMessage";
 import AuthCheck from "../components/AuthCheck";
 
 export default function RootLayout() {
@@ -19,6 +21,7 @@ export default function RootLayout() {
             <Stack.Screen name="pages/Auth/Entrance" />
           </Stack>
         </AuthCheck>
+        <Toast position="bottom" config={toastConfig} />
       </ThemeProvider>
     </>
   );
