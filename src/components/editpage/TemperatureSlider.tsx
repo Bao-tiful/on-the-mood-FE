@@ -1,21 +1,22 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
-import { Colors } from "@/src/styles/Colors";
+import { Colors, OndoColors } from "@/src/styles/Colors";
 import Icon, { IconName } from "../Icon";
 import typography from "@/src/styles/Typography";
+import * as Haptic from "expo-haptics";
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
+  myMoodOndo: number;
   changeMoodTemp: (temperature: number) => void;
 };
 
 const TemperatureSlider = ({
   feelsLikeTemp,
+  myMoodOndo,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
-  const [temperature, setTemperature] = useState(feelsLikeTemp);
-
   const minValue = -40;
   const maxValue = 40;
 
@@ -44,7 +45,7 @@ const TemperatureSlider = ({
                 )
               )}
             </View>
-            {temperature === feelsLikeTemp ? null : (
+            {myMoodOndo === feelsLikeTemp ? null : (
               <View
                 style={[
                   styles.feelsLikeTempLabelRow,
@@ -68,16 +69,21 @@ const TemperatureSlider = ({
             trackRightPadding={-1}
             minimumValue={minValue}
             maximumValue={maxValue}
-            value={temperature}
+            value={myMoodOndo}
             onValueChange={(value) => {
-              setTemperature(value[0]);
-              changeMoodTemp(temperature);
+              // step 크기와 관계없이 소숫점 단위의 변화에 대해서도 onValueChange 콜백이 호출되고 있어,
+              // 이미 value가 같은 경우에는 로직 호출 방지
+              if (myMoodOndo == value[0]) return;
+
+              changeMoodTemp(value[0]);
+
+              Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
             }}
             maximumTrackTintColor="transparent"
             minimumTrackTintColor="transparent"
             thumbStyle={styles.thumb}
             thumbTouchSize={{
-              width: 6,
+              width: 12,
               height: 50,
             }}
             trackStyle={styles.track}
@@ -89,21 +95,21 @@ const TemperatureSlider = ({
         style={[
           styles.sliderThumbContainer,
           {
-            left: `${
-              ((temperature - minValue) / (maxValue - minValue)) * 100
-            }%`,
+            left: `${((myMoodOndo - minValue) / (maxValue - minValue)) * 100}%`,
           },
         ]}
       >
         <View style={[styles.degreeTag]}>
           <Text style={[styles.degreeTopLabel]}>
-            {temperature === feelsLikeTemp
-              ? "오늘의 체감온도"
-              : "나의 온도무드"}
+            {myMoodOndo === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
           </Text>
-          {/* TODO: 온도에 따라 색상 변경되도록 수정하기 */}
-          <Text style={[styles.degreeTagLabel, { color: Colors.white100 }]}>
-            {temperature}°
+          <Text
+            style={[
+              styles.degreeTagLabel,
+              { color: OndoColors.get(myMoodOndo) },
+            ]}
+          >
+            {myMoodOndo}°
           </Text>
         </View>
         <View style={styles.degreeBottomTriangle} />
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
   },
   backgroundTrack: {
     height: 32,
-    width: "100%",
+    width: "101%",
     position: "absolute",
     flexDirection: "row",
     justifyContent: "space-between",

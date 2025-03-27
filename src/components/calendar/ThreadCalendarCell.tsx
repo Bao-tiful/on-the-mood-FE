@@ -4,6 +4,9 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
+import { router } from "expo-router";
+import { isDateToday } from "@/src/utils/dateUtils";
+import EditPage from "@/src/app/pages/EditPage";
 
 type ThreadCalendarCellProps = {
   date: Date;
@@ -32,7 +35,27 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
       <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
         <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
         {note != undefined ? (
-          <ToolbarButton name={IconName.arrow} onPress={() => {}} />
+          <ToolbarButton
+            name={IconName.arrow}
+            onPress={() => {
+              if (isDateToday(note.created_at)) {
+                router.push({
+                  pathname: "/pages/EditPage",
+                  // TODO: feelsLikeTempData를 오늘의 체감온도로 수정해주기
+                  // 이 데이터는 note에 들어있을 예정이라, note에서 값 가져와도 좋을 것 같음
+                  params: {
+                    feelsLikeTempData: 30,
+                    noteData: JSON.stringify(note),
+                  },
+                });
+              } else {
+                router.push({
+                  pathname: "/pages/DetailPage",
+                  params: { noteData: JSON.stringify(note) },
+                });
+              }
+            }}
+          />
         ) : (
           <View />
         )}
