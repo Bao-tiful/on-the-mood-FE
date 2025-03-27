@@ -119,20 +119,29 @@ const EditPage = () => {
                     router.back();
                   }}
                 />
-                <Text style={typography.heading2}>
-                  {parsedDate?.toLocaleDateString("ko-KR")}
-                </Text>
+
+                <Text style={typography.heading2}>{toDateString(date)}</Text>
                 <ToolbarButton
                   name={IconName.check}
                   onPress={async () => {
-                    // TODO: 지역 정보 가져오는 API 및 로직 추가 후 수정 예정
                     try {
-                      const prop = {
-                        location: "Seoul",
-                        content: memo,
-                        custom_temp: myMoodOndo,
-                      };
-                      const result = await postNote(prop);
+                      // 노트를 수정하려는 경우
+                      if (note) {
+                        const prop = {
+                          content: memo,
+                        };
+                      }
+                      // 오늘 노트를 처음 작성하는 경우
+                      else {
+                        const prop = {
+                          location: "Seoul",
+                          content: memo,
+                          custom_temp: myMoodOndo,
+                        };
+                        const result = await postNote(prop);
+                        console.log(result);
+                      }
+
                       router.back();
                     } catch (error) {
                       console.error("ERROR : ", error);
@@ -142,65 +151,33 @@ const EditPage = () => {
               </View>
               <LocationAndTemperature
                 location={"서울특별시"}
-                temperature={parsedTemperature}
+                temperature={feelsLikeTemp}
               />
-              <Text style={typography.heading2}>{toDateString(date)}</Text>
-              <ToolbarButton
-                name={IconName.check}
-                onPress={async () => {
-                  try {
-                    // 노트를 수정하려는 경우
-                    if (note) {
-                      const prop = {
-                        content: memo,
-                      };
-                    }
-                    // 오늘 노트를 처음 작성하는 경우
-                    else {
-                      const prop = {
-                        location: "Seoul",
-                        content: memo,
-                        custom_temp: myMoodOndo,
-                      };
-                      const result = await postNote(prop);
-                      console.log(result);
-                    }
+            </View>
 
-                    router.back();
-                  } catch (error) {
-                    console.error("ERROR : ", error);
-                  }
+            <View style={{ marginTop: 16 }}>
+              <TemperatureSlider
+                feelsLikeTemp={feelsLikeTemp}
+                myMoodOndo={myMoodOndo}
+                // TODO: 만약 note 정보가 있다면 해당 날짜에 선택한 온도 넣어주기
+                changeMoodTemp={(temperature) => {
+                  setMyMoodOndo(temperature);
                 }}
               />
             </View>
-            <LocationAndTemperature
-              location={"서울특별시"}
-              temperature={feelsLikeTemp}
-            />
-          </View>
-
-          <View style={{ marginTop: 16 }}>
-            <TemperatureSlider
-              feelsLikeTemp={feelsLikeTemp}
-              moodTemp={myMoodOndo}
-              // TODO: 만약 note 정보가 있다면 해당 날짜에 선택한 온도 넣어주기
-              changeMoodTemp={(temperature) => {
-                setMyMoodOndo(temperature);
-              }}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <NoteEditor
-              keywordList={["키워드 1", "keyword", "hello"]}
-              memo={memo}
-              onMemoChanged={(memo) => setMemo(memo)}
-              defaultValue={note?.content}
-              autoFocus={!note}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
+            <View style={{ flex: 1 }}>
+              <NoteEditor
+                keywordList={["키워드 1", "keyword", "hello"]}
+                memo={memo}
+                onMemoChanged={(memo) => setMemo(memo)}
+                defaultValue={note?.content}
+                autoFocus={!note}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </View>
+    </AnimatedColorView>
   );
 };
 

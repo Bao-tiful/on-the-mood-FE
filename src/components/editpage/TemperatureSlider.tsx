@@ -83,7 +83,7 @@ const TemperatureSlider = ({
             minimumTrackTintColor="transparent"
             thumbStyle={styles.thumb}
             thumbTouchSize={{
-              width: 6,
+              width: 12,
               height: 50,
             }}
             trackStyle={styles.track}
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   backgroundTrack: {
     height: 32,
-    width: "100%",
+    width: "101%",
     position: "absolute",
     flexDirection: "row",
     justifyContent: "space-between",
