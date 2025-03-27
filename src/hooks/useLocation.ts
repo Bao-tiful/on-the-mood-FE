@@ -1,6 +1,9 @@
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 
+/// 아직 위치 정보 접근 권한에 대한 응답을 받지 못했거나, 처리중인 경우에는 geoLocation 값으로 null을 반환합니다.
+/// 접근을 거부한 경우, defaultLocation을 반환합니다.
+/// 접근을 허용한 경우, 현재 사용자 기기의 위도, 경도를 반환합니다.
 type geoLocation = {
   latitude: number;
   longitude: number;
