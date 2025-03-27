@@ -50,10 +50,10 @@ const EditPage = () => {
 
   useEffect(() => {
     try {
-      if (Array.isArray(noteData))
+      if (Array.isArray(noteData)) {
         throw new Error("noteData가 string[] 타입입니다");
+      }
 
-      // 노트 데이터가 있는 경우 (기존 작성 데이터 O)
       if (noteData) {
         const parsedNote = JSON.parse(noteData);
         // TODO: JSON -> NoteItem 만드는 Util 함수 추가하기
@@ -67,22 +67,22 @@ const EditPage = () => {
         });
         setMyMoodOndo(parsedNote.custom_temp);
         setMemo(parsedNote.content);
-      }
-      // 노트 데이터가 없는 경우 (처음 작성하는 경우)
-      else {
-        // 페이지가 로드되고 잠시 후 키보드에 포커스를 부여하기
-        setTimeout(() => {
+      } else {
+        const focusTimeout = setTimeout(() => {
           requestAnimationFrame(() => {
             inputRef.current?.focus();
           });
         }, 500);
 
         setMyMoodOndo(Number(feelsLikeTempData));
+
+        // Cleanup function
+        return () => clearTimeout(focusTimeout);
       }
     } catch (error) {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
-  }, [noteData]);
+  }, [noteData, feelsLikeTempData]);
 
   useEffect(() => {
     try {
