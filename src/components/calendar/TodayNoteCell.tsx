@@ -45,7 +45,10 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
           onPress={() =>
             router.push({
               pathname: "/pages/EditPage",
-              params: { temperature: temperature, date: date.toISOString() },
+              params: {
+                feelsLikeTempData: temperature,
+                date: date.toISOString(),
+              },
             })
           }
         >
