@@ -33,7 +33,7 @@ const EditPage = () => {
   const [editable, setEditable] = useState(true);
 
   const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
-  const [memo, setMemo] = useState(note ? note.content : "");
+  const [memo, setMemo] = useState("");
 
   useEffect(() => {
     try {
