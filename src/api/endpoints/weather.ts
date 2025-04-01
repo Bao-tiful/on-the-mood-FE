@@ -6,18 +6,21 @@ interface GetWeatherProps {
   longitude: number;
 }
 
+// 공통 모듈을 어디에?
+
+export interface LocationData {
+  id: number;
+  name: string;
+  name_ko: string;
+  country_code: string;
+  state?: string;
+  latitude: number;
+  longitude: number;
+}
 interface WeatherData {
   id: number;
   avg_feels_like_temp: number;
-  location: {
-    id: number;
-    name: string;
-    name_ko: string;
-    country_code: string;
-    state?: string;
-    latitude: number;
-    longitude: number;
-  };
+  location: LocationData;
   date: string;
 }
 

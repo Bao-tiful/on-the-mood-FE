@@ -1,19 +1,25 @@
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
 import { router } from "expo-router";
 import { isDateToday } from "@/src/utils/dateUtils";
 import EditPage from "@/src/app/pages/EditPage";
+import { LocationData } from "@/src/api/endpoints/weather";
 
 type ThreadCalendarCellProps = {
   date: Date;
   note: NoteItem | undefined;
+  location?: LocationData;
 };
 
-const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
+const ThreadCalendarCell = ({
+  date,
+  note,
+  location,
+}: ThreadCalendarCellProps) => {
   const WeatherCell = (
     <View style={[styles.todayCell]}>
       <Text style={styles.todayCellTitle}>
@@ -22,7 +28,7 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
       <View style={{ width: "100%" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Icon name={IconName.location} size={17} />
-          <Text style={styles.todayWeatherLocation}> 서울특별시</Text>
+          <Text style={styles.todayWeatherLocation}>{location?.name_ko}</Text>
         </View>
         <Text style={styles.todayWeatherTemperature}>
           {note?.custom_temp ?? "-"}°
@@ -34,11 +40,11 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
     <View style={[styles.todayCell]}>
       <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
         <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
-        {note != undefined ? (
+        {note !== undefined ? (
           <ToolbarButton
             name={IconName.arrow}
             onPress={() => {
-              if (isDateToday(note.created_at)) {
+              if (isDateToday(note?.created_at)) {
                 router.push({
                   pathname: "/pages/EditPage",
                   // TODO: feelsLikeTempData를 오늘의 체감온도로 수정해주기
@@ -46,6 +52,7 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
                   params: {
                     feelsLikeTempData: 30,
                     noteData: JSON.stringify(note),
+                    locationData: JSON.stringify(location),
                   },
                 });
               } else {

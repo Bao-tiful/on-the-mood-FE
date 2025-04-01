@@ -18,18 +18,19 @@ import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
-import { postNote } from "@/src/api/endpoints/daily-notes";
+import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
+import { LocationData } from "@/src/api/endpoints/weather";
 
 const EditPage = () => {
-  const { feelsLikeTempData, noteData, editableData } = useLocalSearchParams();
+  const { feelsLikeTempData, noteData, locationData } = useLocalSearchParams();
 
   const date = new Date();
 
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
-  const [editable, setEditable] = useState(true);
+  const [location, setLocation] = useState<LocationData | undefined>(undefined);
 
   useEffect(() => {
     try {
@@ -71,16 +72,16 @@ const EditPage = () => {
 
   useEffect(() => {
     try {
-      if (Array.isArray(editableData))
+      if (Array.isArray(locationData))
         throw new Error("editableData가 string[] 타입입니다");
 
-      if (editableData) {
-        setEditable(JSON.parse(editableData.toLowerCase()));
+      if (locationData) {
+        setLocation(JSON.parse(locationData.toLowerCase()));
       }
     } catch (error) {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
-  }, [editableData]);
+  }, [locationData]);
 
   const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
   const [memo, setMemo] = useState("");
@@ -128,13 +129,17 @@ const EditPage = () => {
                       // 노트를 수정하려는 경우
                       if (note) {
                         const prop = {
+                          id: note.id,
                           content: memo,
+                          custom_temp: myMoodOndo,
                         };
+                        const result = await editNote(prop);
+                        console.log(result);
                       }
                       // 오늘 노트를 처음 작성하는 경우
                       else {
                         const prop = {
-                          location: "Seoul",
+                          location: location?.name ?? "Seoul",
                           content: memo,
                           custom_temp: myMoodOndo,
                         };
@@ -150,7 +155,7 @@ const EditPage = () => {
                 />
               </View>
               <LocationAndTemperature
-                location={"서울특별시"}
+                location={location?.name_ko ?? ""}
                 temperature={feelsLikeTemp}
               />
             </View>
