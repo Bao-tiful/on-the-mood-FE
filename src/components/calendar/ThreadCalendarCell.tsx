@@ -28,7 +28,7 @@ const ThreadCalendarCell = ({
       <View style={{ width: "100%" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Icon name={IconName.location} size={17} />
-          <Text style={styles.todayWeatherLocation}> 서울특별시</Text>
+          <Text style={styles.todayWeatherLocation}>{location?.name_ko}</Text>
         </View>
         <Text style={styles.todayWeatherTemperature}>
           {note?.custom_temp ?? "-"}°

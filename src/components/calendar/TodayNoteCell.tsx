@@ -20,10 +20,7 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
         <View style={{ width: "100%" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name={IconName.location} size={17} />
-            <Text style={styles.todayWeatherLocation}>
-              {" "}
-              {location?.name_ko}
-            </Text>
+            <Text style={styles.todayWeatherLocation}>{location?.name_ko}</Text>
           </View>
           <Text style={styles.todayWeatherTemperature}>
             {temperature ?? "-"}°
