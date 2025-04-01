@@ -9,14 +9,14 @@ type geoLocation = {
   longitude: number;
 };
 
-export function useLocation() {
+export function useGeoLocation() {
   // 서울시 중구의 위경도를 기본 location으로 가진다.
   const defaultLocation: geoLocation = {
     latitude: 37.56100278,
     longitude: 126.9996417,
   };
 
-  const [location, setLocation] = useState<geoLocation | null>(null);
+  const [geoLocation, setGeoLocation] = useState<geoLocation | null>(null);
 
   // 위치정보 제공에 대한 요청
   const askPermission = async (): Promise<boolean> => {
@@ -41,17 +41,17 @@ export function useLocation() {
       // 사용자가 위치 정보 접근 권한을 부여한 경우 위경도를 가져와 location에 담기
       if (permissionGranted) {
         getGeoLocation().then((geoLocation) => {
-          setLocation(geoLocation);
+          setGeoLocation(geoLocation);
         });
       }
       // 사용자가 위치 정보 접근 권한을 부여하지 않은 경우 기본 위경도를 location에 담기
       else {
-        setLocation(defaultLocation);
+        setGeoLocation(defaultLocation);
       }
     };
 
     updateGeoLocation();
   }, []);
 
-  return { location };
+  return { geoLocation };
 }
