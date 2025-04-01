@@ -1,19 +1,25 @@
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
 import { router } from "expo-router";
 import { isDateToday } from "@/src/utils/dateUtils";
 import EditPage from "@/src/app/pages/EditPage";
+import { LocationData } from "@/src/api/endpoints/weather";
 
 type ThreadCalendarCellProps = {
   date: Date;
   note: NoteItem | undefined;
+  location?: LocationData;
 };
 
-const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
+const ThreadCalendarCell = ({
+  date,
+  note,
+  location,
+}: ThreadCalendarCellProps) => {
   const WeatherCell = (
     <View style={[styles.todayCell]}>
       <Text style={styles.todayCellTitle}>
@@ -46,6 +52,7 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
                   params: {
                     feelsLikeTempData: 30,
                     noteData: JSON.stringify(note),
+                    locationData: JSON.stringify(location),
                   },
                 });
               } else {

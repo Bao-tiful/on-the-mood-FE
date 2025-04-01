@@ -61,11 +61,15 @@ export const MoodNoteCalendar = ({
         {isToday && notes.get(date.getDate()) == undefined ? (
           <TodayNoteCell
             date={date}
-            location={location?.name_ko ?? ""}
+            location={location}
             temperature={feelLikeTemp}
           />
         ) : (
-          <ThreadCalendarCell date={date} note={notes.get(date.getDate())} />
+          <ThreadCalendarCell
+            date={date}
+            note={notes.get(date.getDate())}
+            location={location}
+          />
         )}
       </View>
     </View>

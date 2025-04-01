@@ -4,11 +4,12 @@ import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import Icon, { IconName } from "../Icon";
 import { router } from "expo-router";
+import { LocationData } from "@/src/api/endpoints/weather";
 
 type TodayNoteCellProps = {
   date: Date;
-  location: string;
   temperature: number;
+  location?: LocationData;
 };
 
 const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
@@ -19,7 +20,10 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
         <View style={{ width: "100%" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name={IconName.location} size={17} />
-            <Text style={styles.todayWeatherLocation}> {location}</Text>
+            <Text style={styles.todayWeatherLocation}>
+              {" "}
+              {location?.name_ko}
+            </Text>
           </View>
           <Text style={styles.todayWeatherTemperature}>
             {temperature ?? "-"}°
@@ -46,8 +50,9 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
             router.push({
               pathname: "/pages/EditPage",
               params: {
-                feelsLikeTempData: temperature,
                 date: date.toISOString(),
+                feelsLikeTempData: temperature,
+                locationData: JSON.stringify(location),
               },
             })
           }

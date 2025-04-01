@@ -18,8 +18,6 @@ export default function HomeScreen() {
   const { geoLocation } = useGeoLocation();
 
   useEffect(() => {
-    // console.log(geoLocation);
-
     const getTemperature = async () => {
       if (geoLocation)
         await getWeather({
@@ -28,8 +26,6 @@ export default function HomeScreen() {
         }).then((weatherData) => {
           setLocation(weatherData.location);
           setTodayTemperature(weatherData.avg_feels_like_temp);
-
-          // console.log(weatherData.avg_feels_like_temp);
         });
     };
 

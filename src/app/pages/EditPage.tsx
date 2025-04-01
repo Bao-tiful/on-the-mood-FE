@@ -21,15 +21,18 @@ import { OndoColors } from "@/src/styles/Colors";
 import { postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
+import { LocationData } from "@/src/api/endpoints/weather";
 
 const EditPage = () => {
-  const { feelsLikeTempData, noteData, editableData } = useLocalSearchParams();
+  const { feelsLikeTempData, noteData, editableData, locationData } =
+    useLocalSearchParams();
 
   const date = new Date();
 
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [editable, setEditable] = useState(true);
+  const [location, setLocation] = useState<LocationData | undefined>(undefined);
 
   useEffect(() => {
     try {
@@ -81,6 +84,19 @@ const EditPage = () => {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
   }, [editableData]);
+
+  useEffect(() => {
+    try {
+      if (Array.isArray(locationData))
+        throw new Error("editableData가 string[] 타입입니다");
+
+      if (locationData) {
+        setLocation(JSON.parse(locationData.toLowerCase()));
+      }
+    } catch (error) {
+      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
+    }
+  }, [locationData]);
 
   const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
   const [memo, setMemo] = useState("");
@@ -150,7 +166,7 @@ const EditPage = () => {
                 />
               </View>
               <LocationAndTemperature
-                location={"서울특별시"}
+                location={location?.name_ko ?? ""}
                 temperature={feelsLikeTemp}
               />
             </View>
