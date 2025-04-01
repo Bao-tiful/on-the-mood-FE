@@ -7,10 +7,13 @@ import { Colors } from "@/src/styles/Colors";
 import TodayNoteCell from "./TodayNoteCell";
 import typography from "@/src/styles/Typography";
 import { isDateToday } from "@/src/utils/dateUtils";
+import { LocationData } from "@/src/api/endpoints/weather";
 
 interface MoodNoteCalendarProp {
   date: Date;
   notes: Map<number, NoteItem>;
+  feelLikeTemp: number;
+  location?: LocationData;
   changeCalendarDate: (newDate: Date) => void;
   changeModalVisible: (isModalOn: boolean) => void;
 }
@@ -20,6 +23,8 @@ export const MoodNoteCalendar = ({
   date,
   changeCalendarDate,
   notes,
+  feelLikeTemp,
+  location,
 }: MoodNoteCalendarProp) => {
   const isToday = isDateToday(date);
 
@@ -54,7 +59,11 @@ export const MoodNoteCalendar = ({
       </View>
       <View style={[{ height: 224, borderRadius: 16, overflow: "hidden" }]}>
         {isToday && notes.get(date.getDate()) == undefined ? (
-          <TodayNoteCell date={date} location={"서울특별시"} temperature={12} />
+          <TodayNoteCell
+            date={date}
+            location={location?.name_ko ?? ""}
+            temperature={feelLikeTemp}
+          />
         ) : (
           <ThreadCalendarCell date={date} note={notes.get(date.getDate())} />
         )}

@@ -6,24 +6,49 @@ import { ToolbarButton } from "../components/ToolbarButton";
 import Calendar from "../components/calendar/Calendar";
 import Threads from "../components/calendar/Threads";
 import { Colors, OndoColors } from "../styles/Colors";
+import { useGeoLocation } from "../hooks/useGeoLocation";
+import { getWeather, LocationData } from "../api/endpoints/weather";
 
 export default function HomeScreen() {
   const [isGridMode, setIsGreedMode] = useState(true);
   const [date, setDate] = useState(new Date());
+  const [todayTemperature, setTodayTemperature] = useState(0);
+  const [location, setLocation] = useState<LocationData | null>(null);
 
-  const [todayColor, setTodayColor] = useState(Colors.white100);
+  const { geoLocation } = useGeoLocation();
 
   useEffect(() => {
-    // TODO: 오늘의 색상값을 페이지 로드 시 가져오기
-    setTodayColor(OndoColors.get(4) ?? Colors.white100);
-  }, []);
+    // console.log(geoLocation);
+
+    const getTemperature = async () => {
+      if (geoLocation)
+        await getWeather({
+          latitude: geoLocation?.latitude,
+          longitude: geoLocation?.longitude,
+        }).then((weatherData) => {
+          setLocation(weatherData.location);
+          setTodayTemperature(weatherData.avg_feels_like_temp);
+
+          // console.log(weatherData.avg_feels_like_temp);
+        });
+    };
+
+    getTemperature();
+  }, [geoLocation]);
 
   const updateDate = (newDate: Date) => {
     setDate(newDate);
   };
 
   return (
-    <View style={[styles.background, { backgroundColor: todayColor }]}>
+    <View
+      style={[
+        styles.background,
+        {
+          backgroundColor: OndoColors.get(todayTemperature) ?? Colors.white100,
+        },
+      ]}
+    >
       <Stack.Screen options={{ headerShown: false }} />
 
       <SafeAreaView style={styles.safeArea}>
@@ -43,7 +68,12 @@ export default function HomeScreen() {
           />
         </View>
         {isGridMode ? (
-          <Calendar date={date} updateDate={updateDate} />
+          <Calendar
+            date={date}
+            updateDate={updateDate}
+            location={location ?? undefined}
+            feelLikeTemp={todayTemperature}
+          />
         ) : (
           <Threads />
         )}

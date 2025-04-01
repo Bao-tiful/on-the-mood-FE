@@ -34,11 +34,11 @@ const ThreadCalendarCell = ({ date, note }: ThreadCalendarCellProps) => {
     <View style={[styles.todayCell]}>
       <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
         <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
-        {note != undefined ? (
+        {note !== undefined ? (
           <ToolbarButton
             name={IconName.arrow}
             onPress={() => {
-              if (isDateToday(note.created_at)) {
+              if (isDateToday(note?.created_at)) {
                 router.push({
                   pathname: "/pages/EditPage",
                   // TODO: feelsLikeTempData를 오늘의 체감온도로 수정해주기

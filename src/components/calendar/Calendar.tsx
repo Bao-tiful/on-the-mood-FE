@@ -4,13 +4,22 @@ import { getNotes } from "@/src/api/endpoints/daily-notes";
 import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useNotes } from "@/src/hooks/useNotes";
+import { LocationData } from "@/src/api/endpoints/weather";
+import { useFocusEffect } from "expo-router";
 
 interface CalendarProps {
   date: Date;
   updateDate: (newDate: Date) => void;
+  location?: LocationData;
+  feelLikeTemp: number;
 }
 
-const Calendar = ({ date, updateDate }: CalendarProps) => {
+const Calendar = ({
+  date,
+  updateDate,
+  location,
+  feelLikeTemp,
+}: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const changeModalVisible = (isModalOn: boolean) => {
@@ -27,15 +36,6 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
     return map;
   }, [notes]);
 
-  useEffect(() => {
-    // getWeather({
-    //   latitude: 35.87,
-    //   longitude: 128.59,
-    // }).then((result) => {
-    //   console.log(result);
-    // });
-  }, []);
-
   return (
     <>
       <View style={styles.container}>
@@ -47,6 +47,8 @@ const Calendar = ({ date, updateDate }: CalendarProps) => {
           date={date}
           changeCalendarDate={updateDate}
           notes={notesMap}
+          location={location}
+          feelLikeTemp={feelLikeTemp}
         />
       </View>
       {/* ModalVisible에 의해 제어되는 바텀시트 */}
