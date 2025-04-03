@@ -22,12 +22,21 @@ import {
 } from "@/src/components/myPage/SectionItem";
 import NotiTimeButton from "@/src/components/myPage/NotiTimeButton";
 
+import * as Notifications from "expo-notifications";
+import { Meridiem, NotiTime } from "@/src/models/NotiTime";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const MyPage = () => {
   const { customTempData } = useLocalSearchParams();
 
   const [customTemp, setCustomTemp] = useState(0);
 
   const [isAlertOn, setIsAlertOn] = useState(false);
+  const [notiTime, setNotiTime] = useState<NotiTime>({
+    hour: 0,
+    meridiem: Meridiem.AM,
+    minute: 0,
+  });
   const [isPasswordOn, setIsPasswordOn] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,6 +53,22 @@ const MyPage = () => {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
   }, [customTempData]);
+
+  useEffect(() => {
+    const loadNotiTime = async () => {
+      if (isAlertOn) {
+        const notiTimeString = await AsyncStorage.getItem("@NotiTime");
+
+        if (notiTimeString) {
+          const parsedNotiTime = JSON.parse(notiTimeString);
+          setNotiTime(parsedNotiTime);
+          console.log(notiTimeString);
+        }
+      }
+    };
+
+    loadNotiTime();
+  }, [isAlertOn]);
 
   return (
     <View
@@ -87,13 +112,36 @@ const MyPage = () => {
               <Switch
                 value={isAlertOn}
                 trackColor={{ true: Colors.black100 }}
-                onValueChange={(value) => {
-                  setIsAlertOn(value);
-                  // 세팅 페이지로 이동할 수 있는 로직
-                  if (value)
-                    Linking.openSettings().catch(() => {
-                      Alert.alert("오류", "설정을 열 수 없습니다.");
-                    });
+                onValueChange={async (value) => {
+                  // 알림 켜기
+                  if (value) {
+                    const permissionStatus =
+                      await Notifications.getPermissionsAsync();
+
+                    console.log(permissionStatus.status);
+                    // 알림 권한이 있다면 알림 켜기
+
+                    switch (permissionStatus.status) {
+                      case Notifications.PermissionStatus.UNDETERMINED:
+                        await Notifications.requestPermissionsAsync();
+                        break;
+
+                      case Notifications.PermissionStatus.GRANTED:
+                        setIsAlertOn(value);
+                        // TODO: 알림 등록하기 삽입
+                        break;
+                      case Notifications.PermissionStatus.DENIED:
+                        Linking.openSettings().catch(() => {
+                          Alert.alert("오류", "설정을 열 수 없습니다.");
+                        });
+                        break;
+                    }
+                  }
+                  // 알림 끄기
+                  else {
+                    setIsAlertOn(false);
+                    // TODO: 등록된 알림 제거
+                  }
                 }}
               />
             </SectionContent>
@@ -104,7 +152,11 @@ const MyPage = () => {
                   onPress={() => {
                     setModalVisible(true);
                   }}
-                  timeString={"PM 08:00"}
+                  timeString={`${notiTime.meridiem} ${notiTime.hour
+                    .toString()
+                    .padStart(2, "0")}:${notiTime.minute
+                    .toString()
+                    .padStart(2, "0")}`}
                 />
               </SectionContent>
             ) : null}
@@ -145,12 +197,15 @@ const MyPage = () => {
         </View>
       </SafeAreaView>
       <NotiTimePicker
-        // initialDate={date}
+        initialTime={notiTime}
         modalVisible={modalVisible}
         changeModalVisible={(v) => {
           setModalVisible(v);
         }}
-        // changeCalendarDate={updateDate}
+        changeNotiTime={(newNotiTime) => {
+          setNotiTime(newNotiTime);
+          AsyncStorage.setItem("@NotiTime", JSON.stringify(newNotiTime));
+        }} // changeCalendarDate={updateDate}
       />
     </View>
   );

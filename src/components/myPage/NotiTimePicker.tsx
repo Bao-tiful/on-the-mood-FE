@@ -1,28 +1,37 @@
 import typography from "@/src/styles/Typography";
 import { Picker } from "@react-native-picker/picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
 import BottomSheet from "../BottomSheet";
+import { Colors } from "@/src/styles/Colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Meridiem, NotiTime } from "@/src/models/NotiTime";
 
 interface NotiTimePickerProps {
-  // initialTime: number;
+  initialTime: NotiTime;
   modalVisible: boolean; // boolean이면 boolean으로 명확하게 타입 지정 가능
-  // changeCalendarDate: (newDate: Date) => void;
+  changeNotiTime: (newTime: NotiTime) => void;
   changeModalVisible: (isModalOn: boolean) => void;
 }
 
 export const NotiTimePicker = ({
-  // initialDate,
+  initialTime,
   modalVisible,
-  // changeCalendarDate,
+  changeNotiTime,
   changeModalVisible,
 }: NotiTimePickerProps) => {
   // 모달 내에서 사용할 임시 날짜값
 
-  const [hour, setHour] = useState("0");
-  const [minute, setMinute] = useState("0");
-  const [meridiem, setMeridiem] = useState("AM");
+  const [hour, setHour] = useState(initialTime.hour);
+  const [minute, setMinute] = useState(initialTime.minute);
+  const [meridiem, setMeridiem] = useState(initialTime.meridiem);
+
+  useEffect(() => {
+    setHour(initialTime.hour);
+    setMinute(initialTime.minute);
+    setMeridiem(initialTime.meridiem);
+  }, [initialTime]);
 
   return (
     <View>
@@ -36,13 +45,13 @@ export const NotiTimePicker = ({
             <Picker
               style={styles.datePicker}
               selectedValue={meridiem}
-              onValueChange={(itemValue: string) => {
-                setMeridiem("AM");
+              onValueChange={(itemValue: Meridiem) => {
+                setMeridiem(itemValue);
               }}
             >
               <Picker.Item
                 label="오전"
-                value="AM"
+                value={Meridiem.AM}
                 color={Colors.black100}
                 style={{
                   ...typography.body,
@@ -52,7 +61,7 @@ export const NotiTimePicker = ({
               />
               <Picker.Item
                 label="오후"
-                value="PM"
+                value={Meridiem.PM}
                 color={Colors.black100}
                 style={{
                   ...typography.body,
@@ -64,12 +73,12 @@ export const NotiTimePicker = ({
             <Picker
               style={styles.datePicker}
               selectedValue={hour}
-              onValueChange={(itemValue: string) => {
+              onValueChange={(itemValue: number) => {
                 setHour(itemValue);
               }}
             >
               {Array.from({ length: 12 }, (_, i) => ({
-                label: `${(i + 1).toString().padStart(2, "0")}`, // 1월부터 12월까지
+                label: `${i.toString().padStart(2, "0")}`, // 1월부터 12월까지
                 value: i, // 0부터 11까지
               })).map((month, index) => (
                 <Picker.Item
@@ -89,7 +98,7 @@ export const NotiTimePicker = ({
             <Picker
               style={styles.datePicker}
               selectedValue={minute}
-              onValueChange={(itemValue: string) => {
+              onValueChange={(itemValue: number) => {
                 setMinute(itemValue);
               }}
             >
@@ -115,7 +124,12 @@ export const NotiTimePicker = ({
           <TouchableOpacity
             style={styles.bottomSheetButton}
             onPress={() => {
-              // changeCalendarDate(tempDate);
+              const newNotiTime: NotiTime = {
+                hour: hour,
+                minute: minute,
+                meridiem: meridiem,
+              };
+              changeNotiTime(newNotiTime);
               changeModalVisible(false);
             }}
           >
