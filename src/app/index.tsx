@@ -47,7 +47,9 @@ export default function HomeScreen() {
     >
       <Stack.Screen options={{ headerShown: false }} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView
+        style={[styles.safeArea, !isGridMode && styles.safeAreaNoMargin]}
+      >
         <View style={styles.topToolbar}>
           <ToolbarButton
             name={IconName.profile}
@@ -71,7 +73,7 @@ export default function HomeScreen() {
             feelLikeTemp={todayTemperature}
           />
         ) : (
-          <Threads />
+          <Threads updateDate={updateDate} />
         )}
       </SafeAreaView>
     </View>
@@ -86,6 +88,9 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 16,
     alignItems: "center",
+  },
+  safeAreaNoMargin: {
+    marginHorizontal: 0,
   },
   topToolbar: {
     flexDirection: "row",
