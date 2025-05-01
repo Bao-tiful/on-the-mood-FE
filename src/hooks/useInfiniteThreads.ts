@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { Thread, ThreadsResponse } from "../types/thread";
-import { getThreads } from "../api/thread";
+import { useCallback, useEffect, useState } from "react";
+import { getThreads } from "../api/endpoints/thread";
+import { Thread } from "../types/thread";
 
 interface UseInfiniteThreadsProps {
   pageSize?: number;
@@ -27,7 +27,6 @@ export const useInfiniteThreads = ({
           page: pageNum,
           size: pageSize,
         });
-        console.log("response-------------", response);
 
         const groupedThreads = response.results;
 
