@@ -11,19 +11,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 enum PasswordConfigStep {
   checkCurrent = 0,
-  inputNew = 1,
-  validateNew = 2,
-  validateAgain = 3,
+  checkCurrentAgain = 1,
+  inputNew = 2,
+  validateNew = 3,
+  validateAgain = 4,
 }
 
 const PasswordPage = () => {
   const [passwordInput, setPasswordInput] = useState("");
   const [step, setStep] = useState(0);
 
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
   const indicatorLabel = [
     "현재 비밀번호를 입력해주세요.",
+    "현재 비밀번호가 일치하지 않아요.\n다시 시도해주세요.",
     "새로운 비밀번호를 입력해주세요.",
     "확인을 위해 한 번 더 입력해주세요.",
     "비밀번호가 일치하지 않아요.\n처음부터 다시 시도해주세요.",
@@ -31,10 +34,11 @@ const PasswordPage = () => {
 
   useEffect(() => {
     const loadPassword = async () => {
-      const currentPassword = await AsyncStorage.getItem("@password");
+      const storedPassword = await AsyncStorage.getItem("@password");
 
-      if (currentPassword && currentPassword.length == 4) {
+      if (storedPassword && storedPassword.length == 4) {
         // 설정된 비밀번호가 있다면 && 정확히 4자리라면
+        setCurrentPassword(storedPassword);
         setStep(PasswordConfigStep.checkCurrent);
       } else {
         // 설정된 비밀번호가 없다면 && 유호하지 않은 비밀번호라면
@@ -54,8 +58,27 @@ const PasswordPage = () => {
       switch (step) {
         case PasswordConfigStep.checkCurrent:
           // 기존 비밀번호 확인
-          setPasswordInput("");
-          setStep(step + 1);
+          if (currentPassword == passwordInput) {
+            // 비밀번호가 일치하는 경우 > 변경으로 이동
+            setPasswordInput("");
+            setStep(PasswordConfigStep.inputNew);
+          } else {
+            // 일치하지 않는 경우
+            setPasswordInput("");
+            setStep(PasswordConfigStep.checkCurrentAgain);
+          }
+
+          break;
+        case PasswordConfigStep.checkCurrentAgain:
+          if (currentPassword == passwordInput) {
+            setPasswordInput("");
+            setStep(PasswordConfigStep.inputNew);
+          }
+          // 일치하지 않는 경우
+          else {
+            setPasswordInput("");
+            setStep(PasswordConfigStep.checkCurrentAgain);
+          }
           break;
         case PasswordConfigStep.inputNew:
           // 새로운 비밀번호 입력하기
