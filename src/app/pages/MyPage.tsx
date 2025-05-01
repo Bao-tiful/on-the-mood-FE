@@ -226,6 +226,48 @@ const MyPage = () => {
               </SectionContent>
             ) : null}
           </View>
+          {/* 개발용 */}
+          <View style={styles.section}>
+            <SectionTitle label="개발용 / 삭제 예정" />
+            <SectionContent>
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={() => {
+                  router.push({ pathname: "/pages/Auth/SignIn" });
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={styles.sectionContentLabel}>로그인</Text>
+                  <Icon name={IconName.arrow} />
+                </View>
+              </TouchableOpacity>
+            </SectionContent>
+            <SectionContent>
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={() => {
+                  router.push({ pathname: "/pages/Auth/SignUp" });
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={styles.sectionContentLabel}>회원가입</Text>
+                  <Icon name={IconName.arrow} />
+                </View>
+              </TouchableOpacity>
+            </SectionContent>
+          </View>
         </View>
       </SafeAreaView>
       <NotiTimePicker
