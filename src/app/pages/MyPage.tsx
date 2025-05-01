@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Colors, OndoColors } from "@/src/styles/Colors";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
 import Icon, { IconName } from "@/src/components/Icon";
 import typography from "@/src/styles/Typography";
@@ -38,7 +38,6 @@ const MyPage = () => {
     minute: 0,
   });
   const [isPasswordOn, setIsPasswordOn] = useState(false);
-
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -69,6 +68,35 @@ const MyPage = () => {
 
     loadNotiTime();
   }, [isAlertOn]);
+
+  const updatePasswordRequirement = async (newState: boolean) => {
+    setIsPasswordOn(newState);
+
+    if (newState) {
+      // 화면 잠금을 추가하는 경우 비밀번호 설정 페이지로 이동
+      router.push({ pathname: "/pages/Profile/PasswordPage" });
+    } else {
+      // 화면 잠금을 제거하는 경우 현재 저장된 비밀번호 삭제
+      await AsyncStorage.removeItem("@password");
+    }
+  };
+
+  // 페이지가 전환될 때 패스워드가 잘 저장되어있는지 확인
+  // 만약 패스워드가 없거나 유효하지 않다면 패스워드가 저장되지 않은 상태로 간주
+  useFocusEffect(
+    useCallback(() => {
+      const loadPassword = async () => {
+        const currentPassword = await AsyncStorage.getItem("@password");
+        if (currentPassword && currentPassword.length === 4) {
+          setIsPasswordOn(true);
+        } else {
+          setIsPasswordOn(false);
+        }
+      };
+
+      loadPassword();
+    }, [])
+  );
 
   return (
     <View
@@ -168,7 +196,7 @@ const MyPage = () => {
                 value={isPasswordOn}
                 trackColor={{ true: Colors.black100 }}
                 onValueChange={(value) => {
-                  setIsPasswordOn(value);
+                  updatePasswordRequirement(value);
                 }}
               />
             </SectionContent>
