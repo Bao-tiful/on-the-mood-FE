@@ -47,7 +47,7 @@ export default function HomeScreen() {
     >
       <Stack.Screen options={{ headerShown: false }} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[styles.safeArea]}>
         <View style={styles.topToolbar}>
           <ToolbarButton
             name={IconName.profile}
@@ -63,16 +63,18 @@ export default function HomeScreen() {
             }}
           />
         </View>
-        {isGridMode ? (
-          <Calendar
-            date={date}
-            updateDate={updateDate}
-            location={location ?? undefined}
-            feelLikeTemp={todayTemperature}
-          />
-        ) : (
-          <Threads />
-        )}
+        <View style={isGridMode ? styles.content : styles.thread}>
+          {isGridMode ? (
+            <Calendar
+              date={date}
+              updateDate={updateDate}
+              location={location ?? undefined}
+              feelLikeTemp={todayTemperature}
+            />
+          ) : (
+            <Threads updateDate={updateDate} />
+          )}
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -84,13 +86,22 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    margin: 16,
     alignItems: "center",
   },
   topToolbar: {
     flexDirection: "row",
     width: "100%",
+    paddingHorizontal: 16,
     paddingVertical: 12,
     justifyContent: "space-between",
+  },
+  content: {
+    flex: 1,
+    width: "100%",
+    paddingHorizontal: 16,
+  },
+  thread: {
+    flex: 1,
+    width: "100%",
   },
 });
