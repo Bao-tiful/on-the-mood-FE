@@ -21,8 +21,7 @@ export const NotiTimePicker = ({
   changeNotiTime,
   changeModalVisible,
 }: NotiTimePickerProps) => {
-  // 모달 내에서 사용할 임시 날짜값
-
+  // 모달 내에서 사용할 임시 시간값
   const [hour, setHour] = useState(initialTime.hour);
   const [minute, setMinute] = useState(initialTime.minute);
   const [meridiem, setMeridiem] = useState(initialTime.meridiem);

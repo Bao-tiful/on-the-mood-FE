@@ -27,7 +27,7 @@ import { Meridiem, NotiTime } from "@/src/models/NotiTime";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MyPage = () => {
-  const { customTempData } = useLocalSearchParams();
+  const { customTempData: feelsLikeTempData } = useLocalSearchParams();
 
   const [customTemp, setCustomTemp] = useState(0);
 
@@ -43,16 +43,16 @@ const MyPage = () => {
 
   useEffect(() => {
     try {
-      if (Array.isArray(customTempData))
+      if (Array.isArray(feelsLikeTempData))
         throw new Error("feelsLikeTempData가 string[] 타입입니다");
 
-      if (customTempData) {
-        setCustomTemp(Number(customTempData));
+      if (feelsLikeTempData) {
+        setCustomTemp(Number(feelsLikeTempData));
       }
     } catch (error) {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
-  }, [customTempData]);
+  }, [feelsLikeTempData]);
 
   useEffect(() => {
     const loadNotiTime = async () => {
@@ -89,13 +89,12 @@ const MyPage = () => {
           <Text
             style={{
               ...typography.heading2,
-              position: "absolute",
-              left: "50%",
-              transform: [{ translateX: "-50%" }],
             }}
           >
             내 정보
           </Text>
+          {/* 내 정보 타이틀의 가운데 배치를 위해 여백 추가 */}
+          <View style={{ width: 44 }} />
         </View>
 
         <View style={styles.list}>
@@ -205,7 +204,7 @@ const MyPage = () => {
         changeNotiTime={(newNotiTime) => {
           setNotiTime(newNotiTime);
           AsyncStorage.setItem("@NotiTime", JSON.stringify(newNotiTime));
-        }} // changeCalendarDate={updateDate}
+        }}
       />
     </View>
   );
