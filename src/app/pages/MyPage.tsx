@@ -176,7 +176,12 @@ const MyPage = () => {
             {isPasswordOn ? (
               <SectionContent>
                 {/* 셀 전체 터치를 위해 label을 child에 포함*/}
-                <TouchableOpacity style={{ flex: 1 }}>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    router.push({ pathname: "/pages/Profile/PasswordPage" });
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
