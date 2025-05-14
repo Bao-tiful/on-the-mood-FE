@@ -21,7 +21,7 @@ import { OndoColors } from "@/src/styles/Colors";
 import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
-import { LocationData } from "@/src/api/endpoints/weather";
+import { getKeywords, LocationData } from "@/src/api/endpoints/weather";
 
 const EditPage = () => {
   const { feelsLikeTempData, noteData, locationData } = useLocalSearchParams();
@@ -31,6 +31,7 @@ const EditPage = () => {
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [location, setLocation] = useState<LocationData | undefined>(undefined);
+  const [keywordList, setKeywordList] = useState<string[]>([]);
 
   useEffect(() => {
     try {
@@ -83,6 +84,22 @@ const EditPage = () => {
     }
   }, [locationData]);
 
+  useEffect(() => {
+    const getKeyword = async () => {
+      try {
+        await getKeywords({
+          temperature: feelsLikeTemp,
+        }).then((keywords) => {
+          setKeywordList(keywords);
+        });
+      } catch (error) {
+        console.error("키워드 받아오기에 실패하였습니다 :", error);
+      }
+    };
+
+    getKeyword();
+  }, []);
+
   const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
   const [memo, setMemo] = useState("");
 
@@ -134,7 +151,6 @@ const EditPage = () => {
                           custom_temp: myMoodOndo,
                         };
                         const result = await editNote(prop);
-                        console.log(result);
                       }
                       // 오늘 노트를 처음 작성하는 경우
                       else {
@@ -144,7 +160,6 @@ const EditPage = () => {
                           custom_temp: myMoodOndo,
                         };
                         const result = await postNote(prop);
-                        console.log(result);
                       }
 
                       router.back();
@@ -172,7 +187,7 @@ const EditPage = () => {
             </View>
             <View style={{ flex: 1 }}>
               <NoteEditor
-                keywordList={["키워드 1", "keyword", "hello"]}
+                keywordList={keywordList}
                 memo={memo}
                 onMemoChanged={(memo) => setMemo(memo)}
                 defaultValue={note?.content}
