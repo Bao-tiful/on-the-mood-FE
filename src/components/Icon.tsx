@@ -17,6 +17,9 @@ import TemperatureGray from "@assets/icons/temperature_gray.svg";
 import Trash from "@assets/icons/trash.svg";
 import GoogleLogo from "@assets/icons/google_logo.svg";
 import AppleLogo from "@assets/icons/apple_logo.svg";
+import Caution from "@assets/icons/caution.svg";
+import CheckCircle from "@assets/icons/check_circle.svg";
+import UncheckCircle from "@assets/icons/uncheck_circle.svg";
 
 export enum IconName {
   arrow = "arrow",
@@ -36,6 +39,9 @@ export enum IconName {
   temperatureGray = "temperature_gray",
   googleLogo = "google_logo",
   appleLogo = "apple_logo",
+  caution = "caution",
+  checkCircle = "check_circle",
+  uncheckCircle = "uncheck_circle",
 }
 
 const icons = {
@@ -56,6 +62,9 @@ const icons = {
   [IconName.temperatureGray]: TemperatureGray,
   [IconName.googleLogo]: GoogleLogo,
   [IconName.appleLogo]: AppleLogo,
+  [IconName.caution]: Caution,
+  [IconName.checkCircle]: CheckCircle,
+  [IconName.uncheckCircle]: UncheckCircle,
 };
 
 interface IconProps {
