@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
-import { IconName } from "@/src/components/Icon";
-import { OndoColors } from "@/src/styles/Colors";
-import DateLocationCell from "@/src/components/detailPage/DateLocationCell";
+import Icon, { IconName } from "@/src/components/Icon";
+import { Colors, OndoColors } from "@/src/styles/Colors";
+import NoteInfoCell from "@/src/components/detailPage/DateLocationCell";
 import PageDivider from "@/src/components/detailPage/PageDivider";
 import ColorCodeCell from "@/src/components/detailPage/ColorCodeCell";
 import OndoCell from "@/src/components/detailPage/OndoCell";
-import NoteCell from "@/src/components/detailPage/NoteCell";
+import NoteContent from "@/src/components/detailPage/NoteContent";
+import typography from "@/src/styles/Typography";
+import Tooltip from "@/src/components/feedback/Tooltip";
+import NoteOndoCard from "@/src/components/detailPage/NoteOndoCard";
 
 const DetailPage = () => {
   const { noteData } = useLocalSearchParams();
@@ -61,29 +64,15 @@ const DetailPage = () => {
         {note !== undefined && note.created_at instanceof Date && (
           <View style={styles.contentContainer}>
             {/* 날짜 / 지역 */}
-            <DateLocationCell
+            <NoteInfoCell
               createdAt={note.created_at}
               location={note.location}
+              feelLikeTemp={note.custom_temp} // TODO: 실제 체감온도로 변경해주기
             />
             {/* 노트 정보 */}
-            <View>
-              <ColorCodeCell ondo={note.custom_temp} />
-              <PageDivider />
-              <OndoCell ondo={note.custom_temp} />
-              <PageDivider />
-              <NoteCell
-                note={note}
-                onPress={() => {
-                  router.push({
-                    pathname: "/pages/EditPage",
-                    params: {
-                      editableData: JSON.stringify(false),
-                      feelsLikeTempData: 30,
-                      noteData: JSON.stringify(note),
-                    },
-                  });
-                }}
-              />
+            <View style={{ gap: 32 }}>
+              <NoteContent note={note} />
+              <NoteOndoCard note={note} />
             </View>
           </View>
         )}
@@ -110,5 +99,35 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     marginTop: 16,
+  },
+  backgroundContainer: {
+    height: 32,
+    flexDirection: "column",
+  },
+  minMaxLabelRow: {
+    flexDirection: "row",
+    position: "absolute",
+    justifyContent: "space-between",
+    top: -30,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  minMaxLabel: {
+    color: Colors.black40,
+    ...typography.body,
+  },
+  backgroundTrack: {
+    height: 32,
+    width: "101%",
+    position: "absolute",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  backgroundTrackItem: {
+    backgroundColor: Colors.black18,
+    height: "100%",
+    width: 2,
+    borderRadius: "50%",
   },
 });
