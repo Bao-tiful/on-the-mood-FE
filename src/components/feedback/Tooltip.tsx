@@ -32,7 +32,8 @@ const Tooltip = ({ title, content, children }: TooltipProp) => {
         shadowRadius: 24,
         elevation: 6,
       }}
-      placement={PopoverPlacement.BOTTOM}
+      placement={PopoverPlacement.TOP}
+      offset={16}
     >
       <View style={[styles.container]}>
         <Text style={styles.titleLabel}>{title}</Text>
