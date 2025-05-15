@@ -4,7 +4,7 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 import { IconName } from "../components/Icon";
 import { ToolbarButton } from "../components/ToolbarButton";
 import Calendar from "../components/calendar/Calendar";
-import Threads from "../components/calendar/Threads";
+import Threads from "../components/calendar/thread/Threads";
 import { Colors, OndoColors } from "../styles/Colors";
 import { useGeoLocation } from "../hooks/useGeoLocation";
 import { getWeather, LocationData } from "../api/endpoints/weather";

@@ -5,18 +5,24 @@ import { Colors } from "@/src/styles/Colors";
 type ToolbarButtonProps = {
   name: IconName;
   onPress: () => void;
+  size?: number;
 };
 
-export const ToolbarButton = ({ name, onPress }: ToolbarButtonProps) => (
-  <TouchableOpacity onPress={onPress} style={styles.toolbarButton}>
+export const ToolbarButton = ({
+  name,
+  onPress,
+  size = 44,
+}: ToolbarButtonProps) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.toolbarButton, { width: size, height: size }]}
+  >
     <Icon name={name} />
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
   toolbarButton: {
-    width: 44,
-    height: 44,
     alignItems: "center",
     justifyContent: "center",
 

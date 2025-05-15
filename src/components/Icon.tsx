@@ -61,11 +61,12 @@ const icons = {
 interface IconProps {
   name: IconName;
   size?: number;
+  color?: string;
 }
 
-const Icon = ({ name, size = 24 }: IconProps) => {
+const Icon = ({ name, size = 24, color }: IconProps) => {
   const SvgIcon = icons[name];
-  return <SvgIcon width={size} height={size} />;
+  return <SvgIcon width={size} height={size} fill={color} />;
 };
 
 export default Icon;

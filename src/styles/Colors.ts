@@ -8,6 +8,7 @@ export const Colors = {
   black40: "#1E1E1E66",
   black32: "#1E1E1E51",
   black18: "#1E1E1E2E",
+  black70: "#1E1E1EB3",
   gray: "#8E8E93",
   lightGray: "#F5F5F5",
   white40: "#FFFFFF66",
