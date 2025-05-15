@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
-import Icon, { IconName } from "@/src/components/Icon";
+import { IconName } from "@/src/components/Icon";
 import { Colors, OndoColors } from "@/src/styles/Colors";
 import NoteInfoCell from "@/src/components/detailPage/DateLocationCell";
-import PageDivider from "@/src/components/detailPage/PageDivider";
-import ColorCodeCell from "@/src/components/detailPage/ColorCodeCell";
-import OndoCell from "@/src/components/detailPage/OndoCell";
 import NoteContent from "@/src/components/detailPage/NoteContent";
 import typography from "@/src/styles/Typography";
-import Tooltip from "@/src/components/feedback/Tooltip";
 import NoteOndoCard from "@/src/components/detailPage/NoteOndoCard";
 
 const DetailPage = () => {
