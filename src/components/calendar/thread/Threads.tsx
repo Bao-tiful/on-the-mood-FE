@@ -1,42 +1,20 @@
+import React from "react";
 import {
-  View,
-  Text,
-  SafeAreaView,
-  FlatList,
   ActivityIndicator,
   RefreshControl,
-  TouchableOpacity,
+  SafeAreaView,
   SectionList,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import React from "react";
 
-import { Thread } from "../../types/thread";
 import { useInfiniteThreads } from "@/src/hooks/useInfiniteThreads";
+import ThreadItem from "./ThreadItem";
 
 interface ThreadsProps {
   updateDate: (date: Date) => void;
 }
-
-const ThreadItem = ({ thread }: { thread: Thread }) => {
-  return (
-    <View
-      style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: "#eee" }}
-    >
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}
-      >
-        <Text style={{ fontWeight: "bold", marginRight: 8 }}>
-          {thread.location}
-        </Text>
-        <Text style={{ color: "#666" }}>
-          {new Date(thread.created_at).toLocaleDateString()}
-        </Text>
-      </View>
-      <Text style={{ marginBottom: 8 }}>{thread.content}</Text>
-      <Text style={{ color: "#666" }}>온도: {thread.custom_temp}°C</Text>
-    </View>
-  );
-};
 
 export default function Threads({ updateDate }: ThreadsProps) {
   const { threads, isLoading, error, hasMore, loadMore, refresh } =
@@ -44,7 +22,7 @@ export default function Threads({ updateDate }: ThreadsProps) {
 
   const sections = Object.entries(threads).map(([date, items]) => {
     const [year, month] = date.split("-");
-    const formattedDate = `${year}년 ${parseInt(month)}월의 기록`;
+    const formattedDate = `${year}.${month.padStart(2, "0")}`;
     return {
       title: formattedDate,
       data: items,
@@ -91,8 +69,7 @@ export default function Threads({ updateDate }: ThreadsProps) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "red" }}>
-      {/* <SafeAreaView style={{ flex: 1 }}> */}
+    <View style={{ flex: 1 }}>
       <SectionList
         sections={sections}
         renderItem={({ item }) => <ThreadItem thread={item} />}
@@ -101,11 +78,11 @@ export default function Threads({ updateDate }: ThreadsProps) {
             style={{
               paddingBottom: 16,
               paddingHorizontal: 16,
+              // backgroundColor: "white",
             }}
           >
             <Text style={{ fontWeight: "bold", fontSize: 24, lineHeight: 24 }}>
-              {title.split("의 기록")[0]}
-              <Text style={{ color: "#8E8E93" }}>의 기록</Text>
+              {title}
             </Text>
           </View>
         )}
@@ -121,7 +98,6 @@ export default function Threads({ updateDate }: ThreadsProps) {
         style={{ flex: 1, paddingTop: 10 }}
         contentContainerStyle={{ flexGrow: 1 }}
       />
-      {/* </SafeAreaView> */}
     </View>
   );
 }
