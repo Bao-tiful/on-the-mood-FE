@@ -7,7 +7,12 @@ import Calendar from "../components/calendar/Calendar";
 import Threads from "../components/calendar/thread/Threads";
 import { Colors, OndoColors } from "../styles/Colors";
 import { useGeoLocation } from "../hooks/useGeoLocation";
-import { getWeather, LocationData } from "../api/endpoints/weather";
+import {
+  getKeywords,
+  getWeather,
+  LocationData,
+} from "../api/endpoints/weather";
+import { useMoodKeyword } from "../hooks/useKeywords";
 import { useBackgroundColor } from "../hooks/useBackgroundColor";
 
 export default function HomeScreen() {
@@ -16,6 +21,7 @@ export default function HomeScreen() {
   const [todayTemperature, setTodayTemperature] = useState(0);
   const { colorState, setBackgroundColor } = useBackgroundColor();
   const [location, setLocation] = useState<LocationData | null>(null);
+  const { setMoodKeywordSet } = useMoodKeyword();
 
   const { geoLocation } = useGeoLocation();
 
@@ -38,6 +44,20 @@ export default function HomeScreen() {
   const updateDate = (newDate: Date) => {
     setDate(newDate);
   };
+
+  useEffect(() => {
+    const getKeyword = async () => {
+      try {
+        await getKeywords().then((keywords) => {
+          setMoodKeywordSet(keywords);
+        });
+      } catch (error) {
+        console.error("키워드 받아오기에 실패하였습니다 :", error);
+      }
+    };
+
+    getKeyword();
+  }, []);
 
   return (
     <View
