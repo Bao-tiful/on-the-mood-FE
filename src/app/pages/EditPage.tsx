@@ -1,9 +1,7 @@
 import {
-  Button,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -21,7 +19,8 @@ import { OndoColors } from "@/src/styles/Colors";
 import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
-import { getKeywords, LocationData } from "@/src/api/endpoints/weather";
+import { LocationData } from "@/src/api/endpoints/weather";
+import { useMoodKeyword } from "@/src/hooks/useKeywords";
 
 const EditPage = () => {
   const { feelsLikeTempData, noteData, locationData } = useLocalSearchParams();
@@ -31,7 +30,7 @@ const EditPage = () => {
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [location, setLocation] = useState<LocationData | undefined>(undefined);
-  const [keywordList, setKeywordList] = useState<string[]>([]);
+  const { moodKeywordSet } = useMoodKeyword();
 
   useEffect(() => {
     try {
@@ -83,22 +82,6 @@ const EditPage = () => {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
   }, [locationData]);
-
-  useEffect(() => {
-    const getKeyword = async () => {
-      try {
-        await getKeywords({
-          temperature: feelsLikeTemp,
-        }).then((keywords) => {
-          setKeywordList(keywords);
-        });
-      } catch (error) {
-        console.error("키워드 받아오기에 실패하였습니다 :", error);
-      }
-    };
-
-    getKeyword();
-  }, []);
 
   const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
   const [memo, setMemo] = useState("");
@@ -187,7 +170,8 @@ const EditPage = () => {
             </View>
             <View style={{ flex: 1 }}>
               <NoteEditor
-                keywordList={keywordList}
+                // TODO: 현재온도 Provider에서 정보 가져오도록 #25 merge 이후 수정 필요
+                keywordList={moodKeywordSet.getKeywordsByTemp(feelsLikeTemp)}
                 memo={memo}
                 onMemoChanged={(memo) => setMemo(memo)}
                 defaultValue={note?.content}
