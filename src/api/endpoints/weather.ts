@@ -1,6 +1,7 @@
 import axiosClient from "../clients/axiosClient";
 import { handleApiError } from "../apiUtils";
-import { MoodKeyword, MoodKeywordSet } from "@/src/contexts/keywordProvider";
+import { MoodKeyword } from "@/src/types/moodKeyword";
+
 
 interface GetWeatherProps {
   latitude: number;

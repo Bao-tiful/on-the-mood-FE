@@ -1,9 +1,7 @@
 import {
-  Button,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -16,12 +14,12 @@ import NoteEditor from "@/src/components/editpage/NoteEditor";
 import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
 import typography from "@/src/styles/Typography";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { OndoColors } from "@/src/styles/Colors";
 import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
-import { getKeywords, LocationData } from "@/src/api/endpoints/weather";
+import { LocationData } from "@/src/api/endpoints/weather";
 import { useMoodKeyword } from "@/src/hooks/useKeywords";
 import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
 
