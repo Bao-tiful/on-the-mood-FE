@@ -81,11 +81,8 @@ const EditPage = () => {
   useEffect(() => {
     const getKeyword = async () => {
       try {
-        await getKeywords({
-          temperature: feelsLikeTemp,
-        }).then((keywords) => {
-          setKeywordList(keywords);
-        });
+        // TODO: 키워드 받아오기
+        setKeywordList([]);
       } catch (error) {
         console.error("키워드 받아오기에 실패하였습니다 :", error);
       }

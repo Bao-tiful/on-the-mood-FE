@@ -58,7 +58,6 @@ export default function HomeScreen() {
               // 디버깅을 위해 해당 버튼을 누르면 로그인 페이지로 이동하도록 연결
               router.push({
                 pathname: "/pages/MyPage",
-                params: { customTempData: 4 },
               });
             }}
           />
