@@ -13,7 +13,7 @@ export interface MoodKeyword {
 
 export interface MoodKeywordSet {
   data: MoodKeyword[];
-  getKeywordsByTemp: (temp: number) => string[] | undefined;
+  getKeywordsByTemp: (temp: number) => string[];
 }
 
 export const createMoodKeywordSet = (data: MoodKeyword[]): MoodKeywordSet => ({
@@ -22,7 +22,7 @@ export const createMoodKeywordSet = (data: MoodKeyword[]): MoodKeywordSet => ({
     const found = data.find(
       (item) => temp >= item.temp_range[0] && temp < item.temp_range[1]
     );
-    return found?.keywords;
+    return found?.keywords ?? [];
   },
 });
 
