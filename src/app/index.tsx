@@ -8,11 +8,13 @@ import Threads from "../components/calendar/thread/Threads";
 import { Colors, OndoColors } from "../styles/Colors";
 import { useGeoLocation } from "../hooks/useGeoLocation";
 import { getWeather, LocationData } from "../api/endpoints/weather";
+import { useBackgroundColor } from "../hooks/useBackgroundColor";
 
 export default function HomeScreen() {
   const [isGridMode, setIsGreedMode] = useState(true);
   const [date, setDate] = useState(new Date());
   const [todayTemperature, setTodayTemperature] = useState(0);
+  const { colorState, setBackgroundColor } = useBackgroundColor();
   const [location, setLocation] = useState<LocationData | null>(null);
 
   const { geoLocation } = useGeoLocation();
@@ -26,6 +28,7 @@ export default function HomeScreen() {
         }).then((weatherData) => {
           setLocation(weatherData.location);
           setTodayTemperature(weatherData.avg_feels_like_temp);
+          setBackgroundColor(weatherData.avg_feels_like_temp);
         });
     };
 

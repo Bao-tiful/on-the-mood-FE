@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { Colors, OndoColors } from "@/src/styles/Colors";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ToolbarButton } from "@/src/components/ToolbarButton";
 import Icon, { IconName } from "@/src/components/Icon";
 import typography from "@/src/styles/Typography";
@@ -25,11 +25,10 @@ import NotiTimeButton from "@/src/components/myPage/NotiTimeButton";
 import * as Notifications from "expo-notifications";
 import { Meridiem, NotiTime } from "@/src/models/NotiTime";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
 
 const MyPage = () => {
-  const { customTempData: feelsLikeTempData } = useLocalSearchParams();
-
-  const [customTemp, setCustomTemp] = useState(0);
+  const { colorState } = useBackgroundColor();
 
   const [isAlertOn, setIsAlertOn] = useState(false);
   const [notiTime, setNotiTime] = useState<NotiTime>({
@@ -39,19 +38,6 @@ const MyPage = () => {
   });
   const [isPasswordOn, setIsPasswordOn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    try {
-      if (Array.isArray(feelsLikeTempData))
-        throw new Error("feelsLikeTempData가 string[] 타입입니다");
-
-      if (feelsLikeTempData) {
-        setCustomTemp(Number(feelsLikeTempData));
-      }
-    } catch (error) {
-      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
-    }
-  }, [feelsLikeTempData]);
 
   useEffect(() => {
     const loadNotiTime = async () => {
@@ -102,8 +88,7 @@ const MyPage = () => {
     <View
       style={{
         flex: 1,
-        // 작성한 온도에 따른 배경색 지정
-        backgroundColor: OndoColors.get(customTemp),
+        backgroundColor: OndoColors.get(colorState.color),
       }}
     >
       <SafeAreaView style={styles.safeArea}>

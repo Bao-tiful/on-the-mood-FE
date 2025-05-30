@@ -6,7 +6,7 @@ import "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../components/feedback/ToastMessage";
 import AuthCheck from "../components/AuthCheck";
-import { BackgroundColorProvider } from "../hooks/useBackgroundColor";
+import { BackgroundColorProvider } from "../contexts/BackgroundColorProvider";
 
 export default function RootLayout() {
   return (

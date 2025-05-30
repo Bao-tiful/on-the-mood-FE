@@ -22,9 +22,11 @@ import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
 import { toDateString } from "@/src/utils/dateUtils";
 import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
 import { getKeywords, LocationData } from "@/src/api/endpoints/weather";
+import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
 
 const EditPage = () => {
-  const { feelsLikeTempData, noteData, locationData } = useLocalSearchParams();
+  const { colorState } = useBackgroundColor();
+  const { noteData, locationData } = useLocalSearchParams();
 
   const date = new Date();
 
@@ -33,18 +35,10 @@ const EditPage = () => {
   const [location, setLocation] = useState<LocationData | undefined>(undefined);
   const [keywordList, setKeywordList] = useState<string[]>([]);
 
+  // 온도 가져와서 기본 배경색 지정하기
   useEffect(() => {
-    try {
-      if (Array.isArray(feelsLikeTempData))
-        throw new Error("feelsLikeTempData가 string[] 타입입니다");
-
-      if (feelsLikeTempData) {
-        setFeelsLikeTemp(Number(feelsLikeTempData));
-      }
-    } catch (error) {
-      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
-    }
-  }, [feelsLikeTempData]);
+    setFeelsLikeTemp(Number(colorState.color));
+  }, []);
 
   useEffect(() => {
     try {
@@ -64,7 +58,7 @@ const EditPage = () => {
         });
         setMyMoodOndo(parsedNote.custom_temp);
       } else {
-        setMyMoodOndo(Number(feelsLikeTempData));
+        setMyMoodOndo(Number(colorState.color));
       }
     } catch (error) {
       console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
