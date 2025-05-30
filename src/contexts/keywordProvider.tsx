@@ -1,20 +1,5 @@
-import React, {
-  createContext,
-  useContext,
-  ReactNode,
-  useState,
-  useCallback,
-} from "react";
-
-export interface MoodKeyword {
-  keywords: string[];
-  temp_range: [number, number];
-}
-
-export interface MoodKeywordSet {
-  data: MoodKeyword[];
-  getKeywordsByTemp: (temp: number) => string[];
-}
+import React, { createContext, ReactNode, useState, useCallback } from "react";
+import { MoodKeyword, MoodKeywordSet } from "../types/moodKeyword";
 
 export const createMoodKeywordSet = (data: MoodKeyword[]): MoodKeywordSet => ({
   data,
