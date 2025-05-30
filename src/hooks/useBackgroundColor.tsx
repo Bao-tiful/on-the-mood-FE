@@ -1,44 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import { useContext } from "react";
+import { BackgroundColorContext } from "../contexts/BackgroundColorProvider";
+import { BackgroundColorContextType } from "../contexts/BackgroundColorProvider";
 
-interface BackgroundColor {
-  // 색상 index 값을 state로 관리
-  color: number;
-}
-
-interface BackgroundColorContextType {
-  colorState: BackgroundColor;
-  setBackgroundColor: (value: number) => void;
-}
-
-const BackgroundColorContext = createContext<
-  BackgroundColorContextType | undefined
->(undefined);
-
-interface BackgroundColorProviderProps {
-  children: ReactNode;
-}
-
-export const BackgroundColorProvider: React.FC<
-  BackgroundColorProviderProps
-> = ({ children }) => {
-  const [backgroundColor, setBackgroundColor] = useState<BackgroundColor>({
-    color: 0,
-  });
-
-  const setColorIndex = (color: number) => {
-    setBackgroundColor({ color });
-  };
-
-  return (
-    <BackgroundColorContext.Provider
-      value={{ colorState: backgroundColor, setBackgroundColor: setColorIndex }}
-    >
-      {children}
-    </BackgroundColorContext.Provider>
-  );
-};
-
-// 커스텀 훅
 export const useBackgroundColor = (): BackgroundColorContextType => {
   const context = useContext(BackgroundColorContext);
   if (!context) {
