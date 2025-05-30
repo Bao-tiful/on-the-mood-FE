@@ -6,7 +6,6 @@ import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
 import { router } from "expo-router";
 import { isDateToday } from "@/src/utils/dateUtils";
-import EditPage from "@/src/app/pages/EditPage";
 import { LocationData } from "@/src/api/endpoints/weather";
 
 type ThreadCalendarCellProps = {
@@ -50,7 +49,6 @@ const ThreadCalendarCell = ({
                   // TODO: feelsLikeTempData를 오늘의 체감온도로 수정해주기
                   // 이 데이터는 note에 들어있을 예정이라, note에서 값 가져와도 좋을 것 같음
                   params: {
-                    feelsLikeTempData: 30,
                     noteData: JSON.stringify(note),
                     locationData: JSON.stringify(location),
                   },

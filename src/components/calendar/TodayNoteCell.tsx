@@ -48,7 +48,6 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
               pathname: "/pages/EditPage",
               params: {
                 date: date.toISOString(),
-                feelsLikeTempData: temperature,
                 locationData: JSON.stringify(location),
               },
             })

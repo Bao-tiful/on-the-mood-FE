@@ -80,7 +80,6 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
                 pathname: "/pages/DetailPage",
                 params: {
                   editableData: JSON.stringify(false),
-                  feelsLikeTempData: 30,
                   noteData: JSON.stringify(thread),
                 },
               });

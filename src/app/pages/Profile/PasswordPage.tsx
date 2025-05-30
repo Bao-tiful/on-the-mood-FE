@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import PasswordKeypad from "@/src/components/myPage/PasswordKeypad";
 import PasswordIndicator from "@/src/components/myPage/PasswordIndicator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
 
 enum PasswordConfigStep {
   checkCurrent = 0,
@@ -18,6 +19,7 @@ enum PasswordConfigStep {
 }
 
 const PasswordPage = () => {
+  const { colorState } = useBackgroundColor();
   const [passwordInput, setPasswordInput] = useState("");
   const [step, setStep] = useState(0);
 
@@ -124,7 +126,7 @@ const PasswordPage = () => {
       style={{
         flex: 1,
         // 작성한 온도에 따른 배경색 지정
-        backgroundColor: OndoColors.get(4),
+        backgroundColor: OndoColors.get(colorState.color),
       }}
     >
       <SafeAreaView style={styles.safeArea}>
