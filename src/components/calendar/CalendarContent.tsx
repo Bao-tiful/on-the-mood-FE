@@ -52,7 +52,7 @@ export const CalendarContent = ({
           {date.getDate().toString()}일 {getKrWeekday(date)}요일
         </Text>
         {MonthPicker}
-        <View style={{ height: 16 }} />
+        <View style={{ height: 8 }} />
         <CalendarGrid
           date={date}
           changeDate={changeCalendarDate}

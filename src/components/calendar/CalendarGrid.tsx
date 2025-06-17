@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     textAlign: "center",
-    color: Colors.black100,
+    color: Colors.black40,
   },
 });
 

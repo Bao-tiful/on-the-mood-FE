@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    margin: 6,
+    margin: 4,
+    marginBottom: 12,
   },
   calendarCellText: {
     ...typography.body,
