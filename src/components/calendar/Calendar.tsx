@@ -1,5 +1,5 @@
 import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
-import { MoodNoteCalendar } from "@/src/components/calendar/MoodNoteCalendar";
+import { CalendarContent } from "@/src/components/calendar/CalendarContent";
 import { getNotes } from "@/src/api/endpoints/daily-notes";
 import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -41,7 +41,7 @@ const Calendar = ({
     <>
       <View style={styles.container}>
         {/* 캘린더 */}
-        <MoodNoteCalendar
+        <CalendarContent
           changeModalVisible={(isModalOn: boolean) => {
             setModalVisible(isModalOn);
           }}

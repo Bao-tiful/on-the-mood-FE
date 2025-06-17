@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, FlatList } from "react-native";
 import {
   CalendarCell,
   EmptyCalendarCell,
-} from "@components/calendar/GridCalendarCell";
+} from "@/src/components/calendar/CalendarGridCell";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import {
@@ -12,18 +12,18 @@ import {
   lastDayOfMonth,
 } from "@/src/utils/dateUtils";
 
-interface GridCalendarProps {
+interface CalendarGridProps {
   date: Date;
   changeDate: (newDate: Date) => void;
   notes: Map<number, NoteItem>;
 }
 
 /// props로 입력된 Date가 포함된 월의 달력을 보여준다.
-export const GridCalendar = ({
+export const CalendarGrid = ({
   date,
   changeDate,
   notes,
-}: GridCalendarProps) => {
+}: CalendarGridProps) => {
   // date가 포함된 달의 첫째 날의 요일
   const firstDayOffset = firstDayOfMonth(date).getDay();
   // date가 포함된 달의 마지막 날짜
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GridCalendar;
+export default CalendarGrid;

@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import GridCalendar from "@/src/components/calendar/GridCalendar";
+import CalendarGrid from "@/src/components/calendar/CalendarGrid";
 import ThreadCalendarCell from "./ThreadCalendarCell";
 import Icon, { IconName } from "../Icon";
 import { Colors } from "@/src/styles/Colors";
@@ -9,7 +9,7 @@ import typography from "@/src/styles/Typography";
 import { getKrWeekday, isDateToday } from "@/src/utils/dateUtils";
 import { LocationData } from "@/src/api/endpoints/weather";
 
-interface MoodNoteCalendarProp {
+interface CalendarContentProp {
   date: Date;
   notes: Map<number, NoteItem>;
   feelLikeTemp: number;
@@ -18,14 +18,14 @@ interface MoodNoteCalendarProp {
   changeModalVisible: (isModalOn: boolean) => void;
 }
 
-export const MoodNoteCalendar = ({
+export const CalendarContent = ({
   changeModalVisible: changeModalVisible,
   date,
   changeCalendarDate,
   notes,
   feelLikeTemp,
   location,
-}: MoodNoteCalendarProp) => {
+}: CalendarContentProp) => {
   const isToday = isDateToday(date);
 
   const MonthPicker = (
@@ -52,7 +52,7 @@ export const MoodNoteCalendar = ({
         </Text>
         {MonthPicker}
         <View style={{ height: 16 }} />
-        <GridCalendar
+        <CalendarGrid
           date={date}
           changeDate={changeCalendarDate}
           notes={notes}

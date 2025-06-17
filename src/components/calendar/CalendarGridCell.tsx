@@ -1,6 +1,7 @@
 import { Colors, OndoColors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import { isDateToday } from "@/src/utils/dateUtils";
+import React from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 interface CalendarCellProps {
