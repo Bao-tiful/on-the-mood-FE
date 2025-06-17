@@ -6,7 +6,7 @@ import Icon, { IconName } from "../Icon";
 import { Colors } from "@/src/styles/Colors";
 import TodayNoteCell from "./TodayNoteCell";
 import typography from "@/src/styles/Typography";
-import { isDateToday } from "@/src/utils/dateUtils";
+import { getKrWeekday, isDateToday } from "@/src/utils/dateUtils";
 import { LocationData } from "@/src/api/endpoints/weather";
 
 interface MoodNoteCalendarProp {
@@ -33,11 +33,11 @@ export const MoodNoteCalendar = ({
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={styles.monthPickerLabel}>
           {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
-          {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}월
+          {date.getFullYear().toString()}.{(date.getMonth() + 1).toString()}
         </Text>
 
         <View style={styles.monthPickerIcon}>
-          <Icon name={IconName.downWhite} size={12} />
+          <Icon name={IconName.down} size={12} />
         </View>
       </View>
     </TouchableOpacity>
@@ -47,8 +47,10 @@ export const MoodNoteCalendar = ({
     <View style={{ justifyContent: "space-between", flex: 1 }}>
       <View style={styles.calendarContainer}>
         {/* 년,월 선택 버튼 */}
+        <Text style={styles.dateLabel}>
+          {date.getDate().toString()}일 {getKrWeekday(date)}요일
+        </Text>
         {MonthPicker}
-        <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
         <View style={{ height: 16 }} />
         <GridCalendar
           date={date}
@@ -84,21 +86,19 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   monthPickerLabel: {
-    ...typography.title3,
-    fontWeight: 800,
+    ...typography.title2,
   },
   monthPickerIcon: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
     borderRadius: 12,
-    backgroundColor: Colors.black100,
+    backgroundColor: Colors.black18,
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 8,
   },
-  moodNoteCount: {
-    ...typography.title3,
-    fontWeight: 600,
+  dateLabel: {
+    ...typography.heading1,
     color: Colors.black40,
   },
 });

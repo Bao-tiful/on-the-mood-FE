@@ -6,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { useNotes } from "@/src/hooks/useNotes";
 import { LocationData } from "@/src/api/endpoints/weather";
 import { useFocusEffect } from "expo-router";
+import React from "react";
 
 interface CalendarProps {
   date: Date;
