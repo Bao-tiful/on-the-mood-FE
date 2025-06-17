@@ -47,3 +47,9 @@ export const toDateString = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, "0");
   return `${year}.${month}.${day}.`;
 };
+
+const weekdayKR = ['일', '월', '화', '수', '목', '금', '토'];
+
+export const getKrWeekday = (date: Date): string => {
+  return weekdayKR[date.getDay()];
+}
