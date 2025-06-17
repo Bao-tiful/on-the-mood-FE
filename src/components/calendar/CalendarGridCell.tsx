@@ -76,6 +76,15 @@ export function EmptyCalendarCell() {
   );
 }
 
+// 빈 줄만 채우는 날짜의 캘린더 칸
+export function PlaceholderCalendarCell() {
+  return (
+    <View style={[styles.calendarCell]}>
+      <View />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   calendarCell: {
     flex: 1,

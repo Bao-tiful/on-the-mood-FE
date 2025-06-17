@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, FlatList } from "react-native";
 import {
   CalendarCell,
   EmptyCalendarCell,
-} from "@/src/components/calendar/CalendarGridCell";
+  PlaceholderCalendarCell,
+} from "@components/calendar/CalendarGridCell";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import {
@@ -41,13 +42,15 @@ export const CalendarGrid = ({
       <FlatList
         data={items}
         renderItem={({ item }) => {
+          let cellDate = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            item.date
+          );
+
           if (item.date > 0 && item.date <= lastDate) {
             // 1일부터 마지막 날까지
-            let cellDate = new Date(
-              date.getFullYear(),
-              date.getMonth(),
-              item.date
-            );
+
             let isSelected = isSameDay(date, cellDate);
             return (
               <CalendarCell
@@ -58,7 +61,11 @@ export const CalendarGrid = ({
               />
             );
           } else {
-            return <EmptyCalendarCell />;
+            if (item.date > 0 && item.date - lastDate - cellDate.getDay() > 0)
+              return <PlaceholderCalendarCell />;
+            else {
+              return <EmptyCalendarCell />;
+            }
           }
         }}
         keyExtractor={(item) => item.date.toString()}

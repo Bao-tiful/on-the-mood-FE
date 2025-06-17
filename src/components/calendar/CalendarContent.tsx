@@ -33,7 +33,8 @@ export const CalendarContent = ({
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={styles.monthPickerLabel}>
           {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
-          {date.getFullYear().toString()}.{(date.getMonth() + 1).toString()}
+          {date.getFullYear().toString()}.
+          {(date.getMonth() + 1).toString().padStart(2, "0")}
         </Text>
 
         <View style={styles.monthPickerIcon}>
