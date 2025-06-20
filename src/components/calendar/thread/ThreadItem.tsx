@@ -7,13 +7,98 @@ import Icon, { IconName } from "../../Icon";
 import { ToolbarButton } from "../../ToolbarButton";
 import { router } from "expo-router";
 
+// 상수 정의
+const CONSTANTS = {
+  ITEM_HEIGHT: 224,
+  BORDER_RADIUS: 12,
+  PADDING: 16,
+  MARGIN_HORIZONTAL: 15,
+  MARGIN_BOTTOM: 8,
+  ICON_SIZE: 16,
+  ARROW_SIZE: 44,
+  MAX_DIARY_HEIGHT: 105,
+} as const;
+
+// 온도 정보 박스 컴포넌트
+const TemperatureSection = React.memo(
+  ({ thread, formattedDate }: { thread: Thread; formattedDate: number }) => (
+    <View style={styles.leftBox}>
+      <View>
+        <Text style={[styles.dayText, typography.label1]}>
+          {formattedDate} Day
+        </Text>
+        <Text style={[styles.label, typography.label1]}>기록 온도</Text>
+      </View>
+      <View>
+        <View style={styles.locationContainer}>
+          <Icon
+            name={IconName.location}
+            size={CONSTANTS.ICON_SIZE}
+            color="#fff"
+          />
+          <Text style={[styles.location, typography.label1]}>
+            {thread.location}
+          </Text>
+        </View>
+        <Text style={[styles.temperature, typography.title1]}>
+          {thread.custom_temp}°
+        </Text>
+        <View style={styles.feelsLikeBox}>
+          <Icon name={IconName.temperature} size={CONSTANTS.ICON_SIZE} />
+          <View>
+            <Text style={[styles.feelsLikeText, typography.label2]}>
+              체감 {thread.custom_temp}°
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  )
+);
+
+// 일기 내용 박스 컴포넌트
+const DiarySection = React.memo(
+  ({
+    thread,
+    formattedDate,
+    onPress,
+  }: {
+    thread: Thread;
+    formattedDate: number;
+    onPress: () => void;
+  }) => (
+    <View style={styles.rightBox}>
+      <View style={styles.diaryHeader}>
+        <View>
+          <Text style={[styles.dayText, typography.label1]}>
+            {formattedDate} Day
+          </Text>
+          <Text style={[styles.label, typography.label1]}>온도 일기</Text>
+        </View>
+        <ToolbarButton
+          name={IconName.arrow}
+          size={CONSTANTS.ARROW_SIZE}
+          onPress={onPress}
+        />
+      </View>
+      <Text
+        style={[styles.diaryText, typography.body2]}
+        numberOfLines={5}
+        ellipsizeMode="tail"
+      >
+        {thread.content}
+      </Text>
+    </View>
+  )
+);
+
 const ThreadItem = ({ thread }: { thread: Thread }) => {
   const formattedDate = useMemo(() => {
     return new Date(thread.updated_at).getDate();
   }, [thread.updated_at]);
 
   const bgColor = useMemo(() => {
-    return OndoColors.get(thread.custom_temp) || "#fff";
+    return OndoColors.get(thread.custom_temp) || Colors.white100;
   }, [thread.custom_temp]);
 
   const handleDetailPress = useCallback(() => {
@@ -27,62 +112,21 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
   }, [thread]);
 
   return (
-    <View style={[styles.container, { backgroundColor: bgColor }]}>
-      {/* 왼쪽: 온도 정보 */}
-      <View style={styles.leftBox}>
-        <View>
-          <Text style={[styles.dayText, typography.label1]}>
-            {formattedDate} Day
-          </Text>
-          <Text style={[styles.label, typography.label1]}>기록 온도</Text>
-        </View>
-        <View>
-          <View style={styles.locationContainer}>
-            <Icon name={IconName.location} size={16} color="#fff" />
-            <Text style={[styles.location, typography.label1]}>
-              {thread.location}
-            </Text>
-          </View>
-          <Text style={[styles.temperature, typography.title1]}>
-            {thread.custom_temp}°
-          </Text>
-          <View style={styles.feelsLikeBox}>
-            <Icon name={IconName.temperature} size={16} />
-            <View>
-              <Text style={[styles.feelsLikeText, typography.label2]}>
-                체감 {thread.custom_temp}°
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
+    <View
+      style={[styles.container, { backgroundColor: bgColor }]}
+      accessibilityRole="button"
+      accessibilityLabel={`${formattedDate}일 일기, 온도 ${thread.custom_temp}도`}
+    >
+      <TemperatureSection thread={thread} formattedDate={formattedDate} />
 
       {/* 중앙 보더라인 */}
       <View style={styles.divider} />
 
-      {/* 오른쪽: 일기 */}
-      <View style={styles.rightBox}>
-        <View style={styles.diaryHeader}>
-          <View>
-            <Text style={[styles.dayText, typography.label1]}>
-              {formattedDate} Day
-            </Text>
-            <Text style={[styles.label, typography.label1]}>온도 일기</Text>
-          </View>
-          <ToolbarButton
-            name={IconName.arrow}
-            size={44}
-            onPress={handleDetailPress}
-          />
-        </View>
-        <Text
-          style={[styles.diaryText, typography.body2]}
-          numberOfLines={5}
-          ellipsizeMode="tail"
-        >
-          {thread.content}
-        </Text>
-      </View>
+      <DiarySection
+        thread={thread}
+        formattedDate={formattedDate}
+        onPress={handleDetailPress}
+      />
     </View>
   );
 };
@@ -90,48 +134,49 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderRadius: 12,
-    marginHorizontal: 15,
-    marginBottom: 8,
-    minHeight: 224,
-    height: 224,
+    borderRadius: CONSTANTS.BORDER_RADIUS,
+    marginHorizontal: CONSTANTS.MARGIN_HORIZONTAL,
+    marginBottom: CONSTANTS.MARGIN_BOTTOM,
+    minHeight: CONSTANTS.ITEM_HEIGHT,
+    height: CONSTANTS.ITEM_HEIGHT,
+    elevation: 1,
+    shadowColor: Colors.black100,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   leftBox: {
     flex: 1,
-    padding: 16,
-    display: "flex",
-    flexDirection: "column",
+    padding: CONSTANTS.PADDING,
     justifyContent: "space-between",
   },
   rightBox: {
     flex: 1,
-    padding: 16,
-    display: "flex",
-    flexDirection: "column",
+    padding: CONSTANTS.PADDING,
     justifyContent: "space-between",
   },
   locationContainer: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
   diaryHeader: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
   },
   divider: {
     width: 1,
-    height: 224,
+    height: CONSTANTS.ITEM_HEIGHT,
     backgroundColor: Colors.black18,
   },
   dayText: {
     marginBottom: 4,
+    color: Colors.black100,
   },
   label: {
     marginBottom: 4,
+    color: Colors.black70,
   },
   location: {
     color: Colors.black70,
@@ -141,7 +186,6 @@ const styles = StyleSheet.create({
     color: Colors.black100,
   },
   feelsLikeBox: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     gap: 2,
@@ -158,7 +202,7 @@ const styles = StyleSheet.create({
   diaryText: {
     marginTop: 8,
     color: Colors.black70,
-    maxHeight: 105,
+    maxHeight: CONSTANTS.MAX_DIARY_HEIGHT,
     overflow: "hidden",
   },
 });
