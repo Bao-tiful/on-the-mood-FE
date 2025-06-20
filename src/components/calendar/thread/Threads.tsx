@@ -16,13 +16,10 @@ import { router } from "expo-router";
 import typography from "@/src/styles/Typography";
 import { Colors } from "@/src/styles/Colors";
 import { Thread } from "@/src/types/thread";
-
-// 상수 정의
-const CONSTANTS = {
-  PAGE_SIZE: 10,
-  END_REACHED_THRESHOLD: 0.5,
-  PADDING_TOP: 10,
-} as const;
+import {
+  useThreadsSections,
+  ThreadSection,
+} from "@/src/hooks/useThreadsSections";
 
 interface ThreadsProps {
   updateDate: (date: Date) => void;
@@ -78,18 +75,13 @@ const SectionHeader = React.memo(({ title }: { title: string }) => (
 
 export default function Threads({ updateDate }: ThreadsProps) {
   const { threads, isLoading, error, hasMore, loadMore, refresh } =
-    useInfiniteThreads({ pageSize: CONSTANTS.PAGE_SIZE });
+    useInfiniteThreads({ pageSize: 10 });
 
-  const sections = useMemo(() => {
-    return Object.entries(threads).map(([date, items]) => {
-      const [year, month] = date.split("-");
-      const formattedDate = `${year}.${month.padStart(2, "0")}`;
-      return {
-        title: formattedDate,
-        data: items,
-      };
-    });
-  }, [threads]);
+  const sections = useThreadsSections(threads);
+
+  const handleEditPress = useCallback(() => {
+    router.push("/pages/EditPage");
+  }, []);
 
   const onEndReached = useCallback(() => {
     if (!isLoading && hasMore) {
@@ -114,14 +106,15 @@ export default function Threads({ updateDate }: ThreadsProps) {
     []
   );
 
-  const handleEditPress = useCallback(() => {
-    router.push("/pages/EditPage");
-  }, []);
-
   const renderEmptyState = useCallback(() => {
     if (isLoading) return null;
     return <EmptyState onPress={handleEditPress} />;
   }, [isLoading, handleEditPress]);
+
+  const refreshControl = useMemo(
+    () => <RefreshControl refreshing={isLoading} onRefresh={refresh} />,
+    [isLoading, refresh]
+  );
 
   if (error) {
     return <ErrorState error={error} onRetry={refresh} />;
@@ -139,11 +132,9 @@ export default function Threads({ updateDate }: ThreadsProps) {
         renderSectionHeader={renderSectionHeader}
         keyExtractor={(item) => item.id}
         onEndReached={onEndReached}
-        onEndReachedThreshold={CONSTANTS.END_REACHED_THRESHOLD}
+        onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refresh} />
-        }
+        refreshControl={refreshControl}
         stickySectionHeadersEnabled={false}
         showsVerticalScrollIndicator={true}
         style={styles.list}
@@ -159,7 +150,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    paddingTop: CONSTANTS.PADDING_TOP,
+    paddingTop: 10,
   },
   listContent: {
     flexGrow: 1,

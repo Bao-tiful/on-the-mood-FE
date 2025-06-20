@@ -1,23 +1,12 @@
 import typography from "@/src/styles/Typography";
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Colors, OndoColors } from "../../../styles/Colors";
+import { Colors } from "../../../styles/Colors";
 import { Thread } from "../../../types/thread";
 import Icon, { IconName } from "../../Icon";
 import { ToolbarButton } from "../../ToolbarButton";
 import { router } from "expo-router";
-
-// 상수 정의
-const CONSTANTS = {
-  ITEM_HEIGHT: 224,
-  BORDER_RADIUS: 12,
-  PADDING: 16,
-  MARGIN_HORIZONTAL: 15,
-  MARGIN_BOTTOM: 8,
-  ICON_SIZE: 16,
-  ARROW_SIZE: 44,
-  MAX_DIARY_HEIGHT: 105,
-} as const;
+import { useThreadItemData } from "@/src/hooks/useThreadItemData";
 
 // 온도 정보 박스 컴포넌트
 const TemperatureSection = React.memo(
@@ -31,11 +20,7 @@ const TemperatureSection = React.memo(
       </View>
       <View>
         <View style={styles.locationContainer}>
-          <Icon
-            name={IconName.location}
-            size={CONSTANTS.ICON_SIZE}
-            color="#fff"
-          />
+          <Icon name={IconName.location} size={16} color="#fff" />
           <Text style={[styles.location, typography.label1]}>
             {thread.location}
           </Text>
@@ -44,7 +29,7 @@ const TemperatureSection = React.memo(
           {thread.custom_temp}°
         </Text>
         <View style={styles.feelsLikeBox}>
-          <Icon name={IconName.temperature} size={CONSTANTS.ICON_SIZE} />
+          <Icon name={IconName.temperature} size={16} />
           <View>
             <Text style={[styles.feelsLikeText, typography.label2]}>
               체감 {thread.custom_temp}°
@@ -75,11 +60,7 @@ const DiarySection = React.memo(
           </Text>
           <Text style={[styles.label, typography.label1]}>온도 일기</Text>
         </View>
-        <ToolbarButton
-          name={IconName.arrow}
-          size={CONSTANTS.ARROW_SIZE}
-          onPress={onPress}
-        />
+        <ToolbarButton name={IconName.arrow} size={44} onPress={onPress} />
       </View>
       <Text
         style={[styles.diaryText, typography.body2]}
@@ -93,13 +74,8 @@ const DiarySection = React.memo(
 );
 
 const ThreadItem = ({ thread }: { thread: Thread }) => {
-  const formattedDate = useMemo(() => {
-    return new Date(thread.updated_at).getDate();
-  }, [thread.updated_at]);
-
-  const bgColor = useMemo(() => {
-    return OndoColors.get(thread.custom_temp) || Colors.white100;
-  }, [thread.custom_temp]);
+  const { formattedDate, backgroundColor, accessibilityLabel } =
+    useThreadItemData(thread);
 
   const handleDetailPress = useCallback(() => {
     router.push({
@@ -113,9 +89,9 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
 
   return (
     <View
-      style={[styles.container, { backgroundColor: bgColor }]}
+      style={[styles.container, { backgroundColor }]}
       accessibilityRole="button"
-      accessibilityLabel={`${formattedDate}일 일기, 온도 ${thread.custom_temp}도`}
+      accessibilityLabel={accessibilityLabel}
     >
       <TemperatureSection thread={thread} formattedDate={formattedDate} />
 
@@ -134,11 +110,11 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderRadius: CONSTANTS.BORDER_RADIUS,
-    marginHorizontal: CONSTANTS.MARGIN_HORIZONTAL,
-    marginBottom: CONSTANTS.MARGIN_BOTTOM,
-    minHeight: CONSTANTS.ITEM_HEIGHT,
-    height: CONSTANTS.ITEM_HEIGHT,
+    borderRadius: 12,
+    marginHorizontal: 15,
+    marginBottom: 8,
+    minHeight: 224,
+    height: 224,
     elevation: 1,
     shadowColor: Colors.black100,
     shadowOffset: { width: 0, height: 1 },
@@ -147,12 +123,12 @@ const styles = StyleSheet.create({
   },
   leftBox: {
     flex: 1,
-    padding: CONSTANTS.PADDING,
+    padding: 16,
     justifyContent: "space-between",
   },
   rightBox: {
     flex: 1,
-    padding: CONSTANTS.PADDING,
+    padding: 16,
     justifyContent: "space-between",
   },
   locationContainer: {
@@ -167,7 +143,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 1,
-    height: CONSTANTS.ITEM_HEIGHT,
+    height: 224,
     backgroundColor: Colors.black18,
   },
   dayText: {
@@ -202,7 +178,7 @@ const styles = StyleSheet.create({
   diaryText: {
     marginTop: 8,
     color: Colors.black70,
-    maxHeight: CONSTANTS.MAX_DIARY_HEIGHT,
+    maxHeight: 105,
     overflow: "hidden",
   },
 });
