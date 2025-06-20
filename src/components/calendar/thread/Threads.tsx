@@ -11,6 +11,9 @@ import {
 
 import { useInfiniteThreads } from "@/src/hooks/useInfiniteThreads";
 import ThreadItem from "./ThreadItem";
+import { router } from "expo-router";
+import typography from "@/src/styles/Typography";
+import { Colors } from "@/src/styles/Colors";
 
 interface ThreadsProps {
   updateDate: (date: Date) => void;
@@ -44,6 +47,49 @@ export default function Threads({ updateDate }: ThreadsProps) {
     );
   };
 
+  // 빈 상태 렌더링
+  const renderEmptyState = () => {
+    if (isLoading) return null;
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 40,
+        }}
+      >
+        <Text
+          style={[
+            typography.headline,
+            { marginBottom: 8, color: Colors.black100 },
+          ]}
+        >
+          아직 기록한 일기가 없어요.
+        </Text>
+        <Text
+          style={[typography.body, { marginBottom: 24, color: Colors.black40 }]}
+        >
+          오늘을 기록하러 가볼까요?
+        </Text>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 12,
+            paddingHorizontal: 66,
+            backgroundColor: Colors.black100,
+            borderRadius: 50,
+          }}
+          onPress={() => router.push("/pages/EditPage")}
+        >
+          <Text style={[typography.body, { color: Colors.lightGray }]}>
+            기록하기
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   if (error) {
     return (
       <SafeAreaView
@@ -66,6 +112,11 @@ export default function Threads({ updateDate }: ThreadsProps) {
         </TouchableOpacity>
       </SafeAreaView>
     );
+  }
+
+  // 빈 상태 체크
+  if (sections.length === 0) {
+  return <View style={{ flex: 1 }}>{renderEmptyState()}</View>;
   }
 
   return (
