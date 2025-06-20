@@ -1,5 +1,5 @@
 import typography from "@/src/styles/Typography";
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Colors, OndoColors } from "../../../styles/Colors";
 import { Thread } from "../../../types/thread";
@@ -8,8 +8,23 @@ import { ToolbarButton } from "../../ToolbarButton";
 import { router } from "expo-router";
 
 const ThreadItem = ({ thread }: { thread: Thread }) => {
-  const formattedDate = new Date(thread.updated_at).getDate(); // 예: 24
-  const bgColor = OndoColors.get(thread.custom_temp) || "#fff";
+  const formattedDate = useMemo(() => {
+    return new Date(thread.updated_at).getDate();
+  }, [thread.updated_at]);
+
+  const bgColor = useMemo(() => {
+    return OndoColors.get(thread.custom_temp) || "#fff";
+  }, [thread.custom_temp]);
+
+  const handleDetailPress = useCallback(() => {
+    router.push({
+      pathname: "/pages/DetailPage",
+      params: {
+        editableData: JSON.stringify(false),
+        noteData: JSON.stringify(thread),
+      },
+    });
+  }, [thread]);
 
   return (
     <View style={[styles.container, { backgroundColor: bgColor }]}>
@@ -21,16 +36,8 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
           </Text>
           <Text style={[styles.label, typography.label1]}>기록 온도</Text>
         </View>
-        {/* stretch ui  */}
         <View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
+          <View style={styles.locationContainer}>
             <Icon name={IconName.location} size={16} color="#fff" />
             <Text style={[styles.location, typography.label1]}>
               {thread.location}
@@ -41,7 +48,6 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
           </Text>
           <View style={styles.feelsLikeBox}>
             <Icon name={IconName.temperature} size={16} />
-
             <View>
               <Text style={[styles.feelsLikeText, typography.label2]}>
                 체감 {thread.custom_temp}°
@@ -52,20 +58,11 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
       </View>
 
       {/* 중앙 보더라인 */}
-      <View
-        style={{ width: 1, height: 224, backgroundColor: Colors.black18 }}
-      />
+      <View style={styles.divider} />
 
       {/* 오른쪽: 일기 */}
       <View style={styles.rightBox}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
+        <View style={styles.diaryHeader}>
           <View>
             <Text style={[styles.dayText, typography.label1]}>
               {formattedDate} Day
@@ -75,15 +72,7 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
           <ToolbarButton
             name={IconName.arrow}
             size={44}
-            onPress={() => {
-              router.push({
-                pathname: "/pages/DetailPage",
-                params: {
-                  editableData: JSON.stringify(false),
-                  noteData: JSON.stringify(thread),
-                },
-              });
-            }}
+            onPress={handleDetailPress}
           />
         </View>
         <Text
@@ -120,6 +109,23 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+  },
+  locationContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  diaryHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  divider: {
+    width: 1,
+    height: 224,
+    backgroundColor: Colors.black18,
   },
   dayText: {
     marginBottom: 4,
