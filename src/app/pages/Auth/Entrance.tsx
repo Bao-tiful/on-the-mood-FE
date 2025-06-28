@@ -11,10 +11,16 @@ import typography from "@/src/styles/Typography";
 import SignInButton, { SignInType } from "@/src/components/login/SignInButton";
 import { router } from "expo-router";
 import Logo from "@/src/components/Logo";
+import { LinearGradient } from "expo-linear-gradient";
 
 const EntrancePage = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.lightGray }}>
+    <LinearGradient
+      colors={["#F1FEFB", "#D7F5BA", "#8DF5F9"]}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 0, y: 0 }}
+      style={{ flex: 1 }}
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <View style={styles.logoContainer}>
@@ -79,7 +85,7 @@ const EntrancePage = () => {
           </View>
         </View>
       </SafeAreaView>
-    </View>
+    </LinearGradient>
   );
 };
 
