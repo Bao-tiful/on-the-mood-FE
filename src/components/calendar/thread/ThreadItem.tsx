@@ -6,13 +6,23 @@ import { Thread } from "../../../types/thread";
 import Icon, { IconName } from "../../Icon";
 import { ToolbarButton } from "../../ToolbarButton";
 import { router } from "expo-router";
+import { useScreenSize } from "../../../hooks/useScreenSize";
 
 const ThreadItem = ({ thread }: { thread: Thread }) => {
   const formattedDate = new Date(thread.updated_at).getDate(); // 예: 24
   const bgColor = OndoColors.get(thread.custom_temp) || "#fff";
+  const { isLargeScreen } = useScreenSize();
 
   return (
-    <View style={[styles.container, { backgroundColor: bgColor }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: bgColor },
+        isLargeScreen
+          ? styles.largeScreenContainer
+          : styles.smallScreenContainer,
+      ]}
+    >
       {/* 왼쪽: 온도 정보 */}
       <View style={styles.leftBox}>
         <View>
@@ -104,6 +114,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginHorizontal: 15,
     marginBottom: 8,
+    minHeight: 224,
+    height: 224,
+  },
+  largeScreenContainer: {
+    // 800px 이상 화면용 스타일
+    marginHorizontal: 20,
+    minHeight: 250,
+    height: 250,
+  },
+  smallScreenContainer: {
+    // 800px 미만 화면용 스타일
+    marginHorizontal: 15,
     minHeight: 224,
     height: 224,
   },

@@ -8,6 +8,7 @@ import TodayNoteCell from "./TodayNoteCell";
 import typography from "@/src/styles/Typography";
 import { getKrWeekday, isDateToday } from "@/src/utils/dateUtils";
 import { LocationData } from "@/src/api/endpoints/weather";
+import { useScreenSize } from "@/src/hooks/useScreenSize";
 
 interface CalendarContentProp {
   date: Date;
@@ -26,12 +27,15 @@ export const CalendarContent = ({
   feelLikeTemp,
   location,
 }: CalendarContentProp) => {
+  // 기기별 ScreenHeight 에 따라 UI를 다르게 보여주기 위해 사용
+  const { isLargeScreen } = useScreenSize();
+
   const isToday = isDateToday(date);
 
   const MonthPicker = (
     <TouchableOpacity onPress={() => changeModalVisible(true)}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text style={styles.monthPickerLabel}>
+        <Text style={[isLargeScreen ? typography.title2 : typography.title3]}>
           {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
           {date.getFullYear().toString()}.
           {(date.getMonth() + 1).toString().padStart(2, "0")}
@@ -47,20 +51,46 @@ export const CalendarContent = ({
   return (
     <View style={{ justifyContent: "space-between", flex: 1 }}>
       <View style={styles.calendarContainer}>
-        {/* 년,월 선택 버튼 */}
-        <Text style={styles.dateLabel}>
-          {date.getDate().toString()}일 {getKrWeekday(date)}요일
-        </Text>
-        {MonthPicker}
+        <View
+          style={[
+            styles.dateLabelContainer,
+            {
+              flexDirection: isLargeScreen ? "column" : "row-reverse",
+              alignItems: isLargeScreen ? "flex-start" : "center",
+              justifyContent: isLargeScreen ? "flex-start" : "space-between",
+            },
+          ]}
+        >
+          {/* 년,월 선택 버튼 */}
+          <Text
+            style={[
+              styles.dateLabel,
+              isLargeScreen ? typography.heading1 : typography.heading2,
+            ]}
+          >
+            {date.getDate().toString()}일 {getKrWeekday(date)}요일
+          </Text>
+          {MonthPicker}
+        </View>
         <View style={{ height: 8 }} />
         <CalendarGrid
           date={date}
           changeDate={changeCalendarDate}
           notes={notes}
         />
-        {/* 투데이 셀 */}
       </View>
-      <View style={[{ height: 224, borderRadius: 16, overflow: "hidden" }]}>
+      {/* 투데이 셀 */}
+      <View
+        style={[
+          {
+            flex: 1,
+            minHeight: 135,
+            maxHeight: 230,
+            borderRadius: 16,
+            overflow: "hidden",
+          },
+        ]}
+      >
         {isToday && notes.get(date.getDate()) == undefined ? (
           <TodayNoteCell
             date={date}
@@ -81,13 +111,14 @@ export const CalendarContent = ({
 
 const styles = StyleSheet.create({
   calendarContainer: {
-    flexGrow: 1,
+    // flexGrow: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
     overflow: "hidden",
   },
-  monthPickerLabel: {
-    ...typography.title2,
+  dateLabelContainer: {
+    flexGrow: 1,
+    overflow: "hidden",
   },
   monthPickerIcon: {
     width: 20,
@@ -99,7 +130,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   dateLabel: {
-    ...typography.heading1,
     color: Colors.black40,
   },
 });
