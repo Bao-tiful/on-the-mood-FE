@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, FlatList } from "react-native";
 import {
   CalendarCell,
   EmptyCalendarCell,
-} from "@components/calendar/GridCalendarCell";
+  PlaceholderCalendarCell,
+} from "@components/calendar/CalendarGridCell";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import {
@@ -12,18 +13,18 @@ import {
   lastDayOfMonth,
 } from "@/src/utils/dateUtils";
 
-interface GridCalendarProps {
+interface CalendarGridProps {
   date: Date;
   changeDate: (newDate: Date) => void;
   notes: Map<number, NoteItem>;
 }
 
 /// props로 입력된 Date가 포함된 월의 달력을 보여준다.
-export const GridCalendar = ({
+export const CalendarGrid = ({
   date,
   changeDate,
   notes,
-}: GridCalendarProps) => {
+}: CalendarGridProps) => {
   // date가 포함된 달의 첫째 날의 요일
   const firstDayOffset = firstDayOfMonth(date).getDay();
   // date가 포함된 달의 마지막 날짜
@@ -41,13 +42,15 @@ export const GridCalendar = ({
       <FlatList
         data={items}
         renderItem={({ item }) => {
+          let cellDate = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            item.date
+          );
+
           if (item.date > 0 && item.date <= lastDate) {
             // 1일부터 마지막 날까지
-            let cellDate = new Date(
-              date.getFullYear(),
-              date.getMonth(),
-              item.date
-            );
+
             let isSelected = isSameDay(date, cellDate);
             return (
               <CalendarCell
@@ -58,7 +61,11 @@ export const GridCalendar = ({
               />
             );
           } else {
-            return <EmptyCalendarCell />;
+            if (item.date > 0 && item.date - lastDate - cellDate.getDay() > 0)
+              return <PlaceholderCalendarCell />;
+            else {
+              return <EmptyCalendarCell />;
+            }
           }
         }}
         keyExtractor={(item) => item.date.toString()}
@@ -94,8 +101,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     textAlign: "center",
-    color: Colors.black100,
+    color: Colors.black40,
   },
 });
 
-export default GridCalendar;
+export default CalendarGrid;
