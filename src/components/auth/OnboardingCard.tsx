@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
     justifyContent: "flex-end",
+    overflow: "hidden",
   },
   imageContainer: {
     flex: 1,
