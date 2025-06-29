@@ -10,13 +10,21 @@ import { useThreadItemData } from "@/src/hooks/useThreadItemData";
 
 // 온도 정보 박스 컴포넌트
 const TemperatureSection = React.memo(
-  ({ thread, formattedDate }: { thread: Thread; formattedDate: number }) => (
-    <View style={styles.leftBox}>
+  ({
+    thread,
+    formattedDate,
+    backgroundColor,
+  }: {
+    thread: Thread;
+    formattedDate: number;
+    backgroundColor: string;
+  }) => (
+    <View style={[styles.leftBox, { backgroundColor }]}>
       <View>
         <Text style={[styles.dayText, typography.label1]}>
           {formattedDate} Day
         </Text>
-        <Text style={[styles.label, typography.label1]}>기록 온도</Text>
+        <Text style={[styles.dayText, typography.label1]}>기록 온도</Text>
       </View>
       <View>
         <View style={styles.locationContainer}>
@@ -30,11 +38,9 @@ const TemperatureSection = React.memo(
         </Text>
         <View style={styles.feelsLikeBox}>
           <Icon name={IconName.temperature} size={16} />
-          <View>
-            <Text style={[styles.feelsLikeText, typography.label2]}>
-              체감 {thread.custom_temp}°
-            </Text>
-          </View>
+          <Text style={[styles.feelsLikeText, typography.label2]}>
+            체감 {thread.custom_temp}°
+          </Text>
         </View>
       </View>
     </View>
@@ -45,20 +51,18 @@ const TemperatureSection = React.memo(
 const DiarySection = React.memo(
   ({
     thread,
-    formattedDate,
     onPress,
+    backgroundColor,
   }: {
     thread: Thread;
-    formattedDate: number;
     onPress: () => void;
+    backgroundColor: string;
   }) => (
-    <View style={styles.rightBox}>
+    <View style={[styles.rightBox, { backgroundColor }]}>
       <View style={styles.diaryHeader}>
         <View>
-          <Text style={[styles.dayText, typography.label1]}>
-            {formattedDate} Day
-          </Text>
-          <Text style={[styles.label, typography.label1]}>온도 일기</Text>
+          <Text style={[styles.label, typography.label1]}>무드온도</Text>
+          <Text style={[styles.label, typography.label1]}>일기</Text>
         </View>
         <ToolbarButton name={IconName.arrow} size={44} onPress={onPress} />
       </View>
@@ -89,19 +93,20 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
 
   return (
     <View
-      style={[styles.container, { backgroundColor }]}
+      style={[styles.container]}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
     >
-      <TemperatureSection thread={thread} formattedDate={formattedDate} />
-
-      {/* 중앙 보더라인 */}
-      <View style={styles.divider} />
+      <TemperatureSection
+        thread={thread}
+        formattedDate={formattedDate}
+        backgroundColor={backgroundColor}
+      />
 
       <DiarySection
         thread={thread}
-        formattedDate={formattedDate}
         onPress={handleDetailPress}
+        backgroundColor={backgroundColor}
       />
     </View>
   );
@@ -110,53 +115,46 @@ const ThreadItem = ({ thread }: { thread: Thread }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderRadius: 12,
+    borderRadius: 16,
     marginHorizontal: 15,
     marginBottom: 8,
     minHeight: 224,
     height: 224,
     elevation: 1,
-    shadowColor: Colors.black100,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    gap: 2,
   },
   leftBox: {
     flex: 1,
     padding: 16,
     justifyContent: "space-between",
+    borderRadius: 16,
   },
   rightBox: {
     flex: 1,
-    padding: 16,
     justifyContent: "space-between",
+    padding: 16,
+    borderRadius: 16,
   },
   locationContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    marginBottom: 4,
   },
   diaryHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
   },
-  divider: {
-    width: 1,
-    height: 224,
-    backgroundColor: Colors.black18,
-  },
   dayText: {
-    marginBottom: 4,
     color: Colors.black100,
   },
   label: {
-    marginBottom: 4,
-    color: Colors.black70,
+    color: Colors.black100,
   },
   location: {
     color: Colors.black70,
-    marginBottom: 4,
+    fontWeight: "semibold",
   },
   temperature: {
     color: Colors.black100,

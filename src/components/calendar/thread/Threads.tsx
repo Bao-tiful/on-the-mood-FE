@@ -67,11 +67,15 @@ const LoadingFooter = React.memo(() => (
 ));
 
 // 섹션 헤더 컴포넌트 분리
-const SectionHeader = React.memo(({ title }: { title: string }) => (
-  <View style={styles.sectionHeader}>
-    <Text style={styles.sectionTitle}>{title}</Text>
-  </View>
-));
+const SectionHeader = React.memo(
+  ({ title, isFirst }: { title: string; isFirst: boolean }) => (
+    <View
+      style={[styles.sectionHeader, !isFirst && styles.sectionHeaderWithMargin]}
+    >
+      <Text style={styles.sectionTitle}>{title}</Text>
+    </View>
+  )
+);
 
 export default function Threads({ updateDate }: ThreadsProps) {
   const { threads, isLoading, error, hasMore, loadMore, refresh } =
@@ -95,10 +99,11 @@ export default function Threads({ updateDate }: ThreadsProps) {
   }, [isLoading]);
 
   const renderSectionHeader = useCallback(
-    ({ section: { title } }: { section: { title: string } }) => (
-      <SectionHeader title={title} />
-    ),
-    []
+    ({ section: { title }, section }: { section: { title: string } }) => {
+      const sectionIndex = sections.findIndex((s) => s.title === title);
+      return <SectionHeader title={title} isFirst={sectionIndex === 0} />;
+    },
+    [sections]
   );
 
   const renderItem = useCallback(
@@ -162,6 +167,9 @@ const styles = StyleSheet.create({
   sectionHeader: {
     paddingBottom: 16,
     paddingHorizontal: 16,
+  },
+  sectionHeaderWithMargin: {
+    marginTop: 32,
   },
   sectionTitle: {
     ...typography.heading2,
