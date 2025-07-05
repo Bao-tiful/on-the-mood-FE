@@ -23,6 +23,7 @@
     "react-native-gesture-handler": "^2.27.2",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-permissions": "^5.4.2",
+    "@shopify/flash-list": "^1.8.3",
     "react-native-popover-view": "^6.1.0",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.13.1",
