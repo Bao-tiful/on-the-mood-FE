@@ -10,7 +10,7 @@ web-build/
 expo-env.d.ts
 
 # Native folders (Expo managed workflow)
-ios/
+# ios/
 android/
 
 # Native
