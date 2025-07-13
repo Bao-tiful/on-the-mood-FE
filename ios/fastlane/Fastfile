@@ -1,0 +1,75 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Export IPA from existing archive"
+  lane :export_only do
+    # package.json에서 버전 읽기
+    require 'json'
+    package_json = JSON.parse(File.read('../../package.json'))
+    version = package_json['version']
+    
+    # 이미 빌드된 IPA 파일 경로 (실제 경로로 수정 필요)
+    ipa_path = "./builds/onthemoodFE.ipa"
+    
+    increment_version_number(
+      version_number: version
+    )
+
+    # Firebase App Distribution에 업로드
+    firebase_app_distribution(
+      app: "1:62590143382:ios:5636a388aa09baa6c2abb7",
+      ipa_path: ipa_path,
+      groups: "Baotiful",
+      release_notes: "New development build from Fastlane - Version #{version}",
+    )
+  end
+
+  desc "Build and distribute to Firebase App Distribution"
+  lane :firebase_distribution do
+    # package.json에서 버전 읽기
+    require 'json'
+    package_json = JSON.parse(File.read('../../package.json'))
+    version = package_json['version']
+
+    # 버전 번호 설정
+    increment_version_number(
+      version_number: version
+    )
+
+    # 빌드
+    build_app(
+      scheme: "onthemoodFE",
+      export_method: "ad-hoc",
+      output_directory: "./builds",
+      export_team_id: "JPL38XBHJ4", # Development Team ID
+      export_options: {
+        provisioningProfiles: {
+          "com.baotiful.onthemood" => "match AdHoc com.baotiful.onthemood"
+        },
+        teamID: "JPL38XBHJ4",
+        signingStyle: "automatic"
+      }
+    )
+    
+    firebase_app_distribution(
+      app: "1:62590143382:ios:5636a388aa09baa6c2abb7",
+      groups: "Baotiful",
+      release_notes: "New development build from Fastlane - Version #{version}"
+    )
+  end
+end
