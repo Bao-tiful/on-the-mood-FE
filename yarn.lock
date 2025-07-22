@@ -2502,9 +2502,9 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "24.0.13"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.0.13.tgz#93ed8c05c7b188a59760be0ce2ee3fa7ad0f83f6"
-  integrity sha512-Qm9OYVOFHFYg3wJoTSrz80hoec5Lia/dPp84do3X7dZvLikQvM1YpmvTBEdIr/e+U8HTkFjLHLnl78K/qjf+jQ==
+  version "24.0.15"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.0.15.tgz#f34fbc973e7d64217106e0c59ed8761e6b51381e"
+  integrity sha512-oaeTSbCef7U/z7rDeJA138xpG3NuKc64/rZ2qmUFkFJmnMsAPaluIifqyWd8hSSMxyP9oie3dLAqYPblag9KgA==
   dependencies:
     undici-types "~7.8.0"
 
@@ -3431,15 +3431,15 @@ compressible@~2.0.18:
     mime-db ">= 1.43.0 < 2"
 
 compression@^1.7.4:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/compression/-/compression-1.8.0.tgz#09420efc96e11a0f44f3a558de59e321364180f7"
-  integrity sha512-k6WLKfunuqCYD3t6AsuPGvQWaKwuLLh2/xHNcX4qE+vIfDNXpSqnrhwA7O53R7WVQUnt8dVAIW+YHr7xTgOgGA==
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/compression/-/compression-1.8.1.tgz#4a45d909ac16509195a9a28bd91094889c180d79"
+  integrity sha512-9mAqGPHLakhCLeNyxPkK4xVo746zQ/czLH1Ky+vkitMnWfWZps8r0qXuwhwizagCRttsL4lfG4pIOvaWLpAP0w==
   dependencies:
     bytes "3.1.2"
     compressible "~2.0.18"
     debug "2.6.9"
     negotiator "~0.6.4"
-    on-headers "~1.0.2"
+    on-headers "~1.1.0"
     safe-buffer "5.2.1"
     vary "~1.1.2"
 
@@ -3851,9 +3851,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.5.173:
-  version "1.5.182"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.182.tgz#4ab73104f893938acb3ab9c28d7bec170c116b3e"
-  integrity sha512-Lv65Btwv9W4J9pyODI6EWpdnhfvrve/us5h1WspW8B2Fb0366REPtY3hX7ounk1CkV/TBjWCEvCBBbYbmV0qCA==
+  version "1.5.189"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.189.tgz#a5c41d2e5c64e2e6cd11bdf4eeeebc1ec8601e08"
+  integrity sha512-y9D1ntS1ruO/pZ/V2FtLE+JXLQe28XoRpZ7QCCo0T8LdQladzdcOVQZH/IWLVJvCw12OGMb6hYOeOAjntCmJRQ==
 
 emittery@^0.13.1:
   version "0.13.1"
@@ -4482,9 +4482,9 @@ flow-enums-runtime@^0.0.6:
   integrity sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==
 
 flow-parser@0.*:
-  version "0.275.0"
-  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.275.0.tgz#c7d2bd486b4d29638261cefd7d642c3b89c729bb"
-  integrity sha512-fHNwawoA2LM7FsxhU/1lTRGq9n6/Q8k861eHgN7GKtamYt9Qrxpg/ZSrev8o1WX7fQ2D3Gg3+uvYN15PmsG7Yw==
+  version "0.276.0"
+  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.276.0.tgz#9a880f1c85674f77543215711a2e45bce9b30342"
+  integrity sha512-rHZzn3I1Hc6L+XCTHe4miH9mEW4+CozvGghVLwE5xHasf2nchq2GJonUowRihuOx6NsJO8pGD+5XdIDH1iLgNg==
 
 follow-redirects@^1.15.6:
   version "1.15.9"
@@ -4512,19 +4512,20 @@ foreground-child@^3.1.0:
     signal-exit "^4.0.1"
 
 form-data@^3.0.1:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.3.tgz#349c8f2c9d8f8f0c879ee0eb7cc0d300018d6b09"
-  integrity sha512-q5YBMeWy6E2Un0nMGWMgI65MAKtaylxfNJGJxpGh45YDciZB4epbWpaAfImil6CPAPTYB4sh0URQNDRIZG5F2w==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.4.tgz#938273171d3f999286a4557528ce022dc2c98df1"
+  integrity sha512-f0cRzm6dkyVYV3nPoooP8XlccPQukegwhAnpoLcXy+X+A8KfpGOoXwDr9FLZd3wzgLaBGQBE3lY93Zm/i1JvIQ==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
     es-set-tostringtag "^2.1.0"
+    hasown "^2.0.2"
     mime-types "^2.1.35"
 
 form-data@^4.0.0:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.3.tgz#608b1b3f3e28be0fccf5901fc85fb3641e5cf0ae"
-  integrity sha512-qsITQPfmvMOSAdeyZ+12I1c+CKSstAFAwu+97zrnWAbIr5u8wfsExUzCesVLC8NgHuRUqNN4Zy6UPWUTRGslcA==
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.4.tgz#784cdcce0669a9d68e94d11ac4eea98088edd2c4"
+  integrity sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
@@ -6730,10 +6731,10 @@ on-finished@~2.3.0:
   dependencies:
     ee-first "1.1.1"
 
-on-headers@~1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/on-headers/-/on-headers-1.0.2.tgz#772b0ae6aaa525c399e489adfad90c403eb3c28f"
-  integrity sha512-pZAE+FJLoyITytdqK0U5s+FIpjN0JP3OzFi/u8Rx+EV5/W+JTWGXG8xFzevE7AjBfDqHv/8vL8qQsIhHnqRkrA==
+on-headers@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/on-headers/-/on-headers-1.1.0.tgz#59da4f91c45f5f989c6e4bcedc5a3b0aed70ff65"
+  integrity sha512-737ZY3yNnXy37FHkQxPzt4UZ2UWPWiCZWLvFZ4fu5cueciegX0zGPnrlY6bwRg4FdQOe9YU8MkmJwGhoMybl8A==
 
 once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"

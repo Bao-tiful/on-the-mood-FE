@@ -47,9 +47,19 @@
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
-      <false/>
+      <true/>
       <key>NSAllowsLocalNetworking</key>
       <true/>
+      <key>NSExceptionDomains</key>
+      <dict>
+        <key>3.35.230.131</key>
+        <dict>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
+          <true/>
+          <key>NSExceptionMinimumTLSVersion</key>
+          <string>TLSv1.2</string>
+        </dict>
+      </dict>
     </dict>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>이 앱은 날씨 정보를 가져오기 위해 위치 권한이 필요합니다.</string>
