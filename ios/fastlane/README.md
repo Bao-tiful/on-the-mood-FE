@@ -29,7 +29,7 @@ Export IPA from existing archive
 [bundle exec] fastlane ios firebase_distribution
 ```
 
-Build and distribute to Firebase App Distribution
+Build production version locally and distribute to Firebase App Distribution
 
 ----
 
