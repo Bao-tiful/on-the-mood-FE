@@ -1,15 +1,16 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import GridCalendar from "@/src/components/calendar/GridCalendar";
+import CalendarGrid from "@/src/components/calendar/CalendarGrid";
 import ThreadCalendarCell from "./ThreadCalendarCell";
 import Icon, { IconName } from "../Icon";
 import { Colors } from "@/src/styles/Colors";
 import TodayNoteCell from "./TodayNoteCell";
 import typography from "@/src/styles/Typography";
-import { isDateToday } from "@/src/utils/dateUtils";
+import { getKrWeekday, isDateToday } from "@/src/utils/dateUtils";
 import { LocationData } from "@/src/api/endpoints/weather";
+import { useScreenSize } from "@/src/hooks/useScreenSize";
 
-interface MoodNoteCalendarProp {
+interface CalendarContentProp {
   date: Date;
   notes: Map<number, NoteItem>;
   feelLikeTemp: number;
@@ -18,26 +19,30 @@ interface MoodNoteCalendarProp {
   changeModalVisible: (isModalOn: boolean) => void;
 }
 
-export const MoodNoteCalendar = ({
+export const CalendarContent = ({
   changeModalVisible: changeModalVisible,
   date,
   changeCalendarDate,
   notes,
   feelLikeTemp,
   location,
-}: MoodNoteCalendarProp) => {
+}: CalendarContentProp) => {
+  // 기기별 ScreenHeight 에 따라 UI를 다르게 보여주기 위해 사용
+  const { isLargeScreen } = useScreenSize();
+
   const isToday = isDateToday(date);
 
   const MonthPicker = (
     <TouchableOpacity onPress={() => changeModalVisible(true)}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text style={styles.monthPickerLabel}>
+        <Text style={[isLargeScreen ? typography.title2 : typography.title3]}>
           {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
-          {date.getFullYear().toString()}년 {(date.getMonth() + 1).toString()}월
+          {date.getFullYear().toString()}.
+          {(date.getMonth() + 1).toString().padStart(2, "0")}
         </Text>
 
         <View style={styles.monthPickerIcon}>
-          <Icon name={IconName.downWhite} size={12} />
+          <Icon name={IconName.down} size={12} />
         </View>
       </View>
     </TouchableOpacity>
@@ -46,18 +51,46 @@ export const MoodNoteCalendar = ({
   return (
     <View style={{ justifyContent: "space-between", flex: 1 }}>
       <View style={styles.calendarContainer}>
-        {/* 년,월 선택 버튼 */}
-        {MonthPicker}
-        <Text style={styles.moodNoteCount}>Mood Note({notes.size})</Text>
-        <View style={{ height: 16 }} />
-        <GridCalendar
+        <View
+          style={[
+            styles.dateLabelContainer,
+            {
+              flexDirection: isLargeScreen ? "column" : "row-reverse",
+              alignItems: isLargeScreen ? "flex-start" : "center",
+              justifyContent: isLargeScreen ? "flex-start" : "space-between",
+            },
+          ]}
+        >
+          {/* 년,월 선택 버튼 */}
+          <Text
+            style={[
+              styles.dateLabel,
+              isLargeScreen ? typography.heading1 : typography.heading2,
+            ]}
+          >
+            {date.getDate().toString()}일 {getKrWeekday(date)}요일
+          </Text>
+          {MonthPicker}
+        </View>
+        <View style={{ height: 8 }} />
+        <CalendarGrid
           date={date}
           changeDate={changeCalendarDate}
           notes={notes}
         />
-        {/* 투데이 셀 */}
       </View>
-      <View style={[{ height: 224, borderRadius: 16, overflow: "hidden" }]}>
+      {/* 투데이 셀 */}
+      <View
+        style={[
+          {
+            flex: 1,
+            minHeight: 135,
+            maxHeight: 230,
+            borderRadius: 16,
+            overflow: "hidden",
+          },
+        ]}
+      >
         {isToday && notes.get(date.getDate()) == undefined ? (
           <TodayNoteCell
             date={date}
@@ -78,27 +111,25 @@ export const MoodNoteCalendar = ({
 
 const styles = StyleSheet.create({
   calendarContainer: {
-    flexGrow: 1,
+    // flexGrow: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
     overflow: "hidden",
   },
-  monthPickerLabel: {
-    ...typography.title3,
-    fontWeight: 800,
+  dateLabelContainer: {
+    flexGrow: 1,
+    overflow: "hidden",
   },
   monthPickerIcon: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
     borderRadius: 12,
-    backgroundColor: Colors.black100,
+    backgroundColor: Colors.black18,
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 8,
   },
-  moodNoteCount: {
-    ...typography.title3,
-    fontWeight: 600,
+  dateLabel: {
     color: Colors.black40,
   },
 });

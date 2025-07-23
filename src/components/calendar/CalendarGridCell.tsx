@@ -1,6 +1,7 @@
 import { Colors, OndoColors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
 import { isDateToday } from "@/src/utils/dateUtils";
+import React from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 interface CalendarCellProps {
@@ -75,6 +76,15 @@ export function EmptyCalendarCell() {
   );
 }
 
+// 빈 줄만 채우는 날짜의 캘린더 칸
+export function PlaceholderCalendarCell() {
+  return (
+    <View style={[styles.calendarCell]}>
+      <View />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   calendarCell: {
     flex: 1,
@@ -83,7 +93,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    margin: 6,
+    margin: 4,
+    marginBottom: 12,
   },
   calendarCellText: {
     ...typography.body,

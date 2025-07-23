@@ -123,6 +123,18 @@ const styles = StyleSheet.create({
     elevation: 1,
     gap: 2,
   },
+  largeScreenContainer: {
+    // 800px 이상 화면용 스타일
+    marginHorizontal: 20,
+    minHeight: 250,
+    height: 250,
+  },
+  smallScreenContainer: {
+    // 800px 미만 화면용 스타일
+    marginHorizontal: 15,
+    minHeight: 224,
+    height: 224,
+  },
   leftBox: {
     flex: 1,
     padding: 16,
