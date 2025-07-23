@@ -1,12 +1,12 @@
+import { LocationData } from "@/src/api/endpoints/weather";
 import { Colors } from "@/src/styles/Colors";
 import typography from "@/src/styles/Typography";
-import React, { useEffect } from "react";
+import { isDateToday } from "@/src/utils/dateUtils";
+import { router } from "expo-router";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon, { IconName } from "../Icon";
 import { ToolbarButton } from "../ToolbarButton";
-import { router } from "expo-router";
-import { isDateToday } from "@/src/utils/dateUtils";
-import { LocationData } from "@/src/api/endpoints/weather";
 
 type ThreadCalendarCellProps = {
   date: Date;
@@ -21,24 +21,33 @@ const ThreadCalendarCell = ({
 }: ThreadCalendarCellProps) => {
   const WeatherCell = (
     <View style={[styles.todayCell]}>
-      <Text style={styles.todayCellTitle}>
-        {date.getDate() + " Day \nOndo"}
-      </Text>
+      <Text style={styles.todayCellTitle}>{"오늘의 \n체감 온도"}</Text>
       <View style={{ width: "100%" }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 4,
+          }}
+        >
           <Icon name={IconName.location} size={17} />
-          <Text style={styles.todayWeatherLocation}>{location?.name_ko}</Text>
+          <Text style={[styles.todayWeatherLocation]}>{location?.name_ko}</Text>
         </View>
-        <Text style={styles.todayWeatherTemperature}>
-          {note?.custom_temp ?? "-"}°
-        </Text>
+        <Text style={[styles.temperature, typography.title1]}>{77}°</Text>
+        <View style={styles.feelsLikeBox}>
+          <Icon name={IconName.temperature} size={16} />
+          <Text style={[styles.feelsLikeText, typography.label2]}>
+            체감 {note?.custom_temp}°
+          </Text>
+        </View>
       </View>
     </View>
   );
+
   const NoteCell = (
     <View style={[styles.todayCell]}>
       <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
-        <Text style={styles.todayCellTitle}>{"Today\nMood Note"}</Text>
+        <Text style={styles.todayCellTitle}>{"무드온도\n일기"}</Text>
         {note !== undefined ? (
           <ToolbarButton
             name={IconName.arrow}
@@ -88,6 +97,7 @@ const styles = StyleSheet.create({
     width: "100%",
     maxHeight: 250,
     columnGap: 1,
+    gap: 2,
   },
   todayCell: {
     width: "100%",
@@ -97,6 +107,7 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
     backgroundColor: Colors.white40,
+    borderRadius: 16,
   },
   todayCellTitle: {
     flex: 1,
@@ -115,11 +126,27 @@ const styles = StyleSheet.create({
   },
   todayWeatherLocation: {
     ...typography.label1,
-    fontWeight: 600,
-    color: Colors.black100,
+    color: Colors.black70,
   },
   todayWeatherTemperature: {
     ...typography.title1,
+    color: Colors.black100,
+  },
+  feelsLikeBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 5,
+    marginTop: 4,
+    alignSelf: "flex-start",
+    backgroundColor: Colors.black18,
+  },
+  feelsLikeText: {
+    color: Colors.black70,
+  },
+  temperature: {
     color: Colors.black100,
   },
 });
