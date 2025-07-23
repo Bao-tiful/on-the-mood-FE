@@ -164,7 +164,6 @@ const EditPage = () => {
             </View>
             <View style={{ flex: 1 }}>
               <NoteEditor
-                // TODO: 현재온도 Provider에서 정보 가져오도록 #25 merge 이후 수정 필요
                 keywordList={moodKeywordSet.getKeywordsByTemp(feelsLikeTemp)}
                 memo={memo}
                 onMemoChanged={(memo) => setMemo(memo)}
