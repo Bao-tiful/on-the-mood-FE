@@ -123,7 +123,7 @@ export const RulerPicker = ({
   min,
   max,
   step = 1,
-  initialValue = max,
+  initialValue = min,
   fractionDigits = 0,
   unit = "cm",
   indicatorHeight = 80,
@@ -148,6 +148,9 @@ export const RulerPicker = ({
   const prevValue = useRef<number>(initialValue);
   const prevMomentumValue = useRef<number>(initialValue);
   const scrollPosition = useRef(new Animated.Value(0)).current;
+
+  // 초기값 설정 여부를 체크해, 다시 값이 초기화 되지 않도록 함
+  const hasInitialized = useRef<boolean>(false);
 
   const valueCallback: Animated.ValueListenerCallback = useCallback(
     ({ value }) => {
@@ -177,6 +180,13 @@ export const RulerPicker = ({
       scrollPosition.removeAllListeners();
     };
   }, [scrollPosition, valueCallback]);
+
+  // initialValue가 변경되면 기본값들을 초기화
+  useEffect(() => {
+    prevValue.current = initialValue;
+    prevMomentumValue.current = initialValue;
+    hasInitialized.current = false;
+  }, [initialValue]);
 
   const scrollHandler = Animated.event(
     [
@@ -251,14 +261,23 @@ export const RulerPicker = ({
       step,
     ]
   );
-  function onContentSizeChange() {
-    const initialIndex = Math.floor((initialValue - min) / step);
-    listRef.current?.scrollToOffset({
-      offset: initialIndex * (stepWidth + gapBetweenSteps),
-      animated: false,
-    });
-    console.log(initialValue + " " + initialIndex);
-  }
+
+  // 초기 스크롤 설정을 위한 useEffect 사용
+  useEffect(() => {
+    // 이미 설정이 완료되었다면 return
+    if (hasInitialized.current) return;
+
+    const timer = setTimeout(() => {
+      const initialIndex = Math.floor((initialValue - min) / step);
+      listRef.current?.scrollToOffset({
+        offset: initialIndex * (stepWidth + gapBetweenSteps),
+        animated: false,
+      });
+      hasInitialized.current = true;
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [initialValue, min, step, stepWidth, gapBetweenSteps]);
 
   return (
     <View style={{ width, height }}>
@@ -275,7 +294,6 @@ export const RulerPicker = ({
         snapToOffsets={arrData.map(
           (_, index) => index * (stepWidth + gapBetweenSteps)
         )}
-        onContentSizeChange={onContentSizeChange}
         snapToAlignment="start"
         decelerationRate={decelerationRate}
         estimatedFirstItemOffset={0}
