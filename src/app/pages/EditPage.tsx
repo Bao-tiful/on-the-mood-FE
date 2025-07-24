@@ -22,6 +22,7 @@ import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
 import { LocationData } from "@/src/api/endpoints/weather";
 import { useMoodKeyword } from "@/src/hooks/useKeywords";
 import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
+import { NoteItem } from "@/src/models/NoteItem";
 
 const EditPage = () => {
   const { colorState } = useBackgroundColor();

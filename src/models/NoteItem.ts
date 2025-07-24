@@ -1,4 +1,4 @@
-type NoteItem = {
+export type NoteItem = {
   id: string;
   location: string;
   content: string;
