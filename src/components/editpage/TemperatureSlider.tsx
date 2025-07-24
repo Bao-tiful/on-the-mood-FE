@@ -27,7 +27,7 @@ const TemperatureSlider = ({
 
   return (
     <RulerPicker
-      height={110}
+      height={120}
       min={minValue}
       max={maxValue}
       initialValue={myMoodOndo}
