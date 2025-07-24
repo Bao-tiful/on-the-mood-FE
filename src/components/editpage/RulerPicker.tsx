@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -149,17 +143,12 @@ export const RulerPicker = ({
   onValueChange,
   onValueChangeEnd,
 }: RulerPickerProps) => {
-  // 동적 width 상태 관리
   const [containerWidth, setContainerWidth] = useState<number>(
     width || windowWidth
   );
-
-  // 현재 선택된 값 상태 관리
   const [currentSelectedValue, setCurrentSelectedValue] =
     useState<number>(initialValue);
-
-  // 고정된 기준점 값 (최초 한 번만 설정)
-  const fixedInitialValue = useMemo(() => initialValue, []);
+  const fixedInitialValue = useRef<number>(initialValue);
 
   const itemAmount = (max - min) / step;
   const arrData = Array.from({ length: itemAmount + 1 }, (_, index) => index);
@@ -168,24 +157,19 @@ export const RulerPicker = ({
   const stepTextRef = useRef<TextInput>(null);
   const prevValue = useRef<number>(initialValue);
   const prevMomentumValue = useRef<number>(initialValue);
-  const scrollPosition = useRef(new Animated.Value(0)).current;
+  const scrollPosition = useRef(new Animated.Value(initialValue)).current;
 
-  // 초기값 설정 여부를 체크해, 다시 값이 초기화 되지 않도록 함
   const hasInitialized = useRef<boolean>(false);
-
-  // onLayout 핸들러
   const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
       const { width: layoutWidth } = event.nativeEvent.layout;
       if (layoutWidth > 0 && !width) {
-        // width prop이 없을 때만 동적으로 설정
         setContainerWidth(layoutWidth);
       }
     },
     [width]
   );
 
-  // width가 변경될 때 초기화 상태 리셋
   useEffect(() => {
     hasInitialized.current = false;
   }, [containerWidth]);
@@ -220,13 +204,21 @@ export const RulerPicker = ({
     };
   }, [scrollPosition, valueCallback]);
 
-  // currentSelectedValue가 외부에서 변경되면 기본값들을 초기화 (최초 1회만)
   useEffect(() => {
-    if (!hasInitialized.current) {
-      prevValue.current = currentSelectedValue;
-      prevMomentumValue.current = currentSelectedValue;
+    if (initialValue >= min && initialValue <= max) {
+      if (!hasInitialized.current) {
+        setCurrentSelectedValue(initialValue);
+        prevValue.current = initialValue;
+        prevMomentumValue.current = initialValue;
+      }
+      if (
+        fixedInitialValue.current === 0 ||
+        Math.abs(fixedInitialValue.current - initialValue) > 0
+      ) {
+        fixedInitialValue.current = initialValue;
+      }
     }
-  }, [currentSelectedValue]);
+  }, [initialValue, min, max]);
 
   const scrollHandler = Animated.event(
     [
@@ -249,26 +241,22 @@ export const RulerPicker = ({
   );
 
   const renderItem: ListRenderItem<unknown> = useCallback(
-    ({ index }) => {
-      console.log(initialValue);
-      console.log(currentSelectedValue);
-      return (
-        <RulerPickerItem
-          isLast={index === arrData.length - 1}
-          index={index}
-          shortStepHeight={shortStepHeight}
-          longStepHeight={longStepHeight}
-          gapBetweenSteps={gapBetweenSteps}
-          stepWidth={stepWidth}
-          shortStepColor={shortStepColor}
-          longStepColor={longStepColor}
-          min={min}
-          step={step}
-          initialValue={fixedInitialValue}
-          currentSelectedValue={currentSelectedValue}
-        />
-      );
-    },
+    ({ index }) => (
+      <RulerPickerItem
+        isLast={index === arrData.length - 1}
+        index={index}
+        shortStepHeight={shortStepHeight}
+        longStepHeight={longStepHeight}
+        gapBetweenSteps={gapBetweenSteps}
+        stepWidth={stepWidth}
+        shortStepColor={shortStepColor}
+        longStepColor={longStepColor}
+        min={min}
+        step={step}
+        initialValue={fixedInitialValue.current}
+        currentSelectedValue={currentSelectedValue}
+      />
+    ),
     [
       arrData.length,
       gapBetweenSteps,
@@ -279,7 +267,7 @@ export const RulerPicker = ({
       shortStepHeight,
       min,
       step,
-      fixedInitialValue,
+      fixedInitialValue.current,
       currentSelectedValue,
     ]
   );
@@ -312,9 +300,7 @@ export const RulerPicker = ({
     ]
   );
 
-  // 초기 스크롤 설정을 위한 useEffect 사용 (최초 1회만)
   useEffect(() => {
-    // 이미 설정이 완료되었다면 return
     if (hasInitialized.current || containerWidth <= 0) return;
 
     const timer = setTimeout(() => {
@@ -396,7 +382,6 @@ export const RulerPicker = ({
                 },
               ]}
             >
-              {/* 체감온도 글자의 가운데정렬을 위해  투명 유닛 추가 */}
               {unit && (
                 <View style={{ height: 60 }}>
                   <Text
@@ -569,6 +554,7 @@ export const RulerPickerItem = React.memo(
     const currentValue = index * step + min;
     const isLong = index % 10 === 0;
     const height = isLong ? longStepHeight : shortStepHeight;
+    const isInitialValue = currentValue === initialValue;
 
     return (
       <View
@@ -613,7 +599,7 @@ export const RulerPickerItem = React.memo(
             )}
           </View>
         )}
-        {currentValue === initialValue && (
+        {isInitialValue && (
           <View
             style={{
               overflow: "visible",
