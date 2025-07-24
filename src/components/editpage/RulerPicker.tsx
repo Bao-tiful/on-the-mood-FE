@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -16,6 +22,8 @@ import {
   FlashList,
   ListRenderItem,
 } from "@shopify/flash-list";
+import Icon, { IconName } from "../Icon";
+import { Colors } from "@/src/styles/Colors";
 
 export type RulerPickerTextProps = Pick<
   TextStyle,
@@ -146,6 +154,13 @@ export const RulerPicker = ({
     width || windowWidth
   );
 
+  // 현재 선택된 값 상태 관리
+  const [currentSelectedValue, setCurrentSelectedValue] =
+    useState<number>(initialValue);
+
+  // 고정된 기준점 값 (최초 한 번만 설정)
+  const fixedInitialValue = useMemo(() => initialValue, []);
+
   const itemAmount = (max - min) / step;
   const arrData = Array.from({ length: itemAmount + 1 }, (_, index) => index);
   const listRef = useRef<FlashList<typeof arrData>>(null);
@@ -189,6 +204,7 @@ export const RulerPicker = ({
       if (prevValue.current !== newStep) {
         onValueChange?.(newStep);
         stepTextRef.current?.setNativeProps({ text: newStep.toString() });
+        setCurrentSelectedValue(newStep);
       }
 
       prevValue.current = newStep;
@@ -204,12 +220,13 @@ export const RulerPicker = ({
     };
   }, [scrollPosition, valueCallback]);
 
-  // initialValue가 변경되면 기본값들을 초기화
+  // currentSelectedValue가 외부에서 변경되면 기본값들을 초기화 (최초 1회만)
   useEffect(() => {
-    prevValue.current = initialValue;
-    prevMomentumValue.current = initialValue;
-    hasInitialized.current = false;
-  }, [initialValue]);
+    if (!hasInitialized.current) {
+      prevValue.current = currentSelectedValue;
+      prevMomentumValue.current = currentSelectedValue;
+    }
+  }, [currentSelectedValue]);
 
   const scrollHandler = Animated.event(
     [
@@ -233,6 +250,8 @@ export const RulerPicker = ({
 
   const renderItem: ListRenderItem<unknown> = useCallback(
     ({ index }) => {
+      console.log(initialValue);
+      console.log(currentSelectedValue);
       return (
         <RulerPickerItem
           isLast={index === arrData.length - 1}
@@ -243,6 +262,10 @@ export const RulerPicker = ({
           stepWidth={stepWidth}
           shortStepColor={shortStepColor}
           longStepColor={longStepColor}
+          min={min}
+          step={step}
+          initialValue={fixedInitialValue}
+          currentSelectedValue={currentSelectedValue}
         />
       );
     },
@@ -254,6 +277,10 @@ export const RulerPicker = ({
       longStepHeight,
       shortStepColor,
       shortStepHeight,
+      min,
+      step,
+      fixedInitialValue,
+      currentSelectedValue,
     ]
   );
 
@@ -285,13 +312,13 @@ export const RulerPicker = ({
     ]
   );
 
-  // 초기 스크롤 설정을 위한 useEffect 사용
+  // 초기 스크롤 설정을 위한 useEffect 사용 (최초 1회만)
   useEffect(() => {
     // 이미 설정이 완료되었다면 return
     if (hasInitialized.current || containerWidth <= 0) return;
 
     const timer = setTimeout(() => {
-      const initialIndex = Math.floor((initialValue - min) / step);
+      const initialIndex = Math.floor((currentSelectedValue - min) / step);
       listRef.current?.scrollToOffset({
         offset: initialIndex * (stepWidth + gapBetweenSteps),
         animated: false,
@@ -300,7 +327,14 @@ export const RulerPicker = ({
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [initialValue, min, step, stepWidth, gapBetweenSteps, containerWidth]);
+  }, [
+    currentSelectedValue,
+    min,
+    step,
+    stepWidth,
+    gapBetweenSteps,
+    containerWidth,
+  ]);
 
   return (
     <View
@@ -329,10 +363,6 @@ export const RulerPicker = ({
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             horizontal
-            contentContainerStyle={{
-              paddingHorizontal: 0,
-              paddingVertical: -4,
-            }}
           />
           <View
             style={[
@@ -383,13 +413,8 @@ export const RulerPicker = ({
                   </Text>
                 </View>
               )}
-              <TextInput
+              <Text
                 ref={stepTextRef}
-                defaultValue={
-                  fractionDigits === 0
-                    ? Math.round(initialValue).toString()
-                    : initialValue.toFixed(fractionDigits)
-                }
                 style={[
                   {
                     textAlign: "center",
@@ -400,7 +425,11 @@ export const RulerPicker = ({
                   styles.valueText,
                   valueTextStyle,
                 ]}
-              />
+              >
+                {fractionDigits === 0
+                  ? Math.round(currentSelectedValue).toString()
+                  : currentSelectedValue.toFixed(fractionDigits)}
+              </Text>
               {unit && (
                 <View style={{ height: 60 }}>
                   <Text
@@ -499,6 +528,22 @@ export type RulerPickerItemProps = {
    * @default 'gray'
    */
   longStepColor: string;
+  /**
+   * Minimum value for calculating current value
+   */
+  min?: number;
+  /**
+   * Step value for calculating current value
+   */
+  step?: number;
+  /**
+   * Initial value for comparison
+   */
+  initialValue?: number;
+  /**
+   * Current selected value
+   */
+  currentSelectedValue?: number;
 };
 
 type Props = {
@@ -516,7 +561,12 @@ export const RulerPickerItem = React.memo(
     stepWidth,
     shortStepColor,
     longStepColor,
+    min = 0,
+    step = 1,
+    initialValue = 0,
+    currentSelectedValue = 0,
   }: Props) => {
+    const currentValue = index * step + min;
     const isLong = index % 10 === 0;
     const height = isLong ? longStepHeight : shortStepHeight;
 
@@ -548,14 +598,41 @@ export const RulerPickerItem = React.memo(
             style={{
               overflow: "visible",
               position: "absolute",
+              flexDirection: "row",
+              width: 40,
+              left: -15,
+              bottom: 24,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {Math.abs(currentValue - initialValue) > 2 && (
+              <Text
+                style={{ overflow: "visible", color: Colors.black70 }}
+              >{`${currentValue}°`}</Text>
+            )}
+          </View>
+        )}
+        {currentValue === initialValue && (
+          <View
+            style={{
+              overflow: "visible",
+              position: "absolute",
+              flexDirection: "row",
               width: 40,
               left: -20,
               bottom: 24,
               alignItems: "center",
             }}
           >
-            {/* 숫자의 가운데 정렬을 위해 앞에 공백 2칸을 삽입 */}
-            <Text style={{ overflow: "visible" }}>{`  ${index - 40}°`}</Text>
+            <Icon
+              size={16}
+              name={IconName.temperature}
+              color={Colors.black70}
+            />
+            <Text
+              style={{ overflow: "visible", color: Colors.black70 }}
+            >{`${currentValue}°`}</Text>
           </View>
         )}
       </View>
