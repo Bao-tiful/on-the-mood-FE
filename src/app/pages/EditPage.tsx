@@ -168,7 +168,7 @@ const EditPage = () => {
             <Text style={{ alignSelf: "center", marginTop: 20 }}>
               {feelsLikeTemp == myMoodOndo ? "체감 온도" : "기록 온도"}
             </Text>
-            <View style={{ marginTop: 16, marginBottom: 16 }}>
+            <View style={{ marginTop: 16, marginBottom: 8 }}>
               <TemperatureSlider
                 feelsLikeTemp={feelsLikeTemp}
                 myMoodOndo={myMoodOndo}
