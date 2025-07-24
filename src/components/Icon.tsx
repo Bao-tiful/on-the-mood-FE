@@ -75,7 +75,7 @@ interface IconProps {
 
 const Icon = ({ name, size = 24, color }: IconProps) => {
   const SvgIcon = icons[name];
-  return <SvgIcon width={size} height={size} fill={color} />;
+  return <SvgIcon width={size} height={size} color={color} />;
 };
 
 export default Icon;

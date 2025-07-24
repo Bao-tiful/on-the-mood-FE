@@ -1,6 +1,7 @@
 import typography from '@/styles/Typography';
 import { StyleSheet, Text, View } from 'react-native';
-import Icon, { IconName } from '../Icon';
+import Icon, { IconName } from "../Icon";
+import { Colors } from "@/src/styles/Colors";
 
 type LocationAndTemperatureProps = {
   location: string;
@@ -14,12 +15,12 @@ const LocationAndTemperature = ({
   return (
     <View style={styles.descriptionRow}>
       <View style={styles.descriptionItem}>
-        <Icon name={IconName.location} size={14} />
+        <Icon name={IconName.location} size={14} color={Colors.black70} />
         <Text style={styles.descriptionLabel}>{location}</Text>
       </View>
       <Text style={styles.descriptionLabel}>|</Text>
       <View style={styles.descriptionItem}>
-        <Icon name={IconName.temperature} size={14} />
+        <Icon name={IconName.temperature} size={14} color={Colors.black70} />
         <Text style={styles.descriptionLabel}>체감온도 {temperature}°</Text>
       </View>
     </View>
@@ -29,10 +30,6 @@ const LocationAndTemperature = ({
 export default LocationAndTemperature;
 
 const styles = StyleSheet.create({
-  container: {
-    margin: 12,
-    flex: 1,
-  },
   descriptionRow: {
     flexDirection: 'row',
     gap: 8,
@@ -45,5 +42,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  descriptionLabel: { ...typography.label1, fontWeight: 600 },
+  descriptionLabel: {
+    ...typography.label1,
+    fontWeight: 600,
+    color: Colors.black70,
+  },
 });

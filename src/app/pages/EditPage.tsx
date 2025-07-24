@@ -115,8 +115,8 @@ const EditPage = () => {
       <View style={{ flex: 1 }}>
         <SafeAreaView style={styles.container}>
           <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1, gap: 12 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
           >
             <View>
               <View style={styles.topToolbar}>
@@ -165,8 +165,10 @@ const EditPage = () => {
                 temperature={feelsLikeTemp}
               />
             </View>
-
-            <View style={{ marginTop: 16 }}>
+            <Text style={{ alignSelf: "center", marginTop: 20 }}>
+              {feelsLikeTemp == myMoodOndo ? "체감 온도" : "기록 온도"}
+            </Text>
+            <View style={{ marginTop: 16, marginBottom: 16 }}>
               <TemperatureSlider
                 feelsLikeTemp={feelsLikeTemp}
                 myMoodOndo={myMoodOndo}
@@ -214,8 +216,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topToolbar: {
-    flexDirection: 'row',
-    paddingVertical: 12,
+    flexDirection: "row",
+    paddingTop: 12,
     marginHorizontal: 4,
     justifyContent: 'space-between',
     alignItems: 'center',
