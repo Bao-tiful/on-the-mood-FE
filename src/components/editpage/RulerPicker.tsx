@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Text,
   Animated,
   TextInput,
+  LayoutChangeEvent,
 } from "react-native";
 import type { NativeSyntheticEvent, NativeScrollEvent } from "react-native";
 
@@ -26,7 +27,7 @@ const { width: windowWidth } = Dimensions.get("window");
 export type RulerPickerProps = {
   /**
    * Width of the ruler picker
-   * @default windowWidth
+   * @default windowWidth (또는 부모 컨테이너의 width)
    */
   width?: number;
   /**
@@ -118,7 +119,7 @@ export type RulerPickerProps = {
 } & Partial<RulerPickerItemProps>;
 
 export const RulerPicker = ({
-  width = windowWidth,
+  width,
   height = 500,
   min,
   max,
@@ -140,6 +141,11 @@ export const RulerPicker = ({
   onValueChange,
   onValueChangeEnd,
 }: RulerPickerProps) => {
+  // 동적 width 상태 관리
+  const [containerWidth, setContainerWidth] = useState<number>(
+    width || windowWidth
+  );
+
   const itemAmount = (max - min) / step;
   const arrData = Array.from({ length: itemAmount + 1 }, (_, index) => index);
   const listRef = useRef<FlashList<typeof arrData>>(null);
@@ -151,6 +157,23 @@ export const RulerPicker = ({
 
   // 초기값 설정 여부를 체크해, 다시 값이 초기화 되지 않도록 함
   const hasInitialized = useRef<boolean>(false);
+
+  // onLayout 핸들러
+  const handleLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const { width: layoutWidth } = event.nativeEvent.layout;
+      if (layoutWidth > 0 && !width) {
+        // width prop이 없을 때만 동적으로 설정
+        setContainerWidth(layoutWidth);
+      }
+    },
+    [width]
+  );
+
+  // width가 변경될 때 초기화 상태 리셋
+  useEffect(() => {
+    hasInitialized.current = false;
+  }, [containerWidth]);
 
   const valueCallback: Animated.ValueListenerCallback = useCallback(
     ({ value }) => {
@@ -204,8 +227,8 @@ export const RulerPicker = ({
   );
 
   const renderSeparator = useCallback(
-    () => <View style={{ width: width * 0.5 - stepWidth * 0.5 }} />,
-    [stepWidth, width]
+    () => <View style={{ width: containerWidth * 0.5 - stepWidth * 0.5 }} />,
+    [stepWidth, containerWidth]
   );
 
   const renderItem: ListRenderItem<unknown> = useCallback(
@@ -265,7 +288,7 @@ export const RulerPicker = ({
   // 초기 스크롤 설정을 위한 useEffect 사용
   useEffect(() => {
     // 이미 설정이 완료되었다면 return
-    if (hasInitialized.current) return;
+    if (hasInitialized.current || containerWidth <= 0) return;
 
     const timer = setTimeout(() => {
       const initialIndex = Math.floor((initialValue - min) / step);
@@ -277,110 +300,135 @@ export const RulerPicker = ({
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [initialValue, min, step, stepWidth, gapBetweenSteps]);
+  }, [initialValue, min, step, stepWidth, gapBetweenSteps, containerWidth]);
 
   return (
-    <View style={{ width, height }}>
-      <AnimatedFlashList
-        ref={listRef}
-        data={arrData}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={renderItem}
-        ListHeaderComponent={renderSeparator}
-        ListFooterComponent={renderSeparator}
-        onScroll={scrollHandler}
-        onMomentumScrollEnd={onMomentumScrollEnd}
-        estimatedItemSize={stepWidth + gapBetweenSteps}
-        snapToOffsets={arrData.map(
-          (_, index) => index * (stepWidth + gapBetweenSteps)
-        )}
-        snapToAlignment="start"
-        decelerationRate={decelerationRate}
-        estimatedFirstItemOffset={0}
-        scrollEventThrottle={16}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        horizontal
-      />
-      <View
-        pointerEvents="none"
-        style={[
-          styles.indicator,
-          {
-            transform: [
-              { translateX: -stepWidth * 0.5 },
-              {
-                translateY:
-                  -indicatorHeight * 0.5 -
-                  (valueTextStyle?.fontSize ?? styles.valueText.fontSize),
-              },
-            ],
-            left: stepWidth * 0.5,
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.displayTextContainer,
-            {
-              // width: 100,
-              height: valueTextStyle?.fontSize ?? styles.valueText.fontSize,
-              transform: [
-                {
-                  translateY:
-                    -(valueTextStyle?.fontSize ?? styles.valueText.fontSize) *
-                    0.2,
-                },
-              ],
-            },
-          ]}
-        >
-          <TextInput
-            ref={stepTextRef}
-            defaultValue={
-              fractionDigits === 0
-                ? Math.round(initialValue).toString()
-                : initialValue.toFixed(fractionDigits)
-            }
-            style={[
-              {
-                // width: 80,
-                textAlign: "center",
-                lineHeight:
-                  valueTextStyle?.fontSize ?? styles.valueText.fontSize,
-
-                fontVariant: ["tabular-nums"],
-              },
-              styles.valueText,
-              valueTextStyle,
-            ]}
+    <View
+      style={{ width: width || "100%", height, marginTop: 12 }}
+      onLayout={handleLayout}
+    >
+      {containerWidth > 0 && (
+        <>
+          <AnimatedFlashList
+            ref={listRef}
+            data={arrData}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={renderItem}
+            ListHeaderComponent={renderSeparator}
+            ListFooterComponent={renderSeparator}
+            onScroll={scrollHandler}
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            estimatedItemSize={stepWidth + gapBetweenSteps}
+            snapToOffsets={arrData.map(
+              (_, index) => index * (stepWidth + gapBetweenSteps)
+            )}
+            snapToAlignment="start"
+            decelerationRate={decelerationRate}
+            estimatedFirstItemOffset={0}
+            scrollEventThrottle={16}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            horizontal
+            contentContainerStyle={{
+              paddingHorizontal: 0,
+              paddingVertical: -4,
+            }}
           />
-          {unit && (
-            <View style={{ height: 60 }}>
-              <Text
+          <View
+            style={[
+              styles.indicator,
+              {
+                width: 100,
+                alignSelf: "center",
+                transform: [
+                  {
+                    translateY:
+                      -indicatorHeight * 0.5 -
+                      (valueTextStyle?.fontSize ?? styles.valueText.fontSize),
+                  },
+                ],
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.displayTextContainer,
+                {
+                  height: valueTextStyle?.fontSize ?? styles.valueText.fontSize,
+                  transform: [
+                    {
+                      translateY:
+                        -(
+                          valueTextStyle?.fontSize ?? styles.valueText.fontSize
+                        ) * 0.2,
+                    },
+                  ],
+                },
+              ]}
+            >
+              {/* 체감온도 글자의 가운데정렬을 위해  투명 유닛 추가 */}
+              {unit && (
+                <View style={{ height: 60 }}>
+                  <Text
+                    style={[
+                      styles.unitText,
+                      unitTextStyle,
+                      {
+                        verticalAlign: "top",
+                        color: "transparent",
+                      },
+                    ]}
+                  >
+                    {unit}
+                  </Text>
+                </View>
+              )}
+              <TextInput
+                ref={stepTextRef}
+                defaultValue={
+                  fractionDigits === 0
+                    ? Math.round(initialValue).toString()
+                    : initialValue.toFixed(fractionDigits)
+                }
                 style={[
                   {
-                    verticalAlign: "top",
+                    textAlign: "center",
+                    lineHeight:
+                      valueTextStyle?.fontSize ?? styles.valueText.fontSize,
+                    fontVariant: ["tabular-nums"],
                   },
-                  styles.unitText,
-                  unitTextStyle,
+                  styles.valueText,
+                  valueTextStyle,
                 ]}
-              >
-                {unit}
-              </Text>
+              />
+              {unit && (
+                <View style={{ height: 60 }}>
+                  <Text
+                    style={[
+                      {
+                        verticalAlign: "top",
+                      },
+                      styles.unitText,
+                      unitTextStyle,
+                    ]}
+                  >
+                    {unit}
+                  </Text>
+                </View>
+              )}
             </View>
-          )}
-        </View>
-        <View
-          style={[
-            {
-              width: stepWidth,
-              height: indicatorHeight,
-              backgroundColor: indicatorColor,
-            },
-          ]}
-        />
-      </View>
+            <View
+              style={[
+                {
+                  width: stepWidth,
+                  height: indicatorHeight,
+                  backgroundColor: indicatorColor,
+                },
+              ]}
+            />
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -502,11 +550,12 @@ export const RulerPickerItem = React.memo(
               position: "absolute",
               width: 40,
               left: -20,
-              bottom: 32,
+              bottom: 24,
               alignItems: "center",
             }}
           >
-            <Text style={{ overflow: "visible" }}>{`${index - 40}°`}</Text>
+            {/* 숫자의 가운데 정렬을 위해 앞에 공백 2칸을 삽입 */}
+            <Text style={{ overflow: "visible" }}>{`  ${index - 40}°`}</Text>
           </View>
         )}
       </View>
