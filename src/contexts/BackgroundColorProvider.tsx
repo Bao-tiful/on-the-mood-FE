@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode } from 'react';
 
 interface BackgroundColor {
   // 색상 index 값을 state로 관리

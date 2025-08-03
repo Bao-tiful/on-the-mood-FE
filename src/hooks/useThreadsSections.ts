@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Thread } from "@/src/types/thread";
+import { useMemo } from 'react';
+import { Thread } from '@/types/thread';
 
 type ThreadsByMonth = {
   [key: string]: Thread[];
@@ -18,8 +18,8 @@ export const useThreadsSections = (
 ): ThreadSection[] => {
   return useMemo(() => {
     return Object.entries(threads).map(([date, items]) => {
-      const [year, month] = date.split("-");
-      const formattedDate = `${year}.${month.padStart(2, "0")}`;
+      const [year, month] = date.split('-');
+      const formattedDate = `${year}.${month.padStart(2, '0')}`;
       return {
         title: formattedDate,
         data: items,

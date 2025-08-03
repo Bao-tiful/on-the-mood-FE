@@ -1,5 +1,5 @@
-import { Colors } from "@/src/styles/Colors";
-import { View } from "react-native";
+import { Colors } from '@/styles/Colors';
+import { View } from 'react-native';
 
 const PageDivider = () => {
   return (

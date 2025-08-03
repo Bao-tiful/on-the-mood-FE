@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Animated,
   Easing,
@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
   ViewStyle,
-} from "react-native";
+} from 'react-native';
 
 interface AnimatedColorViewProps {
   children: React.ReactNode;
@@ -28,11 +28,11 @@ const AnimatedColorView = ({
   // 애니메이션 값을 저장할 색상팔레트 레퍼런스 배열 생성
   // Value는 투명도(opacity) -> 1이면 색상이 보이고 0이면 색상이 보이지 않음
   const animatedValues = useRef(
-    colors.map(() => new Animated.Value(0))
+    colors.map(() => new Animated.Value(0)),
   ).current;
 
   // 활성화된 색상을 업데이트하는 함수
-  const setActive = (index: number) => {
+  const setActive = useCallback((index: number) => {
     animatedValues.forEach((animatedValue, i) => {
       Animated.timing(animatedValue, {
         toValue: i === index ? 1 : 0,
@@ -41,19 +41,19 @@ const AnimatedColorView = ({
         easing,
       }).start();
     });
-  };
+  }, [animatedValues, duration, easing]);
 
   // 컴포넌트 마운트 시 초기 활성 색상 설정
   useEffect(() => {
     if (colors.length > 0) {
       setActive(activeIndex);
     }
-  }, [colors, activeIndex]);
+  }, [colors, activeIndex, setActive]);
 
   // activeIndex가 변경될 때마다 애니메이션 업데이트
   useEffect(() => {
     setActive(activeIndex);
-  }, [activeIndex]);
+  }, [activeIndex, setActive]);
 
   return (
     <View style={style}>

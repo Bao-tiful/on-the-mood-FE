@@ -1,6 +1,6 @@
-import axios from "axios";
-import axiosClient from "../clients/axiosClient";
-import { handleApiError } from "../apiUtils";
+
+import axiosClient from '../clients/axiosClient';
+import { handleApiError } from '../apiUtils';
 
 interface SignUpProps {
   username: string;
@@ -12,7 +12,7 @@ interface SignUpProps {
 
 export const signUp = async (postData: SignUpProps) => {
   try {
-    const response = await axiosClient.post("/auth/register", postData);
+    const response = await axiosClient.post('/auth/register', postData);
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -33,7 +33,7 @@ interface AuthTokens {
 export const logIn = async (postData: LogInProps) => {
   try {
     const response = await axiosClient.post<AuthTokens>(
-      "/auth/login",
+      '/auth/login',
       postData
     );
     return response.data;
@@ -54,7 +54,7 @@ interface Profile {
 
 export const getProfile = async () => {
   try {
-    const response = await axiosClient.get<Profile>("/auth/profile");
+    const response = await axiosClient.get<Profile>('/auth/profile');
     return response.data;
   } catch (error) {
     handleApiError(error);

@@ -24,7 +24,7 @@ platform :ios do
     version = package_json['version']
     
     # 이미 빌드된 IPA 파일 경로 (실제 경로로 수정 필요)
-    ipa_path = "./builds/onthemoodFE.ipa"
+    ipa_path = "./builds/onthemood.ipa"
     
     increment_version_number(
       version_number: version
@@ -39,7 +39,7 @@ platform :ios do
     )
   end
 
-  desc "Build production version locally and distribute to Firebase App Distribution"
+  desc "Build and distribute to Firebase App Distribution"
   lane :firebase_distribution do
     # package.json에서 버전 읽기
     require 'json'
@@ -51,12 +51,12 @@ platform :ios do
       version_number: version
     )
 
-    # 로컬 production 빌드 (ad-hoc for Firebase Distribution)
+    # 빌드
     build_app(
-      scheme: "onthemoodFE",
+      scheme: "onthemood",
       export_method: "ad-hoc",
       output_directory: "./builds",
-      export_team_id: "JPL38XBHJ4",
+      export_team_id: "JPL38XBHJ4", # Development Team ID
       export_options: {
         provisioningProfiles: {
           "com.baotiful.onthemood" => "match AdHoc com.baotiful.onthemood"
@@ -69,7 +69,7 @@ platform :ios do
     firebase_app_distribution(
       app: "1:62590143382:ios:5636a388aa09baa6c2abb7",
       groups: "Baotiful",
-      release_notes: "Production build (Local) - Version #{version}"
+      release_notes: "New development build from Fastlane - Version #{version}"
     )
   end
 end

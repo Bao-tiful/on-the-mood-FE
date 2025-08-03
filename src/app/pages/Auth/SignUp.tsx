@@ -5,18 +5,20 @@ import {
   Text,
   TextInput,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import { ToolbarButton } from "@/src/components/ToolbarButton";
-import { IconName } from "@/src/components/Icon";
-import { signUp } from "@/src/api/endpoints/auth";
-import { router } from "expo-router";
+} from 'react-native';
+import React, { useState } from 'react';
+import { ToolbarButton } from '@/components/ToolbarButton';
+import { IconName } from '@/components/Icon';
+import { signUp } from '@/api/endpoints/auth';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
 
 const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [signUpResult, setSignUpResult] = useState("");
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [signUpResult, setSignUpResult] = useState('');
 
   return (
     <SafeAreaView style={{ margin: 16 }}>
@@ -24,28 +26,28 @@ const SignUp = () => {
         <ToolbarButton
           name={IconName.back}
           onPress={() => {
-            router.back();
+            navigation.goBack();
           }}
         />
       </View>
       <View style={{ gap: 4 }}>
         <Text>회원가입</Text>
         <TextInput
-          style={{ backgroundColor: "#aaaaaa", padding: 8 }}
+          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
           placeholder="이메일"
           autoCapitalize="none"
           placeholderTextColor="#ffffff"
           onChangeText={(v) => setEmail(v)}
         />
         <TextInput
-          style={{ backgroundColor: "#aaaaaa", padding: 8 }}
+          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
           placeholder="비밀번호"
           autoCapitalize="none"
           placeholderTextColor="#ffffff"
           onChangeText={(v) => setPassword(v)}
         />
         <TextInput
-          style={{ backgroundColor: "#aaaaaa", padding: 8 }}
+          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
           placeholder="닉네임"
           autoCapitalize="none"
           placeholderTextColor="#ffffff"
@@ -64,10 +66,10 @@ const SignUp = () => {
               const result = await signUp(prop);
               setSignUpResult(result);
 
-              router.back();
+              navigation.goBack();
             } catch (error) {
-              setSignUpResult("error");
-              console.error("ERROR : ", error);
+              setSignUpResult('error');
+              console.error('ERROR : ', error);
             }
           }}
           title="회원가입"
@@ -83,9 +85,9 @@ export default SignUp;
 
 const styles = StyleSheet.create({
   topToolbar: {
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     paddingVertical: 12,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
 });

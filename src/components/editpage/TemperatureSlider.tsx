@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Slider } from "@miblanchard/react-native-slider";
-import { Colors, OndoColors } from "@/src/styles/Colors";
-import Icon, { IconName } from "../Icon";
-import typography from "@/src/styles/Typography";
-import * as Haptic from "expo-haptics";
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Slider } from '@miblanchard/react-native-slider';
+import { Colors, OndoColors } from '@/styles/Colors';
+import Icon, { IconName } from '../Icon';
+import typography from '@/styles/Typography';
+import { Vibration } from 'react-native';
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
@@ -21,7 +21,7 @@ const TemperatureSlider = ({
   const maxValue = 40;
 
   return (
-    <View style={{ width: "100%", marginTop: 16, marginBottom: 32 }}>
+    <View style={{ width: '100%', marginTop: 16, marginBottom: 32 }}>
       <View style={styles.sliderContainer}>
         <View>
           <View style={styles.backgroundContainer}>
@@ -42,7 +42,7 @@ const TemperatureSlider = ({
                     ]}
                     key={index}
                   />
-                )
+                ),
               )}
             </View>
             {myMoodOndo === feelsLikeTemp ? null : (
@@ -59,7 +59,7 @@ const TemperatureSlider = ({
               >
                 <Icon name={IconName.temperatureGray} size={16} />
                 <Text style={styles.feelsLikeTempLabel}>
-                  {feelsLikeTemp + "°"}
+                  {feelsLikeTemp + '°'}
                 </Text>
               </View>
             )}
@@ -70,14 +70,16 @@ const TemperatureSlider = ({
             minimumValue={minValue}
             maximumValue={maxValue}
             value={myMoodOndo}
-            onValueChange={(value) => {
+            onValueChange={value => {
               // step 크기와 관계없이 소숫점 단위의 변화에 대해서도 onValueChange 콜백이 호출되고 있어,
               // 이미 value가 같은 경우에는 로직 호출 방지
-              if (myMoodOndo == value[0]) return;
+              if (myMoodOndo === value[0]) {
+                return;
+              }
 
               changeMoodTemp(value[0]);
 
-              Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
+              Vibration.vibrate(10);
             }}
             maximumTrackTintColor="transparent"
             minimumTrackTintColor="transparent"
@@ -101,7 +103,7 @@ const TemperatureSlider = ({
       >
         <View style={[styles.degreeTag]}>
           <Text style={[styles.degreeTopLabel]}>
-            {myMoodOndo === feelsLikeTemp ? "오늘의 체감온도" : "나의 온도무드"}
+            {myMoodOndo === feelsLikeTemp ? '오늘의 체감온도' : '나의 온도무드'}
           </Text>
           <Text
             style={[
@@ -124,16 +126,16 @@ const styles = StyleSheet.create({
   sliderContainer: {
     height: 32,
     marginTop: 40,
-    width: "100%",
-    justifyContent: "flex-end",
+    width: '100%',
+    justifyContent: 'flex-end',
   },
   backgroundContainer: {
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   minMaxLabelRow: {
-    flexDirection: "row",
-    position: "absolute",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    position: 'absolute',
+    justifyContent: 'space-between',
     top: -30,
     left: 0,
     right: 0,
@@ -144,11 +146,11 @@ const styles = StyleSheet.create({
     ...typography.body,
   },
   feelsLikeTempLabelRow: {
-    flexDirection: "row",
-    position: "absolute",
+    flexDirection: 'row',
+    position: 'absolute',
     bottom: -54,
-    transform: [{ translateX: "-22%" }],
-    alignItems: "center",
+    transform: [{ translateX: '-22%' }],
+    alignItems: 'center',
   },
   feelsLikeTempLabel: {
     ...typography.label1,
@@ -156,21 +158,21 @@ const styles = StyleSheet.create({
     color: Colors.black40,
   },
   sliderThumbContainer: {
-    position: "absolute",
+    position: 'absolute',
   },
   degreeTag: {
-    position: "absolute",
+    position: 'absolute',
     width: 82,
     height: 48,
-    transform: [{ translateX: "-50%" }],
-    backgroundColor: "black",
+    transform: [{ translateX: '-50%' }],
+    backgroundColor: 'black',
     borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   degreeTopLabel: {
     ...typography.label4,
-    position: "absolute",
+    position: 'absolute',
     top: -14,
   },
   degreeTagLabel: {
@@ -182,30 +184,30 @@ const styles = StyleSheet.create({
     borderLeftWidth: 8 / 2,
     borderRightWidth: 8 / 2,
     borderBottomWidth: (Math.sqrt(3) / 2) * 8, // 정삼각형 높이
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    backgroundColor: "transparent",
-    position: "absolute",
-    transform: [{ translateY: 98 }, { translateX: "-35%" }],
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    transform: [{ translateY: 98 }, { translateX: '-35%' }],
   },
   backgroundTrack: {
     height: 32,
-    width: "101%",
-    position: "absolute",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: '101%',
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   backgroundTrackItem: {
     backgroundColor: Colors.black18,
-    height: "100%",
+    height: '100%',
     width: 2,
-    borderRadius: "50%",
+    borderRadius: '50%',
   },
   thumb: {
     width: 2,
     height: 58,
-    backgroundColor: "black",
-    position: "absolute",
+    backgroundColor: 'black',
+    position: 'absolute',
     top: -15,
   },
   track: {

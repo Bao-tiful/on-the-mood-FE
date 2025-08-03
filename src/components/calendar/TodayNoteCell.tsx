@@ -1,29 +1,31 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import Icon, { IconName } from "../Icon";
-import { router } from "expo-router";
-import { LocationData } from "@/src/api/endpoints/weather";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import Icon, { IconName } from '../Icon';
+import { LocationData } from '@/api/endpoints/weather';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
 
 type TodayNoteCellProps = {
-  date: Date;
   temperature: number;
   location?: LocationData;
 };
 
-const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
+const TodayNoteCell = ({ location, temperature }: TodayNoteCellProps) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <View style={styles.todayCell}>
-        <Text style={styles.todayCellTitle}>{"Today \nOndo"}</Text>
-        <View style={{ width: "100%" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={styles.todayCellTitle}>{'Today \nOndo'}</Text>
+        <View style={{ width: '100%' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Icon name={IconName.location} size={17} />
             <Text style={styles.todayWeatherLocation}>{location?.name_ko}</Text>
           </View>
           <Text style={styles.todayWeatherTemperature}>
-            {temperature ?? "-"}°
+            {temperature ?? '-'}°
           </Text>
         </View>
       </View>
@@ -31,27 +33,24 @@ const TodayNoteCell = ({ date, location, temperature }: TodayNoteCellProps) => {
         <View
           style={{
             flex: 1,
-            flexDirection: "column",
-            justifyContent: "flex-start",
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
             gap: 8,
           }}
         >
-          <Text style={styles.todayCellTitle}>{"Today \nMood Note"}</Text>
+          <Text style={styles.todayCellTitle}>{'Today \nMood Note'}</Text>
           <Text style={styles.todayCellDescription}>
-            {"오늘의 하루를 \n+버튼을 눌러 기록해보세요."}
+            {'오늘의 하루를 \n+버튼을 눌러 기록해보세요.'}
           </Text>
         </View>
         <TouchableOpacity
           style={styles.todayWriteButton}
-          onPress={() =>
-            router.push({
-              pathname: "/pages/EditPage",
-              params: {
-                date: date.toISOString(),
-                locationData: JSON.stringify(location),
-              },
-            })
-          }
+          onPress={() => {
+            const today = new Date();
+            navigation.navigate('EditPage', {
+              selectedDate: today.toISOString(),
+            });
+          }}
         >
           {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 => svgIcon 의 컬러값에 currentColor 사용후 적용 가능함*/}
           <Text
@@ -73,39 +72,38 @@ export default TodayNoteCell;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     maxHeight: 250,
     columnGap: 8,
   },
   todayCell: {
-    width: "100%",
+    width: '100%',
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     borderColor: Colors.black32,
     borderWidth: 1,
     borderRadius: 16,
     padding: 16,
   },
   todayCellTitle: {
-    textAlign: "left",
-    width: "100%",
+    textAlign: 'left',
+    width: '100%',
     ...typography.label1,
     fontWeight: 700,
     color: Colors.black100,
   },
   todayCellDescription: {
-    flexDirection: "row",
-    textAlign: "left",
-    width: "100%",
+    flexDirection: 'row',
+    textAlign: 'left',
+    width: '100%',
     ...typography.label3,
     color: Colors.black32,
   },
   todayCellContent: {
     ...typography.body2,
     color: Colors.black100,
-    textOverflow: "...",
     maxHeight: 110,
   },
   todayWeatherLocation: {
@@ -120,10 +118,10 @@ const styles = StyleSheet.create({
   todayWriteButton: {
     width: 68,
     aspectRatio: 1,
-    borderRadius: "50%",
+    borderRadius: '50%',
     backgroundColor: Colors.black100,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     color: Colors.white100,
     fontSize: 24,
   },

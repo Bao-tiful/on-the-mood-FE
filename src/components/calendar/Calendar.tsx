@@ -1,12 +1,11 @@
-import { CalendarDatePicker } from "@/src/components/calendar/CalendarDatePicker";
-import { CalendarContent } from "@/src/components/calendar/CalendarContent";
-import { getNotes } from "@/src/api/endpoints/daily-notes";
-import { useEffect, useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { useNotes } from "@/src/hooks/useNotes";
-import { LocationData } from "@/src/api/endpoints/weather";
-import { useFocusEffect } from "expo-router";
-import React from "react";
+import { CalendarDatePicker } from '@/components/calendar/CalendarDatePicker';
+import { CalendarContent } from '@/components/calendar/CalendarContent';
+import { useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useNotes } from '@/hooks/useNotes';
+import { LocationData } from '@/api/endpoints/weather';
+import React from 'react';
+import { NoteItem } from '@/models/NoteItem';
 
 interface CalendarProps {
   date: Date;
@@ -27,7 +26,7 @@ const Calendar = ({
     setModalVisible(isModalOn);
   };
 
-  const { notes, reloadNotes } = useNotes();
+  const { notes } = useNotes();
 
   const notesMap = useMemo(() => {
     const map = new Map<number, NoteItem>();
@@ -68,27 +67,27 @@ export default Calendar;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    width: '100%',
     maxWidth: 450,
-    flexDirection: "column",
-    justifyContent: "space-between",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     rowGap: 20,
   },
   todayContainer: {
     flex: 1,
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     maxHeight: 250,
     columnGap: 2,
   },
   todayCell: {
-    width: "100%",
+    width: '100%',
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     padding: 16,
-    alignItems: "center",
-    backgroundColor: "#ffffff88",
+    alignItems: 'center',
+    backgroundColor: '#ffffff88',
   },
   todayWeatherCell: {
     borderTopLeftRadius: 32,
@@ -99,26 +98,26 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 32,
   },
   todayCellTitle: {
-    width: "100%",
+    width: '100%',
     fontWeight: 600,
   },
   todayWeatherLocation: {
     fontSize: 14,
-    color: "black",
+    color: 'black',
   },
   todayWeatherTemperature: {
     fontSize: 48,
     fontWeight: 400,
-    color: "black",
+    color: 'black',
   },
   todayWriteButton: {
-    width: "40%",
+    width: '40%',
     aspectRatio: 1,
-    borderRadius: "50%",
-    backgroundColor: "black",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "white",
+    borderRadius: '50%',
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
     fontSize: 24,
   },
 });

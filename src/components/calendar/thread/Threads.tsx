@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -8,18 +8,17 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
-import { useInfiniteThreads } from "@/src/hooks/useInfiniteThreads";
-import ThreadItem from "./ThreadItem";
-import { router } from "expo-router";
-import typography from "@/src/styles/Typography";
-import { Colors } from "@/src/styles/Colors";
-import { Thread } from "@/src/types/thread";
-import {
-  useThreadsSections,
-  ThreadSection,
-} from "@/src/hooks/useThreadsSections";
+import { useInfiniteThreads } from '@/hooks/useInfiniteThreads';
+import ThreadItem from './ThreadItem';
+import typography from '@/styles/Typography';
+import { Colors } from '@/styles/Colors';
+import { Thread } from '@/types/thread';
+import { useThreadsSections } from '@/hooks/useThreadsSections';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
 
 interface ThreadsProps {
   updateDate: (date: Date) => void;
@@ -56,7 +55,7 @@ const ErrorState = React.memo(
         <Text style={styles.retryButtonText}>다시 시도</Text>
       </TouchableOpacity>
     </SafeAreaView>
-  )
+  ),
 );
 
 // 로딩 인디케이터 컴포넌트 분리
@@ -74,18 +73,22 @@ const SectionHeader = React.memo(
     >
       <Text style={styles.sectionTitle}>{title}</Text>
     </View>
-  )
+  ),
 );
 
-export default function Threads({ updateDate }: ThreadsProps) {
+export default function Threads({}: ThreadsProps) {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { threads, isLoading, error, hasMore, loadMore, refresh } =
     useInfiniteThreads({ pageSize: 10 });
 
   const sections = useThreadsSections(threads);
 
   const handleEditPress = useCallback(() => {
-    router.push("/pages/EditPage");
-  }, []);
+    const today = new Date();
+    navigation.navigate('EditPage', {
+      selectedDate: today.toISOString(),
+    });
+  }, [navigation]);
 
   const onEndReached = useCallback(() => {
     if (!isLoading && hasMore) {
@@ -94,31 +97,35 @@ export default function Threads({ updateDate }: ThreadsProps) {
   }, [isLoading, hasMore, loadMore]);
 
   const renderFooter = useCallback(() => {
-    if (!isLoading) return null;
+    if (!isLoading) {
+      return null;
+    }
     return <LoadingFooter />;
   }, [isLoading]);
 
   const renderSectionHeader = useCallback(
-    ({ section: { title }, section }: { section: { title: string } }) => {
-      const sectionIndex = sections.findIndex((s) => s.title === title);
+    ({ section: { title } }: { section: { title: string } }) => {
+      const sectionIndex = sections.findIndex(s => s.title === title);
       return <SectionHeader title={title} isFirst={sectionIndex === 0} />;
     },
-    [sections]
+    [sections],
   );
 
   const renderItem = useCallback(
     ({ item }: { item: Thread }) => <ThreadItem thread={item} />,
-    []
+    [],
   );
 
   const renderEmptyState = useCallback(() => {
-    if (isLoading) return null;
+    if (isLoading) {
+      return null;
+    }
     return <EmptyState onPress={handleEditPress} />;
   }, [isLoading, handleEditPress]);
 
   const refreshControl = useMemo(
     () => <RefreshControl refreshing={isLoading} onRefresh={refresh} />,
-    [isLoading, refresh]
+    [isLoading, refresh],
   );
 
   if (error) {
@@ -135,7 +142,7 @@ export default function Threads({ updateDate }: ThreadsProps) {
         sections={sections}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
@@ -162,7 +169,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     paddingVertical: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   sectionHeader: {
     paddingBottom: 16,
@@ -177,21 +184,21 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 40,
   },
   emptyTitle: {
     ...typography.headline,
     marginBottom: 8,
     color: Colors.black100,
-    textAlign: "center",
+    textAlign: 'center',
   },
   emptySubtitle: {
     ...typography.body,
     marginBottom: 24,
     color: Colors.black40,
-    textAlign: "center",
+    textAlign: 'center',
   },
   emptyButton: {
     paddingVertical: 12,
@@ -207,41 +214,41 @@ const styles = StyleSheet.create({
   emptyButtonText: {
     ...typography.body,
     color: Colors.lightGray,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   errorContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 24,
   },
   errorTitle: {
     ...typography.heading1,
     fontSize: 18,
-    color: "#FF3B30",
+    color: '#FF3B30',
     marginBottom: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   errorMessage: {
     ...typography.body2,
     color: Colors.black40,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: "#007AFF",
+    backgroundColor: '#007AFF',
     borderRadius: 8,
     elevation: 2,
-    shadowColor: "#007AFF",
+    shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   retryButtonText: {
     ...typography.body,
-    color: "white",
-    fontWeight: "600",
+    color: 'white',
+    fontWeight: '600',
   },
 });

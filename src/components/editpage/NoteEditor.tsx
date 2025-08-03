@@ -1,8 +1,8 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
-import { Colors } from "@/src/styles/Colors";
-import Keywords from "./Keywords";
-import typography from "@/src/styles/Typography";
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React from 'react';
+import { Colors } from '@/styles/Colors';
+import Keywords from './Keywords';
+import typography from '@/styles/Typography';
 
 type NoteEditorProps = {
   keywordList: string[];
@@ -17,7 +17,7 @@ const NoteEditor = ({
   memo,
   onMemoChanged,
   autoFocus = true,
-  defaultValue = "",
+  defaultValue = '',
 }: NoteEditorProps) => {
   return (
     <View style={styles.noteEditorContainer}>
@@ -30,7 +30,7 @@ const NoteEditor = ({
           numberOfLines={3}
           maxLength={100}
           placeholder={
-            "오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요."
+            '오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요.'
           }
           placeholderTextColor={Colors.black40}
           autoFocus={autoFocus}
@@ -39,7 +39,7 @@ const NoteEditor = ({
           }}
         />
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
         <Text style={styles.noteCountingLabel}>{memo.length}</Text>
         <Text style={styles.noteMaxLabel}> /100</Text>
       </View>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   noteEditor: {
     ...typography.body,
-    textAlignVertical: "top",
+    textAlignVertical: 'top',
     minHeight: 64,
     // maxHeight: 80,
   },

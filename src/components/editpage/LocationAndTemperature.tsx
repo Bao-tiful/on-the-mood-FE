@@ -1,6 +1,6 @@
-import typography from "@/src/styles/Typography";
-import { StyleSheet, Text, View } from "react-native";
-import Icon, { IconName } from "../Icon";
+import typography from '@/styles/Typography';
+import { StyleSheet, Text, View } from 'react-native';
+import Icon, { IconName } from '../Icon';
 
 type LocationAndTemperatureProps = {
   location: string;
@@ -34,16 +34,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   descriptionRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 8,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   descriptionItem: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 2,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   descriptionLabel: { ...typography.label1, fontWeight: 600 },
 });

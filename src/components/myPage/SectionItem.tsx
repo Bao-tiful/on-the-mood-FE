@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import typography from "@/src/styles/Typography";
-import { Colors } from "@/src/styles/Colors";
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import typography from '@/styles/Typography';
+import { Colors } from '@/styles/Colors';
 
 export const SectionTitle = ({ label }: { label: string }) => {
   return (
@@ -12,7 +12,7 @@ export const SectionTitle = ({ label }: { label: string }) => {
 };
 
 export const SectionContent = ({
-  label = "",
+  label = '',
   children = null,
 }: {
   label?: string;
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     ...typography.headline,
   },
   sectionContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingBottom: 24,
     borderBottomWidth: 1,
     borderBottomColor: Colors.black18,

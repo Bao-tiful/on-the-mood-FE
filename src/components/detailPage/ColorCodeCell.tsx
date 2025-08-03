@@ -1,24 +1,24 @@
-import { Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import Icon, { IconName } from "@/src/components/Icon";
-import typography from "@/src/styles/Typography";
-import { Colors, OndoColors } from "@/src/styles/Colors";
+import { Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import Icon, { IconName } from '@/components/Icon';
+import typography from '@/styles/Typography';
+import { Colors, OndoColors } from '@/styles/Colors';
 
 const ColorCodeCell = ({ ondo }: { ondo: number }) => (
   <View
     style={{
-      flexDirection: "row",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     }}
   >
-    <View style={{ flexDirection: "row" }}>
+    <View style={{ flexDirection: 'row' }}>
       <Text
         style={[
           typography.label1,
-          { color: Colors.black100, fontWeight: "bold" },
+          { color: Colors.black100, fontWeight: 'bold' },
         ]}
       >
-        {"Note\nMood Code"}
+        {'Note\nMood Code'}
       </Text>
 
       <TouchableOpacity
@@ -35,8 +35,8 @@ const ColorCodeCell = ({ ondo }: { ondo: number }) => (
         typography.title2,
         {
           color: Colors.black100,
-          fontWeight: "bold",
-          textDecorationLine: "underline",
+          fontWeight: 'bold',
+          textDecorationLine: 'underline',
         },
       ]}
     >
