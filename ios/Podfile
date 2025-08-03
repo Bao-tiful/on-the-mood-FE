@@ -5,12 +5,23 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
+# Setup permissions for react-native-permissions
+# Temporarily disabled to test app functionality
+# def node_require(script)
+#   require Pod::Executable.execute_command('node', ['-p',
+#     "require.resolve(
+#       '#{script}',
+#       {paths: [process.argv[1]]},
+#     )", __dir__]).strip
+# end
+# 
+# node_require('react-native-permissions/scripts/setup')
+# setup_permissions([
+#   'LocationWhenInUse',
+# ])
+
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
-
-# Permissions for react-native-permissions
-permissions_path = '../node_modules/react-native-permissions/ios'
-pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -35,5 +46,15 @@ target 'onthemood' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    
+    # Setup permissions for react-native-permissions
+    installer.pods_project.targets.each do |target|
+      if target.name == 'RNPermissions'
+        target.build_configurations.each do |config|
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PERMISSION_LOCATION_WHEN_IN_USE=1'
+        end
+      end
+    end
   end
 end

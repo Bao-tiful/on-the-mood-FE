@@ -10,8 +10,6 @@ PODS:
   - hermes-engine (0.80.2):
     - hermes-engine/Pre-built (= 0.80.2)
   - hermes-engine/Pre-built (0.80.2)
-  - Permission-LocationWhenInUse (1.0.0):
-    - React-Core
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -2466,7 +2464,6 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - Permission-LocationWhenInUse (from `../node_modules/react-native-permissions/ios/LocationWhenInUse`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
   - RCTRequired (from `../node_modules/react-native/Libraries/Required`)
@@ -2565,8 +2562,6 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2025-07-24-RNv0.80.2-5c7dbc0a78cb2d2a8bc81c41c617c3abecf209ff
-  Permission-LocationWhenInUse:
-    :path: "../node_modules/react-native-permissions/ios/LocationWhenInUse"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2723,7 +2718,6 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: bbc1152da7d2d40f9e59c28acc6576fcf5d28e2a
-  Permission-LocationWhenInUse: 90d9a69098e5d18443d2026a29daa8ef2fc66b86
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: 300c5eb91114d4339b0bb39505d0f4824d7299b7
   RCTRequired: e0446b01093475b7082fbeee5d1ef4ad1fe20ac4
@@ -2799,6 +2793,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: a742cc68e8366fcfc681808162492bc0aa7a9498
 
-PODFILE CHECKSUM: 6f5d268257ffdf7817446b514666f896c678b1a8
+PODFILE CHECKSUM: cc34d50953bedc6bedbd90601a22ed9ce04e1716
 
 COCOAPODS: 1.16.2
