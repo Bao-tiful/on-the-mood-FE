@@ -1,12 +1,15 @@
-import { LocationData } from "@/src/api/endpoints/weather";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import { isDateToday } from "@/src/utils/dateUtils";
-import { router } from "expo-router";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import Icon, { IconName } from "../Icon";
-import { ToolbarButton } from "../ToolbarButton";
+import { LocationData } from '@/api/endpoints/weather';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Icon, { IconName } from '../Icon';
+import { ToolbarButton } from '../ToolbarButton';
+import { NoteItem } from '@/models/NoteItem';
+import { isDateToday } from '@/utils/dateUtils';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
 
 type ThreadCalendarCellProps = {
   date: Date;
@@ -14,19 +17,16 @@ type ThreadCalendarCellProps = {
   location?: LocationData;
 };
 
-const ThreadCalendarCell = ({
-  date,
-  note,
-  location,
-}: ThreadCalendarCellProps) => {
+const ThreadCalendarCell = ({ date, note, location }: ThreadCalendarCellProps) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const WeatherCell = (
     <View style={[styles.todayCell]}>
-      <Text style={styles.todayCellTitle}>{"오늘의 \n체감 온도"}</Text>
-      <View style={{ width: "100%" }}>
+      <Text style={styles.todayCellTitle}>{'오늘의 \n체감 온도'}</Text>
+      <View style={{ width: '100%' }}>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             marginBottom: 4,
           }}
         >
@@ -46,27 +46,23 @@ const ThreadCalendarCell = ({
 
   const NoteCell = (
     <View style={[styles.todayCell]}>
-      <View style={{ flexDirection: "row", paddingHorizontal: 0 }}>
-        <Text style={styles.todayCellTitle}>{"무드온도\n일기"}</Text>
+      <View style={{ flexDirection: 'row', paddingHorizontal: 0 }}>
+        <Text style={styles.todayCellTitle}>{'무드온도\n일기'}</Text>
         {note !== undefined ? (
           <ToolbarButton
             name={IconName.arrow}
             onPress={() => {
-              if (isDateToday(note?.created_at)) {
-                router.push({
-                  pathname: "/pages/EditPage",
-                  // TODO: feelsLikeTempData를 오늘의 체감온도로 수정해주기
-                  // 이 데이터는 note에 들어있을 예정이라, note에서 값 가져와도 좋을 것 같음
-                  params: {
-                    noteData: JSON.stringify(note),
-                    locationData: JSON.stringify(location),
-                  },
-                });
-              } else {
-                router.push({
-                  pathname: "/pages/DetailPage",
-                  params: { noteData: JSON.stringify(note) },
-                });
+              if (note) {
+                if (isDateToday(note.created_at)) {
+                  navigation.navigate('EditPage', {
+                    selectedDate: date.toISOString(),
+                    existingNote: JSON.stringify(note),
+                  });
+                } else {
+                  navigation.navigate('DetailPage', { 
+                    noteData: JSON.stringify(note) 
+                  });
+                }
               }
             }}
           />
@@ -74,7 +70,7 @@ const ThreadCalendarCell = ({
           <View />
         )}
       </View>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: '100%' }}>
         <Text style={styles.todayCellContent}>{note?.content}</Text>
       </View>
     </View>
@@ -93,27 +89,27 @@ export default ThreadCalendarCell;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     maxHeight: 250,
     columnGap: 1,
     gap: 2,
   },
   todayCell: {
-    width: "100%",
+    width: '100%',
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     padding: 16,
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: Colors.white40,
     borderRadius: 16,
   },
   todayCellTitle: {
     flex: 1,
-    flexDirection: "row",
-    textAlign: "left",
-    width: "100%",
+    flexDirection: 'row',
+    textAlign: 'left',
+    width: '100%',
     ...typography.label1,
     fontWeight: 700,
     color: Colors.black100,
@@ -121,7 +117,6 @@ const styles = StyleSheet.create({
   todayCellContent: {
     ...typography.body2,
     color: Colors.black100,
-    textOverflow: "...",
     maxHeight: 110,
   },
   todayWeatherLocation: {
@@ -133,14 +128,14 @@ const styles = StyleSheet.create({
     color: Colors.black100,
   },
   feelsLikeBox: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 2,
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 5,
     marginTop: 4,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     backgroundColor: Colors.black18,
   },
   feelsLikeText: {

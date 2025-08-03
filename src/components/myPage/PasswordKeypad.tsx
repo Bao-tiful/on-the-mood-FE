@@ -4,11 +4,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import typography from "@/src/styles/Typography";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import Icon, { IconName } from "../Icon";
+} from 'react-native';
+import React from 'react';
+import typography from '@/styles/Typography';
+import { Colors } from '@/styles/Colors';
+import Icon, { IconName } from '../Icon';
 
 type PasswordKeypadProps = {
   onNextInput: (value: number) => void;
@@ -87,19 +87,19 @@ export default PasswordKeypad;
 
 const styles = StyleSheet.create({
   topToolbar: {
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     paddingVertical: 12,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   safeArea: { gap: 20, margin: 12, flex: 1 },
   button: {
     flex: 1,
     paddingVertical: 24,
     color: Colors.black100,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 8,
   },
   text: {

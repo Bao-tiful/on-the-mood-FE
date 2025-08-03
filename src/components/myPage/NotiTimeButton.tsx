@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
 
 // TODO: 필요한 경우에 timeString을 내부 Time type으로 변경하기
 const NotiTimeButton = ({

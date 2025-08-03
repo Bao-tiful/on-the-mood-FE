@@ -1,12 +1,12 @@
-import typography from "@/src/styles/Typography";
-import { View, Text } from "react-native";
+import typography from '@/styles/Typography';
+import { View, Text } from 'react-native';
 
-import Icon, { IconName } from "../Icon";
-import { Colors } from "@/src/styles/Colors";
+import Icon, { IconName } from '../Icon';
+import { Colors } from '@/styles/Colors';
 
 export enum AuthType {
-  "google",
-  "apple",
+  'google',
+  'apple',
 }
 
 export const AuthInfo = ({
@@ -33,8 +33,8 @@ export const AuthInfo = ({
   return (
     <View
       style={{
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         gap: 16,
       }}
     >
@@ -42,10 +42,10 @@ export const AuthInfo = ({
         style={{
           width: 24,
           height: 24,
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: 'center',
+          justifyContent: 'center',
           backgroundColor: backgroundColor,
-          borderRadius: "50%",
+          borderRadius: '50%',
         }}
       >
         <Icon name={iconName} size={12} />

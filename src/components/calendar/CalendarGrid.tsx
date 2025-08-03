@@ -1,17 +1,17 @@
-import React from "react";
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import React from 'react';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
 import {
   CalendarCell,
   EmptyCalendarCell,
   PlaceholderCalendarCell,
-} from "@components/calendar/CalendarGridCell";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+} from '@components/calendar/CalendarGridCell';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
 import {
   firstDayOfMonth,
   isSameDay,
   lastDayOfMonth,
-} from "@/src/utils/dateUtils";
+} from '@/utils/dateUtils';
 
 interface CalendarGridProps {
   date: Date;
@@ -62,7 +62,7 @@ export const CalendarGrid = ({
             );
           } else {
             if (item.date > 0 && item.date - lastDate - cellDate.getDay() > 0)
-              return <PlaceholderCalendarCell />;
+              {return <PlaceholderCalendarCell />;}
             else {
               return <EmptyCalendarCell />;
             }
@@ -78,7 +78,7 @@ export const CalendarGrid = ({
 
 // 캘린더의 요일 목록
 function WeekdayNames() {
-  const weekdayNameList = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const weekdayNameList = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   return (
     <View style={styles.weekdayContainer}>
@@ -93,14 +93,14 @@ function WeekdayNames() {
 
 const styles = StyleSheet.create({
   weekdayContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   weekdayCell: {
     ...typography.label2,
-    flexDirection: "row",
+    flexDirection: 'row',
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
     color: Colors.black40,
   },
 });

@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import typography from "@/src/styles/Typography";
-import { Colors, OndoColors } from "@/src/styles/Colors";
-import Tooltip from "../feedback/Tooltip";
-import Icon, { IconName } from "../Icon";
-import Toast from "react-native-toast-message";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import typography from '@/styles/Typography';
+import { Colors, OndoColors } from '@/styles/Colors';
+import Tooltip from '../feedback/Tooltip';
+import Icon, { IconName } from '../Icon';
+import Toast from 'react-native-toast-message';
 
 const NoteOndoCard = ({ note }: { note: NoteItem }) => {
   const maxTemp = 40;
@@ -13,7 +13,7 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
   const copyColorCode = () => {
     const colorCode = OndoColors.get(note.custom_temp);
     if (colorCode) {
-      const Clipboard = require("react-native").Clipboard;
+      const Clipboard = require('react-native').Clipboard;
       Clipboard.setString(colorCode);
     }
   };
@@ -29,8 +29,8 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
     >
       {/* 노트 온도 레이블 */}
       <View style={styles.rowContainer}>
-        <Text style={styles.sectionTitle}>{"Note\nOndo"}</Text>
-        <View style={{ flexDirection: "row" }}>
+        <Text style={styles.sectionTitle}>{'Note\nOndo'}</Text>
+        <View style={{ flexDirection: 'row' }}>
           <Text style={[typography.display2]}>{note.custom_temp}°</Text>
         </View>
       </View>
@@ -59,12 +59,12 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
       <View style={{ height: 24 }} />
       {/* 노트 컬러 코드*/}
       <View style={styles.rowContainer}>
-        <View style={{ flexDirection: "row", gap: 16 }}>
-          <Text style={styles.sectionTitle}>{"Mood\nColor Code"}</Text>
+        <View style={{ flexDirection: 'row', gap: 16 }}>
+          <Text style={styles.sectionTitle}>{'Mood\nColor Code'}</Text>
           <Tooltip
-            title={"💡 Mood Code란?"}
+            title={'💡 Mood Code란?'}
             content={
-              "이 코드는 여러분의 감정온도를 기반으로 생성된 색상 값입니다. HEX 컬러 코드를 복사하여 다양한 곳에서 활용해보세요!"
+              '이 코드는 여러분의 감정온도를 기반으로 생성된 색상 값입니다. HEX 컬러 코드를 복사하여 다양한 곳에서 활용해보세요!'
             }
             children={<Icon name={IconName.info} size={24} />}
           />
@@ -73,8 +73,8 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
           onPress={() => {
             copyColorCode();
             Toast.show({
-              type: "info",
-              text1: "컬러코드를 복사했어요",
+              type: 'info',
+              text1: '컬러코드를 복사했어요',
               visibilityTime: 2000, // ms단위
             });
           }}
@@ -95,12 +95,12 @@ export default NoteOndoCard;
 const styles = StyleSheet.create({
   backgroundContainer: {
     height: 32,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   minMaxLabelRow: {
-    flexDirection: "row",
-    position: "absolute",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    position: 'absolute',
+    justifyContent: 'space-between',
     top: -30,
     left: 0,
     right: 0,
@@ -112,31 +112,31 @@ const styles = StyleSheet.create({
   },
   backgroundTrack: {
     height: 32,
-    width: "101%",
-    position: "absolute",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: '101%',
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   backgroundTrackItem: {
     backgroundColor: Colors.black18,
-    height: "100%",
+    height: '100%',
     width: 2,
-    borderRadius: "50%",
+    borderRadius: '50%',
   },
   rowContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   sectionTitle: {
     ...typography.label1,
     color: Colors.black100,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   colorCode: {
     ...typography.headline,
     color: Colors.black100,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
   colorCodeContainer: {
     paddingHorizontal: 10,

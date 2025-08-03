@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { Thread } from "@/src/types/thread";
-import { OndoColors } from "@/src/styles/Colors";
-import { Colors } from "@/src/styles/Colors";
+import { useMemo } from 'react';
+import { Thread } from '@/types/thread';
+import { OndoColors } from '@/styles/Colors';
+import { Colors } from '@/styles/Colors';
 
 /**
  * ThreadItem에서 사용할 데이터를 변환하는 훅

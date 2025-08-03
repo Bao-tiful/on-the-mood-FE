@@ -1,6 +1,6 @@
-import axios from "axios";
-import axiosClient from "../clients/axiosClient";
-import { handleApiError } from "../apiUtils";
+
+import axiosClient from '../clients/axiosClient';
+import { handleApiError } from '../apiUtils';
 
 interface PostNotesProps {
   location: string;
@@ -10,7 +10,7 @@ interface PostNotesProps {
 
 export const postNote = async (prop: PostNotesProps) => {
   try {
-    const response = await axiosClient.post<Note>("/daily-notes", prop);
+    const response = await axiosClient.post<Note>('/daily-notes', prop);
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -29,7 +29,7 @@ export interface Note {
 
 export const getNotes = async () => {
   try {
-    const response = await axiosClient.get<Note[]>("/daily-notes");
+    const response = await axiosClient.get<Note[]>('/daily-notes');
     return response.data;
   } catch (error) {
     handleApiError(error);

@@ -1,11 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
 import Popover, {
   PopoverMode,
   PopoverPlacement,
-} from "react-native-popover-view";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+} from 'react-native-popover-view';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
 
 /// 사용법
 /// children으로 Tooltip을 열 때 사용할 컴포넌트를 전달 (<Icon /> 등)
@@ -23,7 +23,7 @@ const Tooltip = ({ title, content, children }: TooltipProp) => {
       from={<TouchableOpacity>{children}</TouchableOpacity>}
       mode={PopoverMode.RN_MODAL}
       arrowSize={{ width: 0, height: 0 }}
-      backgroundStyle={{ backgroundColor: "transparent" }}
+      backgroundStyle={{ backgroundColor: 'transparent' }}
       popoverStyle={{
         borderRadius: 8,
         shadowColor: Colors.black18,
@@ -37,7 +37,13 @@ const Tooltip = ({ title, content, children }: TooltipProp) => {
     >
       <View style={[styles.container]}>
         <Text style={styles.titleLabel}>{title}</Text>
-        <Text style={styles.contentLabel}>{content}</Text>
+        <Text
+          style={styles.contentLabel}
+          numberOfLines={3}
+          ellipsizeMode="tail"
+        >
+          {content}
+        </Text>
       </View>
     </Popover>
   );
@@ -48,5 +54,5 @@ export default Tooltip;
 const styles = StyleSheet.create({
   container: { margin: 16, gap: 8, maxWidth: 180 },
   titleLabel: { ...typography.body },
-  contentLabel: { ...typography.body2, textOverflow: "" },
+  contentLabel: { ...typography.body2 },
 });

@@ -43,8 +43,8 @@ export const isSameDay = (from: Date, target: Date): boolean => {
 /// yyyy.MM.dd. 의 형식으로 Date 데이터를 string 으로 변환해줍니다.
 export const toDateString = (date: Date): string => {
   const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
   return `${year}.${month}.${day}.`;
 };
 
@@ -52,4 +52,4 @@ const weekdayKR = ['일', '월', '화', '수', '목', '금', '토'];
 
 export const getKrWeekday = (date: Date): string => {
   return weekdayKR[date.getDay()];
-}
+};

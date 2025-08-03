@@ -1,8 +1,9 @@
-import { Colors, OndoColors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import { isDateToday } from "@/src/utils/dateUtils";
-import React from "react";
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { NoteItem } from '@/models/NoteItem';
+import { Colors, OndoColors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import { isDateToday } from '@/utils/dateUtils';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 
 interface CalendarCellProps {
   isSelected: boolean;
@@ -89,10 +90,10 @@ const styles = StyleSheet.create({
   calendarCell: {
     flex: 1,
     aspectRatio: 1,
-    borderRadius: "50%",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
+    borderRadius: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
     margin: 4,
     marginBottom: 12,
   },
@@ -101,20 +102,20 @@ const styles = StyleSheet.create({
     fontWeight: 600,
   },
   invalidCalendarCell: {
-    backgroundColor: "transparent",
-    borderStyle: "dashed",
+    backgroundColor: 'transparent',
+    borderStyle: 'dashed',
     borderWidth: 1,
     borderColor: Colors.black18,
   },
   calendarCellWithData: {
-    backgroundColor: "black",
+    backgroundColor: 'black',
     // color: "white",
     borderColor: Colors.black100,
   },
   calendarCellWithoutData: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     color: Colors.black100,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderWidth: 1,
     borderColor: Colors.black18,
   },
@@ -129,20 +130,20 @@ const styles = StyleSheet.create({
     shadowColor: Colors.black18,
     // TODO: 각 날짜의 색상 넣어주기
     color: Colors.black100,
-    borderColor: "white",
+    borderColor: 'white',
   },
   todayDot: {
-    position: "absolute",
-    bottom: "16%",
-    borderRadius: "50%",
+    position: 'absolute',
+    bottom: '16%',
+    borderRadius: '50%',
     width: 4,
     height: 4,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   todayLabel: {
     ...typography.label4,
     color: Colors.black100,
-    position: "absolute",
+    position: 'absolute',
     bottom: -14,
   },
 });

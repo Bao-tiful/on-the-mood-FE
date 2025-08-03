@@ -1,6 +1,6 @@
-import axios from "axios";
-import { ThreadsResponse } from "../../types/thread";
-import axiosClient from "../clients/axiosClient";
+import axios from 'axios';
+import { ThreadsResponse } from '../../types/thread';
+import axiosClient from '../clients/axiosClient';
 
 interface GetThreadsParams {
   page: number;
@@ -18,9 +18,9 @@ export const getThreads = async ({
 
     return response.data;
   } catch (error) {
-    console.error("API 에러:", error);
+    console.error('API 에러:', error);
     if (axios.isAxiosError(error)) {
-      console.error("에러 상세:", {
+      console.error('에러 상세:', {
         status: error.response?.status,
         data: error.response?.data,
         headers: error.response?.headers,

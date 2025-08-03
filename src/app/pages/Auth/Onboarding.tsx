@@ -1,3 +1,4 @@
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -5,24 +6,27 @@ import {
   View,
   FlatList,
   Dimensions,
-} from "react-native";
-import React, { useState, useRef } from "react";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import { router } from "expo-router";
-import OnboardingCard from "@/src/components/auth/OnboardingCard";
+} from 'react-native';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
+import OnboardingCard from '@/components/auth/OnboardingCard';
 
-const { width: screenWidth } = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get('window');
 
 const OnboardingPage = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  const buttonLabel = ["다음", "다음", "다음", "시작하기"];
+  const buttonLabel = ['다음', '다음', '다음', '시작하기'];
   const onboardingData = [0, 1, 2, 3];
 
   const handleNext = () => {
     if (index === 3) {
-      router.replace("/pages/Auth/Entrance");
+      // TODO: Navigate to Entrance - need to set up screen name
+      navigation.navigate('Entrance');
       return;
     }
 
@@ -52,7 +56,7 @@ const OnboardingPage = () => {
         ref={flatListRef}
         data={onboardingData}
         renderItem={renderItem}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={item => item.toString()}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
@@ -98,9 +102,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.black100,
     marginHorizontal: 16,
     marginBottom: 34,
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center",
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     height: 50,
     borderRadius: 50,
   },
@@ -109,9 +113,9 @@ const styles = StyleSheet.create({
     color: Colors.white100,
   },
   paginationContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20,
     gap: 8,
   },

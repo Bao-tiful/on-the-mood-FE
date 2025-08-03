@@ -1,16 +1,15 @@
-import React from "react";
-import { View } from "react-native";
-import { SvgProps } from "react-native-svg";
+import React from 'react';
+import { SvgProps } from 'react-native-svg';
 
-import OnthemoodLogo from "@assets/icons/onthemood-logo.svg";
+import OnthemoodLogo from '@assets/icons/onthemood-logo.svg';
 
 interface LogoProps extends SvgProps {
-  variant?: "default";
+  variant?: 'default';
 }
 
-const Logo = ({ variant = "default", ...props }: LogoProps) => {
+const Logo = ({ variant = 'default', ...props }: LogoProps) => {
   switch (variant) {
-    case "default":
+    case 'default':
     default:
       return <OnthemoodLogo {...props} />;
   }

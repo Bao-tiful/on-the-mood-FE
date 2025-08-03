@@ -1,14 +1,15 @@
-import React from "react";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import CalendarGrid from "@/src/components/calendar/CalendarGrid";
-import ThreadCalendarCell from "./ThreadCalendarCell";
-import Icon, { IconName } from "../Icon";
-import { Colors } from "@/src/styles/Colors";
-import TodayNoteCell from "./TodayNoteCell";
-import typography from "@/src/styles/Typography";
-import { getKrWeekday, isDateToday } from "@/src/utils/dateUtils";
-import { LocationData } from "@/src/api/endpoints/weather";
-import { useScreenSize } from "@/src/hooks/useScreenSize";
+import React from 'react';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import CalendarGrid from '@/components/calendar/CalendarGrid';
+import ThreadCalendarCell from './ThreadCalendarCell';
+import Icon, { IconName } from '../Icon';
+import { Colors } from '@/styles/Colors';
+import TodayNoteCell from './TodayNoteCell';
+import typography from '@/styles/Typography';
+import { getKrWeekday, isDateToday } from '@/utils/dateUtils';
+import { LocationData } from '@/api/endpoints/weather';
+import { useScreenSize } from '@/hooks/useScreenSize';
+import { NoteItem } from '@/models/NoteItem';
 
 interface CalendarContentProp {
   date: Date;
@@ -34,11 +35,11 @@ export const CalendarContent = ({
 
   const MonthPicker = (
     <TouchableOpacity onPress={() => changeModalVisible(true)}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={[isLargeScreen ? typography.title2 : typography.title3]}>
           {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
           {date.getFullYear().toString()}.
-          {(date.getMonth() + 1).toString().padStart(2, "0")}
+          {(date.getMonth() + 1).toString().padStart(2, '0')}
         </Text>
 
         <View style={styles.monthPickerIcon}>
@@ -49,15 +50,15 @@ export const CalendarContent = ({
   );
 
   return (
-    <View style={{ justifyContent: "space-between", flex: 1 }}>
+    <View style={{ justifyContent: 'space-between', flex: 1 }}>
       <View style={styles.calendarContainer}>
         <View
           style={[
             styles.dateLabelContainer,
             {
-              flexDirection: isLargeScreen ? "column" : "row-reverse",
-              alignItems: isLargeScreen ? "flex-start" : "center",
-              justifyContent: isLargeScreen ? "flex-start" : "space-between",
+              flexDirection: isLargeScreen ? 'column' : 'row-reverse',
+              alignItems: isLargeScreen ? 'flex-start' : 'center',
+              justifyContent: isLargeScreen ? 'flex-start' : 'space-between',
             },
           ]}
         >
@@ -87,16 +88,12 @@ export const CalendarContent = ({
             minHeight: 135,
             maxHeight: 230,
             borderRadius: 16,
-            overflow: "hidden",
+            overflow: 'hidden',
           },
         ]}
       >
         {isToday && notes.get(date.getDate()) == undefined ? (
-          <TodayNoteCell
-            date={date}
-            location={location}
-            temperature={feelLikeTemp}
-          />
+          <TodayNoteCell location={location} temperature={feelLikeTemp} />
         ) : (
           <ThreadCalendarCell
             date={date}
@@ -112,21 +109,21 @@ export const CalendarContent = ({
 const styles = StyleSheet.create({
   calendarContainer: {
     // flexGrow: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    overflow: "hidden",
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    overflow: 'hidden',
   },
   dateLabelContainer: {
     flexGrow: 1,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   monthPickerIcon: {
     width: 20,
     height: 20,
     borderRadius: 12,
     backgroundColor: Colors.black18,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     marginLeft: 8,
   },
   dateLabel: {

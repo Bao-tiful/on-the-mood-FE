@@ -1,17 +1,14 @@
 /// https://coding-w00se.tistory.com/33
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
-  Text,
   Modal,
   Animated,
   TouchableWithoutFeedback,
   Dimensions,
-  PanResponder,
-  TouchableOpacity,
-} from "react-native";
+} from 'react-native';
 
 interface BottomSheetProps {
   children: React.ReactNode;
@@ -24,7 +21,7 @@ const BottomSheet = ({
   modalVisible,
   setModalVisible,
 }: BottomSheetProps) => {
-  const screenHeight = Dimensions.get("screen").height;
+  const screenHeight = Dimensions.get('screen').height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
     inputRange: [-1, 0, 1],
@@ -60,30 +57,37 @@ const BottomSheet = ({
   //   })
   // ).current;
 
+  // const closeModal = useCallback(() => {
+
+  // });
+
   useEffect(() => {
     if (modalVisible) {
       resetBottomSheet.start();
     } else {
       // closeBottomSheet.start();
-      closeModal();
-    }
-  }, [modalVisible]);
 
-  const closeModal = () => {
-    closeBottomSheet.start(() => {
-      setModalVisible(false);
-    });
-  };
+      closeBottomSheet.start(() => {
+        setModalVisible(false);
+      });
+    }
+  }, [closeBottomSheet, modalVisible, resetBottomSheet, setModalVisible]);
 
   return (
     <Modal
       visible={modalVisible}
-      animationType={"fade"}
+      animationType={'fade'}
       transparent
       statusBarTranslucent
     >
       <View style={styles.overlay}>
-        <TouchableWithoutFeedback onPress={closeModal}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            closeBottomSheet.start(() => {
+              setModalVisible(false);
+            });
+          }}
+        >
           <View style={styles.background} />
         </TouchableWithoutFeedback>
         <Animated.View
@@ -102,17 +106,17 @@ const BottomSheet = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   background: {
     flex: 1,
   },
   bottomSheetContainer: {
     // height: 350,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },

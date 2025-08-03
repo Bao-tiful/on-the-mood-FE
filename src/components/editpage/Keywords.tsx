@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
 
 type KeywordsProps = {
   keywordList: string[];
@@ -23,10 +23,10 @@ export default Keywords;
 
 const styles = StyleSheet.create({
   keywordContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 16,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   keywordCell: {
     paddingVertical: 10,

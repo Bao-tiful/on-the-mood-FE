@@ -1,6 +1,6 @@
-import axiosClient from "../clients/axiosClient";
-import { handleApiError } from "../apiUtils";
-import { MoodKeyword } from "@/src/types/moodKeyword";
+import axiosClient from '../clients/axiosClient';
+import { handleApiError } from '../apiUtils';
+import { MoodKeyword } from '@/types/moodKeyword';
 
 
 interface GetWeatherProps {
@@ -41,12 +41,12 @@ export const getWeather = async ({ latitude, longitude }: GetWeatherProps) => {
 export const getKeywords = async () => {
   try {
     const response = await axiosClient.get<MoodKeyword[]>(
-      `weather/keywords`
+      'weather/keywords'
     );
-    const moodKeyworList: MoodKeyword[] = response.data; 
+    const moodKeyworList: MoodKeyword[] = response.data;
     // 타입이 확실하다면
-    return moodKeyworList
-    
+    return moodKeyworList;
+
   } catch (error) {
     handleApiError(error);
     throw error;

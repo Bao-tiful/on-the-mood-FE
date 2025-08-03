@@ -1,7 +1,7 @@
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import React from "react";
-import typography from "@/src/styles/Typography";
-import { Colors } from "@/src/styles/Colors";
+import { Text, View, StyleSheet } from 'react-native';
+import React from 'react';
+import typography from '@/styles/Typography';
+import { Colors } from '@/styles/Colors';
 
 const NoteContent = ({ note }: { note: NoteItem }) => {
   return (
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
   title: {
     ...typography.label1,
     color: Colors.black100,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
   content: {
     ...typography.body,

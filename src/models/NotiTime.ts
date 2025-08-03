@@ -1,6 +1,6 @@
 export enum Meridiem {
-  AM = "AM",
-  PM = "PM",
+  AM = 'AM',
+  PM = 'PM',
 }
 
 export type NotiTime = {

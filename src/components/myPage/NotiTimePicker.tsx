@@ -1,12 +1,13 @@
-import typography from "@/src/styles/Typography";
-import { Picker } from "@react-native-picker/picker";
-import { useEffect, useState } from "react";
-import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import React from 'react';
+import typography from '@/styles/Typography';
+import { Picker } from '@react-native-picker/picker';
+import { useEffect, useState } from 'react';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 
-import BottomSheet from "../BottomSheet";
-import { Colors } from "@/src/styles/Colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Meridiem, NotiTime } from "@/src/models/NotiTime";
+import BottomSheet from '../BottomSheet';
+import { Colors } from '@/styles/Colors';
+
+import { Meridiem, NotiTime } from '@/models/NotiTime';
 
 interface NotiTimePickerProps {
   initialTime: NotiTime;
@@ -77,7 +78,7 @@ export const NotiTimePicker = ({
               }}
             >
               {Array.from({ length: 12 }, (_, i) => ({
-                label: `${i.toString().padStart(2, "0")}`, // 1월부터 12월까지
+                label: `${i.toString().padStart(2, '0')}`, // 1월부터 12월까지
                 value: i, // 0부터 11까지
               })).map((month, index) => (
                 <Picker.Item
@@ -102,7 +103,7 @@ export const NotiTimePicker = ({
               }}
             >
               {Array.from({ length: 6 }, (_, i) => ({
-                label: `${(i * 10).toString().padStart(2, "0")}`,
+                label: `${(i * 10).toString().padStart(2, '0')}`,
                 value: i * 10, // 0부터 11까지
               })).map((month, index) => (
                 <Picker.Item
@@ -142,23 +143,23 @@ export const NotiTimePicker = ({
 
 const styles = StyleSheet.create({
   topToolbar: {
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     paddingVertical: 12,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   bottomSheetContainer: {
     paddingHorizontal: 24,
     paddingVertical: 32,
-    width: "100%",
+    width: '100%',
   },
   bottomSheetButton: {
     backgroundColor: Colors.black100,
-    width: "100%",
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     height: 56,
     borderRadius: 28,
   },
@@ -168,10 +169,10 @@ const styles = StyleSheet.create({
     color: Colors.white100,
   },
   pickerContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 12,
   },
   datePicker: {
