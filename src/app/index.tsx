@@ -15,7 +15,6 @@ import { Colors, OndoColors } from '@/styles/Colors';
 import { useGeoLocation } from '@/hooks/useGeoLocation';
 import { getWeather, LocationData } from '@/api/endpoints/weather';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
-import MyPageScreen from '@/app/pages/MyPage';
 // Auth screens
 import Entrance from '@/app/pages/Auth/Entrance';
 import SignIn from '@/app/pages/Auth/SignIn';
@@ -26,6 +25,7 @@ import Withdraw from '@/app/pages/Auth/Withdraw';
 import DetailPage from '@/app/pages/DetailPage';
 import EditPage from '@/app/pages/EditPage';
 // Profile screens
+import MyPageScreen from '@/app/pages/MyPage';
 import PasswordPage from '@/app/pages/Profile/PasswordPage';
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -62,7 +62,7 @@ function HomeScreen() {
     };
 
     getTemperature();
-  }, [geoLocation, setBackgroundColor, isLoadingWeather]);
+  }, [geoLocation, setBackgroundColor]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateDate = (newDate: Date) => {
     setDate(newDate);
