@@ -15,7 +15,6 @@ import { Colors, OndoColors } from '@/styles/Colors';
 import { useGeoLocation } from '@/hooks/useGeoLocation';
 import { getWeather, LocationData } from '@/api/endpoints/weather';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
-import MyPageScreen from '@/screens/MyPage';
 // Auth screens
 import Entrance from '@/app/pages/Auth/Entrance';
 import SignIn from '@/app/pages/Auth/SignIn';
@@ -26,6 +25,7 @@ import Withdraw from '@/app/pages/Auth/Withdraw';
 import DetailPage from '@/app/pages/DetailPage';
 import EditPage from '@/app/pages/EditPage';
 // Profile screens
+import MyPageScreen from '@/app/pages/MyPage';
 import PasswordPage from '@/app/pages/Profile/PasswordPage';
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -62,7 +62,7 @@ function HomeScreen() {
     };
 
     getTemperature();
-  }, [geoLocation, setBackgroundColor, isLoadingWeather]);
+  }, [geoLocation, setBackgroundColor]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateDate = (newDate: Date) => {
     setDate(newDate);
@@ -149,18 +149,18 @@ export default function App() {
           {/* Main screens */}
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="MyPage" component={MyPageScreen} />
-          
+
           {/* Auth screens */}
           <Stack.Screen name="Entrance" component={Entrance} />
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Withdraw" component={Withdraw} />
-          
+
           {/* Content screens */}
           <Stack.Screen name="DetailPage" component={DetailPage} />
           <Stack.Screen name="EditPage" component={EditPage} />
-          
+
           {/* Profile screens */}
           <Stack.Screen name="PasswordPage" component={PasswordPage} />
         </Stack.Navigator>

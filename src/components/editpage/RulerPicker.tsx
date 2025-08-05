@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+/* eslint-disable react-native/no-inline-styles */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -8,23 +9,19 @@ import {
   Animated,
   TextInput,
   LayoutChangeEvent,
-} from "react-native";
-import type { NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+} from 'react-native';
+import type { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 
-import {
-  AnimatedFlashList,
-  FlashList,
-  ListRenderItem,
-} from "@shopify/flash-list";
-import Icon, { IconName } from "../Icon";
-import { Colors } from "@/src/styles/Colors";
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import Icon, { IconName } from '../Icon';
+import { Colors } from '@/styles/Colors';
 
 export type RulerPickerTextProps = Pick<
   TextStyle,
-  "color" | "fontSize" | "fontWeight"
+  'color' | 'fontSize' | 'fontWeight'
 >;
 
-const { width: windowWidth } = Dimensions.get("window");
+const { width: windowWidth } = Dimensions.get('window');
 
 export type RulerPickerProps = {
   /**
@@ -105,7 +102,7 @@ export type RulerPickerProps = {
    *
    * @default 'normal'
    */
-  decelerationRate?: "fast" | "normal" | number;
+  decelerationRate?: 'fast' | 'normal' | number;
   /**
    * Callback when the value changes
    *
@@ -128,23 +125,23 @@ export const RulerPicker = ({
   step = 1,
   initialValue = min,
   fractionDigits = 0,
-  unit = "cm",
+  unit = 'cm',
   indicatorHeight = 80,
   gapBetweenSteps = 10,
   shortStepHeight = 20,
   longStepHeight = 40,
   stepWidth = 2,
-  indicatorColor = "black",
-  shortStepColor = "lightgray",
-  longStepColor = "darkgray",
+  indicatorColor = 'black',
+  shortStepColor = 'lightgray',
+  longStepColor = 'darkgray',
   valueTextStyle,
   unitTextStyle,
-  decelerationRate = "normal",
+  decelerationRate = 'normal',
   onValueChange,
   onValueChangeEnd,
 }: RulerPickerProps) => {
   const [containerWidth, setContainerWidth] = useState<number>(
-    width || windowWidth
+    width || windowWidth,
   );
   const [currentSelectedValue, setCurrentSelectedValue] =
     useState<number>(initialValue);
@@ -152,7 +149,7 @@ export const RulerPicker = ({
 
   const itemAmount = (max - min) / step;
   const arrData = Array.from({ length: itemAmount + 1 }, (_, index) => index);
-  const listRef = useRef<FlashList<typeof arrData>>(null);
+  const listRef = useRef<any>(null);
 
   const stepTextRef = useRef<TextInput>(null);
   const prevValue = useRef<number>(initialValue);
@@ -167,7 +164,7 @@ export const RulerPicker = ({
         setContainerWidth(layoutWidth);
       }
     },
-    [width]
+    [width],
   );
 
   useEffect(() => {
@@ -182,7 +179,7 @@ export const RulerPicker = ({
         gapBetweenSteps,
         min,
         max,
-        step
+        step,
       );
 
       if (prevValue.current !== newStep) {
@@ -193,7 +190,7 @@ export const RulerPicker = ({
 
       prevValue.current = newStep;
     },
-    [fractionDigits, gapBetweenSteps, stepWidth, max, min, onValueChange, step]
+    [gapBetweenSteps, stepWidth, max, min, onValueChange, step],
   );
 
   useEffect(() => {
@@ -220,27 +217,20 @@ export const RulerPicker = ({
     }
   }, [initialValue, min, max]);
 
-  const scrollHandler = Animated.event(
-    [
-      {
-        nativeEvent: {
-          contentOffset: {
-            x: scrollPosition,
-          },
-        },
-      },
-    ],
-    {
-      useNativeDriver: true,
-    }
+  const scrollHandler = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      scrollPosition.setValue(offsetX);
+    },
+    [scrollPosition],
   );
 
   const renderSeparator = useCallback(
     () => <View style={{ width: containerWidth * 0.5 - stepWidth * 0.5 }} />,
-    [stepWidth, containerWidth]
+    [stepWidth, containerWidth],
   );
 
-  const renderItem: ListRenderItem<unknown> = useCallback(
+  const renderItem: ListRenderItem<number> = useCallback(
     ({ index }) => (
       <RulerPickerItem
         isLast={index === arrData.length - 1}
@@ -267,9 +257,8 @@ export const RulerPicker = ({
       shortStepHeight,
       min,
       step,
-      fixedInitialValue.current,
       currentSelectedValue,
-    ]
+    ],
   );
 
   const onMomentumScrollEnd = useCallback(
@@ -280,7 +269,7 @@ export const RulerPicker = ({
         gapBetweenSteps,
         min,
         max,
-        step
+        step,
       );
 
       if (prevMomentumValue.current !== newStep) {
@@ -289,15 +278,7 @@ export const RulerPicker = ({
 
       prevMomentumValue.current = newStep;
     },
-    [
-      fractionDigits,
-      gapBetweenSteps,
-      stepWidth,
-      max,
-      min,
-      onValueChangeEnd,
-      step,
-    ]
+    [gapBetweenSteps, stepWidth, max, min, onValueChangeEnd, step],
   );
 
   useEffect(() => {
@@ -324,45 +305,41 @@ export const RulerPicker = ({
 
   return (
     <View
-      style={{ width: width || "100%", height, marginTop: 12 }}
+      style={{
+        width: width || '100%',
+        height,
+      }}
       onLayout={handleLayout}
     >
       {containerWidth > 0 && (
         <>
-          <AnimatedFlashList
-            ref={listRef}
-            data={arrData}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={renderItem}
-            ListHeaderComponent={renderSeparator}
-            ListFooterComponent={renderSeparator}
-            onScroll={scrollHandler}
-            onMomentumScrollEnd={onMomentumScrollEnd}
-            estimatedItemSize={stepWidth + gapBetweenSteps}
-            snapToOffsets={arrData.map(
-              (_, index) => index * (stepWidth + gapBetweenSteps)
-            )}
-            snapToAlignment="start"
-            decelerationRate={decelerationRate}
-            estimatedFirstItemOffset={0}
-            scrollEventThrottle={16}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            horizontal
-          />
+          <View style={{ bottom: 0, position: 'absolute' }}>
+            <FlashList
+              ref={listRef}
+              data={arrData}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={renderItem}
+              ListHeaderComponent={renderSeparator}
+              ListFooterComponent={renderSeparator}
+              onScroll={scrollHandler}
+              onMomentumScrollEnd={onMomentumScrollEnd}
+              // estimatedItemSize={stepWidth + gapBetweenSteps}
+              snapToOffsets={arrData.map(
+                (_, index) => index * (stepWidth + gapBetweenSteps),
+              )}
+              decelerationRate={decelerationRate}
+              scrollEventThrottle={16}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              horizontal
+            />
+          </View>
           <View
             style={[
               styles.indicator,
               {
                 width: 100,
-                alignSelf: "center",
-                transform: [
-                  {
-                    translateY:
-                      -indicatorHeight * 0.5 -
-                      (valueTextStyle?.fontSize ?? styles.valueText.fontSize),
-                  },
-                ],
+                alignSelf: 'center',
               },
             ]}
           >
@@ -371,14 +348,6 @@ export const RulerPicker = ({
                 styles.displayTextContainer,
                 {
                   height: valueTextStyle?.fontSize ?? styles.valueText.fontSize,
-                  transform: [
-                    {
-                      translateY:
-                        -(
-                          valueTextStyle?.fontSize ?? styles.valueText.fontSize
-                        ) * 0.2,
-                    },
-                  ],
                 },
               ]}
             >
@@ -389,8 +358,8 @@ export const RulerPicker = ({
                       styles.unitText,
                       unitTextStyle,
                       {
-                        verticalAlign: "top",
-                        color: "transparent",
+                        textAlignVertical: 'top',
+                        color: 'transparent',
                       },
                     ]}
                   >
@@ -401,14 +370,15 @@ export const RulerPicker = ({
               <Text
                 ref={stepTextRef}
                 style={[
-                  {
-                    textAlign: "center",
-                    lineHeight:
-                      valueTextStyle?.fontSize ?? styles.valueText.fontSize,
-                    fontVariant: ["tabular-nums"],
-                  },
                   styles.valueText,
                   valueTextStyle,
+                  {
+                    textAlign: 'center',
+                    lineHeight:
+                      valueTextStyle?.fontSize ?? styles.valueText.fontSize,
+                    // fontVariant: 'tabular-nums',
+                    fontFamily: 'tabular-nums',
+                  },
                 ]}
               >
                 {fractionDigits === 0
@@ -420,7 +390,7 @@ export const RulerPicker = ({
                   <Text
                     style={[
                       {
-                        verticalAlign: "top",
+                        textAlignVertical: 'top',
                       },
                       styles.unitText,
                       unitTextStyle,
@@ -431,16 +401,19 @@ export const RulerPicker = ({
                 </View>
               )}
             </View>
-            <View
-              style={[
-                {
-                  width: stepWidth,
-                  height: indicatorHeight,
-                  backgroundColor: indicatorColor,
-                },
-              ]}
-            />
           </View>
+          <View
+            style={[
+              {
+                width: stepWidth,
+                height: indicatorHeight,
+                backgroundColor: indicatorColor,
+                alignSelf: 'center',
+                bottom: 26,
+                position: 'absolute',
+              },
+            ]}
+          />
         </>
       )}
     </View>
@@ -449,29 +422,29 @@ export const RulerPicker = ({
 
 const styles = StyleSheet.create({
   indicator: {
-    position: "absolute",
-    top: "50%",
-    width: "100%",
-    alignItems: "center",
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    alignItems: 'center',
   },
   displayTextContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   valueText: {
-    color: "black",
+    color: 'black',
     fontSize: 32,
-    fontWeight: "800",
+    fontWeight: '800',
     margin: 0,
     padding: 0,
-    fontFamily: "monospace",
+    fontFamily: 'monospace',
   },
   unitText: {
-    color: "black",
+    color: 'black',
     fontSize: 24,
-    fontWeight: "400",
+    fontWeight: '400',
     marginLeft: 6,
   },
 });
@@ -549,8 +522,8 @@ export const RulerPickerItem = React.memo(
     min = 0,
     step = 1,
     initialValue = 0,
-    currentSelectedValue = 0,
-  }: Props) => {
+  }: // currentSelectedValue = 0,
+  Props) => {
     const currentValue = index * step + min;
     const isLong = index % 10 === 0;
     const height = isLong ? longStepHeight : shortStepHeight;
@@ -561,69 +534,85 @@ export const RulerPickerItem = React.memo(
         style={[
           {
             width: stepWidth,
-            height: "100%",
-            justifyContent: "center",
+            justifyContent: 'center',
             marginRight: isLast ? 0 : gapBetweenSteps,
             marginTop: shortStepHeight,
-            overflow: "visible",
+            overflow: 'visible',
           },
         ]}
       >
         <View
           style={[
             {
-              width: "100%",
+              width: '100%',
               height: height,
               backgroundColor: isLong ? longStepColor : shortStepColor,
               marginTop: isLong ? 0 : shortStepHeight / 2,
             },
           ]}
         />
-        {index % 10 === 0 && (
+        {
           <View
             style={{
-              overflow: "visible",
-              position: "absolute",
-              flexDirection: "row",
               width: 40,
-              left: -15,
-              bottom: 24,
-              alignItems: "center",
-              justifyContent: "center",
+              marginTop: 8,
             }}
           >
-            {Math.abs(currentValue - initialValue) > 2 && (
-              <Text
-                style={{ overflow: "visible", color: Colors.black70 }}
-              >{`${currentValue}°`}</Text>
-            )}
+            <View
+              style={{
+                overflow: 'visible',
+                flexDirection: 'row',
+              }}
+            >
+              {isInitialValue ? (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    left: -20,
+                    bottom: -1,
+                  }}
+                >
+                  <Icon
+                    size={14}
+                    name={IconName.temperature}
+                    color={Colors.black70}
+                  />
+                  <Text
+                    style={{
+                      overflow: 'visible',
+                      color: Colors.black70,
+                      fontSize: 14,
+                    }}
+                  >{`${currentValue}°`}</Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    left: -8,
+                  }}
+                >
+                  <Text
+                    style={{
+                      overflow: 'visible',
+                      color:
+                        index % 10 === 0 &&
+                        Math.abs(currentValue - initialValue) > 2
+                          ? Colors.black70
+                          : 'transparent',
+                      fontSize: 14,
+                    }}
+                  >{`${currentValue}°`}</Text>
+                </View>
+              )}
+            </View>
           </View>
-        )}
-        {isInitialValue && (
-          <View
-            style={{
-              overflow: "visible",
-              position: "absolute",
-              flexDirection: "row",
-              width: 40,
-              left: -20,
-              bottom: 24,
-              alignItems: "center",
-            }}
-          >
-            <Icon
-              size={16}
-              name={IconName.temperature}
-              color={Colors.black70}
-            />
-            <Text
-              style={{ overflow: "visible", color: Colors.black70 }}
-            >{`${currentValue}°`}</Text>
-          </View>
-        )}
+        }
       </View>
     );
-  }
+  },
 );
 
 const calculateCurrentValue = (
@@ -632,7 +621,7 @@ const calculateCurrentValue = (
   gapBetweenItems: number,
   min: number,
   max: number,
-  step: number
+  step: number,
 ) => {
   const index = Math.round(scrollPosition / (stepWidth + gapBetweenItems));
   const newValue = Math.round(Math.min(Math.max(index * step + min, min), max));

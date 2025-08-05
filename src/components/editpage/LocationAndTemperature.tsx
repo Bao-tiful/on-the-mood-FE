@@ -1,7 +1,7 @@
 import typography from '@/styles/Typography';
 import { StyleSheet, Text, View } from 'react-native';
-import Icon, { IconName } from "../Icon";
-import { Colors } from "@/src/styles/Colors";
+import Icon, { IconName } from '../Icon';
+import { Colors } from '@/styles/Colors';
 
 type LocationAndTemperatureProps = {
   location: string;

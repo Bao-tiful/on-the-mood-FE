@@ -21,7 +21,7 @@ type EditPageRouteParams = {
   locationData?: string;
 };
 import React, { useEffect, useMemo, useState } from 'react';
-import { OndoColors } from '@/styles/Colors';
+import { Colors, OndoColors } from '@/styles/Colors';
 import { editNote, postNote } from '@/api/endpoints/daily-notes';
 import { toDateString } from '@/utils/dateUtils';
 import AnimatedColorView from '@/components/editpage/AnimatedColorView';
@@ -113,11 +113,11 @@ const EditPage = () => {
       duration={200}
     >
       <View style={{ flex: 1 }}>
-        <SafeAreaView style={styles.container}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1 }}
-          >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <SafeAreaView style={styles.container}>
             <View>
               <View style={styles.topToolbar}>
                 <ToolbarButton
@@ -165,10 +165,15 @@ const EditPage = () => {
                 temperature={feelsLikeTemp}
               />
             </View>
-            <Text style={{ alignSelf: "center", marginTop: 20 }}>
-              {feelsLikeTemp == myMoodOndo ? "체감 온도" : "기록 온도"}
+            <Text
+              style={[
+                { alignSelf: 'center', marginTop: 20, color: Colors.black70 },
+                typography.label4,
+              ]}
+            >
+              {feelsLikeTemp === myMoodOndo ? '체감 온도' : '기록 온도'}
             </Text>
-            <View style={{ marginTop: 16, marginBottom: 8 }}>
+            <View style={{ marginTop: 8, marginBottom: 16 }}>
               <TemperatureSlider
                 feelsLikeTemp={feelsLikeTemp}
                 myMoodOndo={myMoodOndo}
@@ -182,13 +187,13 @@ const EditPage = () => {
               <NoteEditor
                 keywordList={moodKeywordSet.getKeywordsByTemp(feelsLikeTemp)}
                 memo={memo}
-                onMemoChanged={memo => setMemo(memo)}
+                onMemoChanged={newMemo => setMemo(newMemo)}
                 defaultValue={note?.content}
                 autoFocus={!note}
               />
             </View>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
       </View>
     </AnimatedColorView>
   );
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topToolbar: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingTop: 12,
     marginHorizontal: 4,
     justifyContent: 'space-between',

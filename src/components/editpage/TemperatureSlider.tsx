@@ -1,8 +1,8 @@
-import React from "react";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import * as Haptic from "expo-haptics";
-import { RulerPicker } from "./RulerPicker";
+import React from 'react';
+import { Vibration } from 'react-native';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import { RulerPicker } from '@/components/editpage/RulerPicker';
 
 type TemperatureSliderProps = {
   feelsLikeTemp: number;
@@ -12,16 +12,14 @@ type TemperatureSliderProps = {
 
 const TemperatureSlider = ({
   feelsLikeTemp,
-  myMoodOndo,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
   const minValue = -40;
   const maxValue = 40;
 
   const onTemperatureChanged = (number: number) => {
-    // TODO: Haptic 실제 동작 여부는 Expo SDK 53 업데이트 PR 후
-    // 실기기에서 테스트 진행하기
-    Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Soft);
+    // React Native 내장 진동 피드백 사용 (부드러운 햅틱 효과)
+    Vibration.vibrate(50); // 50ms 부드러운 진동
     changeMoodTemp(number);
   };
 
@@ -46,8 +44,8 @@ const TemperatureSlider = ({
         color: Colors.black100,
         ...typography.title3,
       }}
-      onValueChange={(number) => onTemperatureChanged(number)}
-      onValueChangeEnd={(number) => onTemperatureChanged(number)}
+      onValueChange={number => onTemperatureChanged(number)}
+      onValueChangeEnd={number => onTemperatureChanged(number)}
     />
   );
 };
