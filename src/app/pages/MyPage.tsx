@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Alert,
   SafeAreaView,
@@ -21,11 +20,47 @@ import { AuthInfo, AuthType } from '@/components/myPage/AuthInfo';
 import { SectionContent, SectionTitle } from '@/components/myPage/SectionItem';
 import NotiTimeButton from '@/components/myPage/NotiTimeButton';
 
-// import { PermissionsAndroid, Platform } from 'react-native';
 import { Meridiem, NotiTime } from '@/models/NotiTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import { useNotifications } from '@/hooks/useNotifications';
+
+// 시간 변환 유틸리티 함수들
+const convertTo24Hour = (notiTime: NotiTime): number => {
+  if (notiTime.meridiem === Meridiem.PM && notiTime.hour !== 12) {
+    return notiTime.hour + 12;
+  }
+  if (notiTime.meridiem === Meridiem.AM && notiTime.hour === 12) {
+    return 0;
+  }
+  return notiTime.hour;
+};
+
+const formatTimeString = (notiTime: NotiTime): string => {
+  const time24 = convertTo24Hour(notiTime);
+  return `${String(time24).padStart(2, '0')}:${String(notiTime.minute).padStart(2, '0')}`;
+};
+
+const formatDisplayTime = (notiTime: NotiTime): string => {
+  return `${notiTime.meridiem} ${notiTime.hour
+    .toString()
+    .padStart(2, '0')}:${notiTime.minute
+    .toString()
+    .padStart(2, '0')}`;
+};
+
+const parseTimeStringToNotiTime = (timeString: string): NotiTime => {
+  const [hours, minutes] = timeString.split(':').map(Number);
+  return {
+    hour: hours > 12 ? hours - 12 : hours === 0 ? 12 : hours,
+    meridiem: hours >= 12 ? Meridiem.PM : Meridiem.AM,
+    minute: minutes,
+  };
+};
+
+// 상수
+const DEFAULT_USER_EMAIL = 'hello@world.com'; // TODO: 실제 사용자 이메일로 교체
+const PASSWORD_LENGTH = 4;
 
 const MyPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -33,7 +68,6 @@ const MyPage = () => {
 
   // 알림 기능 초기화
   const {
-    permissionStatus,
     notificationSettings,
     requestPermissions,
     updateNotificationSettings,
@@ -49,17 +83,44 @@ const MyPage = () => {
   const [isPasswordOn, setIsPasswordOn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  // 핸들러 함수들
+  const handleNotificationToggle = async (value: boolean) => {
+    if (value) {
+      try {
+        const granted = await requestPermissions();
+        if (granted) {
+          setIsAlertOn(true);
+          const timeString = formatTimeString(notiTime);
+          await updateNotificationSettings({ enabled: true, time: timeString });
+        } else {
+          Alert.alert('알림 권한이 필요합니다', '설정에서 알림을 허용해주세요.');
+        }
+      } catch (error) {
+        console.error('알림 권한 요청 오류:', error);
+        Alert.alert('오류', '알림 권한을 확인할 수 없습니다.');
+      }
+    } else {
+      setIsAlertOn(false);
+      await updateNotificationSettings({ enabled: false });
+      await cancelAllNotifications();
+    }
+  };
+
+  const handleNotificationTimeChange = async (newNotiTime: NotiTime) => {
+    setNotiTime(newNotiTime);
+    await AsyncStorage.setItem('@NotiTime', JSON.stringify(newNotiTime));
+    
+    if (isAlertOn) {
+      const timeString = formatTimeString(newNotiTime);
+      await updateNotificationSettings({ enabled: true, time: timeString });
+    }
+  };
+
   // 알림 설정 상태 동기화
   useEffect(() => {
     setIsAlertOn(notificationSettings.enabled);
     if (notificationSettings.enabled && notificationSettings.time) {
-      // "HH:mm" 형식을 NotiTime으로 변환
-      const [hours, minutes] = notificationSettings.time.split(':').map(Number);
-      setNotiTime({
-        hour: hours > 12 ? hours - 12 : hours === 0 ? 12 : hours,
-        meridiem: hours >= 12 ? Meridiem.PM : Meridiem.AM,
-        minute: minutes,
-      });
+      setNotiTime(parseTimeStringToNotiTime(notificationSettings.time));
     }
   }, [notificationSettings]);
 
@@ -71,7 +132,6 @@ const MyPage = () => {
         if (notiTimeString) {
           const parsedNotiTime = JSON.parse(notiTimeString);
           setNotiTime(parsedNotiTime);
-          console.log(notiTimeString);
         }
       }
     };
@@ -79,17 +139,18 @@ const MyPage = () => {
     loadNotiTime();
   }, [isAlertOn]);
 
-  const updatePasswordRequirement = async (newState: boolean) => {
+  const handlePasswordToggle = async (newState: boolean) => {
     setIsPasswordOn(newState);
-
+    
     if (newState) {
-      // 화면 잠금을 추가하는 경우 비밀번호 설정 페이지로 이동
-      // TODO: Navigate to PasswordPage - need to set up screen name
       navigation.navigate('PasswordPage');
     } else {
-      // 화면 잠금을 제거하는 경우 현재 저장된 비밀번호 삭제
       await AsyncStorage.removeItem('@password');
     }
+  };
+  
+  const handlePasswordChange = () => {
+    navigation.navigate('PasswordPage');
   };
 
   // 페이지가 전환될 때 패스워드가 잘 저장되어있는지 확인
@@ -98,11 +159,7 @@ const MyPage = () => {
     useCallback(() => {
       const loadPassword = async () => {
         const currentPassword = await AsyncStorage.getItem('@password');
-        if (currentPassword && currentPassword.length === 4) {
-          setIsPasswordOn(true);
-        } else {
-          setIsPasswordOn(false);
-        }
+        setIsPasswordOn(currentPassword?.length === PASSWORD_LENGTH);
       };
 
       loadPassword();
@@ -111,10 +168,9 @@ const MyPage = () => {
 
   return (
     <View
-      style={{
-        flex: 1,
+style={[styles.container, {
         backgroundColor: OndoColors.get(colorState.color),
-      }}
+      }]}
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
@@ -125,21 +181,19 @@ const MyPage = () => {
             }}
           />
           <Text
-            style={{
-              ...typography.heading2,
-            }}
+            style={[typography.heading2]}
           >
             내 정보
           </Text>
           {/* 내 정보 타이틀의 가운데 배치를 위해 여백 추가 */}
-          <View style={{ width: 44 }} />
+          <View style={styles.spacer} />
         </View>
 
         <View style={styles.list}>
           {/* 계정 정보 */}
           <View style={styles.section}>
             <SectionContent>
-              <AuthInfo authType={AuthType.apple} email={'hello@world.com'} />
+              <AuthInfo authType={AuthType.apple} email={DEFAULT_USER_EMAIL} />
             </SectionContent>
           </View>
           {/* 알림 설정 */}
@@ -149,49 +203,7 @@ const MyPage = () => {
               <Switch
                 value={isAlertOn}
                 trackColor={{ true: Colors.black100 }}
-                onValueChange={async value => {
-                  // 알림 켜기
-                  if (value) {
-                    try {
-                      const granted = await requestPermissions();
-                      if (granted) {
-                        setIsAlertOn(true);
-                        // 현재 시간 설정으로 알림 등록
-                        const time24 =
-                          notiTime.meridiem === Meridiem.PM &&
-                          notiTime.hour !== 12
-                            ? notiTime.hour + 12
-                            : notiTime.meridiem === Meridiem.AM &&
-                              notiTime.hour === 12
-                            ? 0
-                            : notiTime.hour;
-                        const timeString = `${String(time24).padStart(
-                          2,
-                          '0',
-                        )}:${String(notiTime.minute).padStart(2, '0')}`;
-
-                        await updateNotificationSettings({
-                          enabled: true,
-                          time: timeString,
-                        });
-                      } else {
-                        Alert.alert(
-                          '알림 권한이 필요합니다',
-                          '설정에서 알림을 허용해주세요.',
-                        );
-                      }
-                    } catch (error) {
-                      console.error('알림 권한 요청 오류:', error);
-                      Alert.alert('오류', '알림 권한을 확인할 수 없습니다.');
-                    }
-                  }
-                  // 알림 끄기
-                  else {
-                    setIsAlertOn(false);
-                    await updateNotificationSettings({ enabled: false });
-                    await cancelAllNotifications();
-                  }
-                }}
+                onValueChange={handleNotificationToggle}
               />
             </SectionContent>
 
@@ -201,11 +213,7 @@ const MyPage = () => {
                   onPress={() => {
                     setModalVisible(true);
                   }}
-                  timeString={`${notiTime.meridiem} ${notiTime.hour
-                    .toString()
-                    .padStart(2, '0')}:${notiTime.minute
-                    .toString()
-                    .padStart(2, '0')}`}
+                  timeString={formatDisplayTime(notiTime)}
                 />
               </SectionContent>
             ) : null}
@@ -217,9 +225,7 @@ const MyPage = () => {
               <Switch
                 value={isPasswordOn}
                 trackColor={{ true: Colors.black100 }}
-                onValueChange={value => {
-                  updatePasswordRequirement(value);
-                }}
+                onValueChange={handlePasswordToggle}
               />
             </SectionContent>
 
@@ -227,18 +233,10 @@ const MyPage = () => {
               <SectionContent>
                 {/* 셀 전체 터치를 위해 label을 child에 포함*/}
                 <TouchableOpacity
-                  style={{ flex: 1 }}
-                  onPress={() => {
-                    // TODO: Navigate to PasswordPage - need to set up screen name
-                    navigation.navigate('PasswordPage');
-                  }}
+                  style={styles.touchableContainer}
+                  onPress={handlePasswordChange}
                 >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
+                  <View style={styles.rowContainer}
                   >
                     <Text style={styles.sectionContentLabel}>
                       비밀번호 변경
@@ -254,18 +252,10 @@ const MyPage = () => {
             <SectionTitle label="개발용 / 삭제 예정" />
             <SectionContent>
               <TouchableOpacity
-                style={{ flex: 1 }}
-                onPress={() => {
-                  // TODO: Navigate to Entrance - need to set up screen name
-                  navigation.navigate('Entrance');
-                }}
+                style={styles.touchableContainer}
+                onPress={() => navigation.navigate('Entrance')}
               >
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
+                <View style={styles.rowContainer}
                 >
                   <Text style={styles.sectionContentLabel}>로그인</Text>
                   <Icon name={IconName.arrow} />
@@ -281,33 +271,7 @@ const MyPage = () => {
         changeModalVisible={v => {
           setModalVisible(v);
         }}
-        changeNotiTime={async newNotiTime => {
-          setNotiTime(newNotiTime);
-          console.log(newNotiTime);
-          await AsyncStorage.setItem('@NotiTime', JSON.stringify(newNotiTime));
-
-          // 알림이 켜져 있으면 새로운 시간으로 업데이트
-          if (isAlertOn) {
-            const time24 =
-              newNotiTime.meridiem === Meridiem.PM && newNotiTime.hour !== 12
-                ? newNotiTime.hour + 12
-                : newNotiTime.meridiem === Meridiem.AM &&
-                  newNotiTime.hour === 12
-                ? 0
-                : newNotiTime.hour;
-            console.log('time24: ', time24);
-            const timeString = `${String(time24).padStart(2, '0')}:${String(
-              newNotiTime.minute,
-            ).padStart(2, '0')}`;
-
-            console.log(timeString);
-
-            await updateNotificationSettings({
-              enabled: true,
-              time: timeString,
-            });
-          }
-        }}
+        changeNotiTime={handleNotificationTimeChange}
       />
     </View>
   );
@@ -316,12 +280,18 @@ const MyPage = () => {
 export default MyPage;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   topToolbar: {
     flexDirection: 'row',
     width: '100%',
     paddingVertical: 12,
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  spacer: {
+    width: 44,
   },
   safeArea: { gap: 20, margin: 12 },
   list: { gap: 16, paddingVertical: 16 },
@@ -344,5 +314,13 @@ const styles = StyleSheet.create({
   },
   sectionContentLabel: {
     ...typography.body,
+  },
+  touchableContainer: {
+    flex: 1,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
