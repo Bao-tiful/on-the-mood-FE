@@ -64,6 +64,9 @@ yarn-error.log*
 /ios/Pods/
 ios/Podfile.lock
 
+# Package managers
+package-lock.json
+
 # Yarn
 .yarn/*
 !.yarn/patches
