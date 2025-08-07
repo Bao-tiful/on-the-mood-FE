@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Alert,
   SafeAreaView,
@@ -17,20 +18,27 @@ import Icon, { IconName } from '@/components/Icon';
 import typography from '@/styles/Typography';
 import { NotiTimePicker } from '@/components/myPage/NotiTimePicker';
 import { AuthInfo, AuthType } from '@/components/myPage/AuthInfo';
-import {
-  SectionContent,
-  SectionTitle,
-} from '@/components/myPage/SectionItem';
+import { SectionContent, SectionTitle } from '@/components/myPage/SectionItem';
 import NotiTimeButton from '@/components/myPage/NotiTimeButton';
 
-import { PermissionsAndroid, Platform } from 'react-native';
+// import { PermissionsAndroid, Platform } from 'react-native';
 import { Meridiem, NotiTime } from '@/models/NotiTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import { useNotifications } from '@/hooks/useNotifications';
 
 const MyPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { colorState } = useBackgroundColor();
+
+  // 알림 기능 초기화
+  const {
+    permissionStatus,
+    notificationSettings,
+    requestPermissions,
+    updateNotificationSettings,
+    cancelAllNotifications,
+  } = useNotifications();
 
   const [isAlertOn, setIsAlertOn] = useState(false);
   const [notiTime, setNotiTime] = useState<NotiTime>({
@@ -40,6 +48,20 @@ const MyPage = () => {
   });
   const [isPasswordOn, setIsPasswordOn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  // 알림 설정 상태 동기화
+  useEffect(() => {
+    setIsAlertOn(notificationSettings.enabled);
+    if (notificationSettings.enabled && notificationSettings.time) {
+      // "HH:mm" 형식을 NotiTime으로 변환
+      const [hours, minutes] = notificationSettings.time.split(':').map(Number);
+      setNotiTime({
+        hour: hours > 12 ? hours - 12 : hours === 0 ? 12 : hours,
+        meridiem: hours >= 12 ? Meridiem.PM : Meridiem.AM,
+        minute: minutes,
+      });
+    }
+  }, [notificationSettings]);
 
   useEffect(() => {
     const loadNotiTime = async () => {
@@ -131,32 +153,32 @@ const MyPage = () => {
                   // 알림 켜기
                   if (value) {
                     try {
-                      if (Platform.OS === 'android') {
-                        // Android에서 알림 권한 요청
-                        const granted = await PermissionsAndroid.request(
-                          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-                          {
-                            title: '알림 권한',
-                            message: '알림을 받으시겠습니까?',
-                            buttonNeutral: '나중에',
-                            buttonNegative: '거부',
-                            buttonPositive: '허용',
-                          },
-                        );
+                      const granted = await requestPermissions();
+                      if (granted) {
+                        setIsAlertOn(true);
+                        // 현재 시간 설정으로 알림 등록
+                        const time24 =
+                          notiTime.meridiem === Meridiem.PM &&
+                          notiTime.hour !== 12
+                            ? notiTime.hour + 12
+                            : notiTime.meridiem === Meridiem.AM &&
+                              notiTime.hour === 12
+                            ? 0
+                            : notiTime.hour;
+                        const timeString = `${String(time24).padStart(
+                          2,
+                          '0',
+                        )}:${String(notiTime.minute).padStart(2, '0')}`;
 
-                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                          setIsAlertOn(value);
-                          // TODO: 알림 등록하기 삽입
-                        } else {
-                          Alert.alert(
-                            '알림 권한이 필요합니다',
-                            '설정에서 알림을 허용해주세요.',
-                          );
-                        }
+                        await updateNotificationSettings({
+                          enabled: true,
+                          time: timeString,
+                        });
                       } else {
-                        // iOS는 알림 권한이 자동으로 처리됨
-                        setIsAlertOn(value);
-                        // TODO: 알림 등록하기 삽입
+                        Alert.alert(
+                          '알림 권한이 필요합니다',
+                          '설정에서 알림을 허용해주세요.',
+                        );
                       }
                     } catch (error) {
                       console.error('알림 권한 요청 오류:', error);
@@ -166,7 +188,8 @@ const MyPage = () => {
                   // 알림 끄기
                   else {
                     setIsAlertOn(false);
-                    // TODO: 등록된 알림 제거
+                    await updateNotificationSettings({ enabled: false });
+                    await cancelAllNotifications();
                   }
                 }}
               />
@@ -258,9 +281,32 @@ const MyPage = () => {
         changeModalVisible={v => {
           setModalVisible(v);
         }}
-        changeNotiTime={newNotiTime => {
+        changeNotiTime={async newNotiTime => {
           setNotiTime(newNotiTime);
-          AsyncStorage.setItem('@NotiTime', JSON.stringify(newNotiTime));
+          console.log(newNotiTime);
+          await AsyncStorage.setItem('@NotiTime', JSON.stringify(newNotiTime));
+
+          // 알림이 켜져 있으면 새로운 시간으로 업데이트
+          if (isAlertOn) {
+            const time24 =
+              newNotiTime.meridiem === Meridiem.PM && newNotiTime.hour !== 12
+                ? newNotiTime.hour + 12
+                : newNotiTime.meridiem === Meridiem.AM &&
+                  newNotiTime.hour === 12
+                ? 0
+                : newNotiTime.hour;
+            console.log('time24: ', time24);
+            const timeString = `${String(time24).padStart(2, '0')}:${String(
+              newNotiTime.minute,
+            ).padStart(2, '0')}`;
+
+            console.log(timeString);
+
+            await updateNotificationSettings({
+              enabled: true,
+              time: timeString,
+            });
+          }
         }}
       />
     </View>

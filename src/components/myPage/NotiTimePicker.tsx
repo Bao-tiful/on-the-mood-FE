@@ -23,8 +23,8 @@ export const NotiTimePicker = ({
   changeModalVisible,
 }: NotiTimePickerProps) => {
   // 모달 내에서 사용할 임시 시간값
-  const [hour, setHour] = useState(initialTime.hour);
-  const [minute, setMinute] = useState(initialTime.minute);
+  const [hour, setHour] = useState<number>(initialTime.hour);
+  const [minute, setMinute] = useState<number>(initialTime.minute);
   const [meridiem, setMeridiem] = useState(initialTime.meridiem);
 
   useEffect(() => {
@@ -78,13 +78,13 @@ export const NotiTimePicker = ({
               }}
             >
               {Array.from({ length: 12 }, (_, i) => ({
-                label: `${i.toString().padStart(2, '0')}`, // 1월부터 12월까지
-                value: i, // 0부터 11까지
+                label: `${(i + 1).toString().padStart(2, '0')}`, // 01부터 12까지
+                value: i + 1, // 1부터 12까지
               })).map((month, index) => (
                 <Picker.Item
                   key={index}
                   label={month.label}
-                  value={month.value.toString()}
+                  value={month.value}
                   enabled={true}
                   color={Colors.black100}
                   style={{
@@ -104,12 +104,12 @@ export const NotiTimePicker = ({
             >
               {Array.from({ length: 6 }, (_, i) => ({
                 label: `${(i * 10).toString().padStart(2, '0')}`,
-                value: i * 10, // 0부터 11까지
-              })).map((month, index) => (
+                value: i * 10, // 0, 10, 20, 30, 40, 50
+              })).map((minute, index) => (
                 <Picker.Item
                   key={index}
-                  label={month.label}
-                  value={month.value.toString()}
+                  label={minute.label}
+                  value={minute.value}
                   enabled={true}
                   color={Colors.black100}
                   style={{
@@ -129,6 +129,7 @@ export const NotiTimePicker = ({
                 minute: minute,
                 meridiem: meridiem,
               };
+              console.log('NEW', newNotiTime);
               changeNotiTime(newNotiTime);
               changeModalVisible(false);
             }}
