@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
-import notifee, { 
-  AuthorizationStatus, 
-  TriggerType, 
+import notifee, {
+  AuthorizationStatus,
+  TriggerType,
   RepeatFrequency,
   AndroidImportance,
-  AndroidVisibility 
+  AndroidVisibility
 } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NotificationPresets } from '@/types/notification';
 
 // 알림 권한 상태 타입
 export type NotificationPermissionStatus = 'authorized' | 'denied' | 'provisional' | 'notDetermined';
@@ -37,7 +38,7 @@ export const useNotifications = () => {
   const checkPermissionStatus = useCallback(async (): Promise<NotificationPermissionStatus> => {
     try {
       const settings = await notifee.getNotificationSettings();
-      
+
       switch (settings.authorizationStatus) {
         case AuthorizationStatus.AUTHORIZED:
         case AuthorizationStatus.PROVISIONAL:
@@ -58,15 +59,15 @@ export const useNotifications = () => {
   const requestPermissions = useCallback(async (): Promise<boolean> => {
     try {
       const settings = await notifee.requestPermission();
-      
-      const isGranted = settings.authorizationStatus === AuthorizationStatus.AUTHORIZED || 
-                       settings.authorizationStatus === AuthorizationStatus.PROVISIONAL;
-      
+
+      const isGranted = settings.authorizationStatus === AuthorizationStatus.AUTHORIZED ||
+        settings.authorizationStatus === AuthorizationStatus.PROVISIONAL;
+
       const status: NotificationPermissionStatus = isGranted ? 'authorized' : 'denied';
-      
+
       setPermissionStatus(status);
       await AsyncStorage.setItem(STORAGE_KEY.PERMISSION_STATUS, status);
-      
+
       return isGranted;
     } catch (error) {
       console.error('권한 요청 실패:', error);
@@ -75,7 +76,7 @@ export const useNotifications = () => {
     }
   }, []);
 
- 
+
   // 모든 알림 취소
   const cancelAllNotifications = useCallback(async () => {
     try {
@@ -86,80 +87,82 @@ export const useNotifications = () => {
     }
   }, []);
 
- // 로컬 알림 예약
- const scheduleNotification = useCallback(async (settings: NotificationSettings) => {
-  if (!settings.enabled) {
-    return;
-  }
-
-  try {
-    // 기존 알림 취소
-    await cancelAllNotifications();
-
-    // Android 채널 생성 (iOS는 무시됨)
-    const channelId = await notifee.createChannel({
-      id: 'mood_reminder',
-      name: '기분 기록 알림',
-      importance: AndroidImportance.HIGH,
-      visibility: AndroidVisibility.PUBLIC,
-      sound: 'default',
-    });
-
-    // 시간 파싱
-    const [hours, minutes] = settings.time.split(':').map(Number);
-    
-    // 내일부터 매일 반복하는 알림 설정
-    const now = new Date();
-    const scheduledDate = new Date();
-    scheduledDate.setHours(hours, minutes, 0, 0);
-    
-    // 오늘 시간이 지났다면 내일로 설정
-    if (scheduledDate <= now) {
-      scheduledDate.setDate(scheduledDate.getDate() + 1);
+  // 로컬 알림 예약
+  const scheduleNotification = useCallback(async (settings: NotificationSettings) => {
+    if (!settings.enabled) {
+      return;
     }
 
-    // 매일 반복 알림 생성
-    await notifee.createTriggerNotification(
-      {
-        id: 'daily_mood_reminder',
-        title: '📝 오늘의 기분 기록',
-        body: '하루를 마무리하며 오늘의 감정을 기록해보세요',
-        data: {
-          type: 'daily_reminder',
-          scheduledFor: scheduledDate.toISOString(),
-        },
-        android: {
-          channelId,
-          importance: AndroidImportance.HIGH,
-          pressAction: {
-            id: 'default',
-            launchActivity: 'default',
+    try {
+      // 기존 알림 취소
+      await cancelAllNotifications();
+
+      // Android 채널 생성 (iOS는 무시됨)
+      const channelId = await notifee.createChannel({
+        id: 'mood_reminder',
+        name: '기분 기록 알림',
+        importance: AndroidImportance.HIGH,
+        visibility: AndroidVisibility.PUBLIC,
+        sound: 'default',
+      });
+
+      // 시간 파싱
+      const [hours, minutes] = settings.time.split(':').map(Number);
+
+      // 내일부터 매일 반복하는 알림 설정
+      const now = new Date();
+      const scheduledDate = new Date();
+      scheduledDate.setHours(hours, minutes, 0, 0);
+
+      // 오늘 시간이 지났다면 내일로 설정
+      if (scheduledDate <= now) {
+        scheduledDate.setDate(scheduledDate.getDate() + 1);
+      }
+
+      const notificationData = NotificationPresets.DAILY_REMINDER;
+
+      // 매일 반복 알림 생성
+      await notifee.createTriggerNotification(
+        {
+          id: notificationData.id,
+          title: notificationData.title,
+          body: notificationData.body,
+          data: {
+            type: 'daily_reminder',
+            scheduledFor: scheduledDate.toISOString(),
+          },
+          android: {
+            channelId,
+            importance: AndroidImportance.HIGH,
+            pressAction: {
+              id: 'default',
+              launchActivity: 'default',
+            },
+          },
+          ios: {
+            categoryId: 'MOOD_REMINDER',
+            sound: 'default',
+            badgeCount: 1,
           },
         },
-        ios: {
-          categoryId: 'MOOD_REMINDER',
-          sound: 'default',
-          badgeCount: 1,
-        },
-      },
-      {
-        type: TriggerType.TIMESTAMP,
-        timestamp: scheduledDate.getTime(),
-        repeatFrequency: RepeatFrequency.DAILY,
-      }
-    );
+        {
+          type: TriggerType.TIMESTAMP,
+          timestamp: scheduledDate.getTime(),
+          repeatFrequency: RepeatFrequency.DAILY,
+        }
+      );
 
-    console.log(`알림이 ${settings.time}에 예약되었습니다.`);
-  } catch (error) {
-    console.error('알림 예약 실패:', error);
-  }
-}, [cancelAllNotifications]);
+      console.log(`알림이 ${settings.time}에 예약되었습니다.`);
+    } catch (error) {
+      console.error('알림 예약 실패:', error);
+    }
+  }, [cancelAllNotifications]);
 
 
   // 알림 설정 업데이트
   const updateNotificationSettings = useCallback(async (newSettings: Partial<NotificationSettings>) => {
     const updatedSettings = { ...notificationSettings, ...newSettings };
-    
+
     try {
       await AsyncStorage.setItem(STORAGE_KEY.NOTIFICATION_SETTINGS, JSON.stringify(updatedSettings));
       setNotificationSettings(updatedSettings);
@@ -191,7 +194,7 @@ export const useNotifications = () => {
   useEffect(() => {
     const initializeNotifications = async () => {
       setIsLoading(true);
-      
+
       try {
         // 권한 상태 확인
         const status = await checkPermissionStatus();
@@ -243,7 +246,7 @@ export const useNotifications = () => {
     permissionStatus,
     notificationSettings,
     isLoading,
-    
+
     // 메서드
     requestPermissions,
     updateNotificationSettings,

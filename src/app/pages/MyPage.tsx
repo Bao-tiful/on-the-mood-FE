@@ -38,15 +38,16 @@ const convertTo24Hour = (notiTime: NotiTime): number => {
 
 const formatTimeString = (notiTime: NotiTime): string => {
   const time24 = convertTo24Hour(notiTime);
-  return `${String(time24).padStart(2, '0')}:${String(notiTime.minute).padStart(2, '0')}`;
+  return `${String(time24).padStart(2, '0')}:${String(notiTime.minute).padStart(
+    2,
+    '0',
+  )}`;
 };
 
 const formatDisplayTime = (notiTime: NotiTime): string => {
   return `${notiTime.meridiem} ${notiTime.hour
     .toString()
-    .padStart(2, '0')}:${notiTime.minute
-    .toString()
-    .padStart(2, '0')}`;
+    .padStart(2, '0')}:${notiTime.minute.toString().padStart(2, '0')}`;
 };
 
 const parseTimeStringToNotiTime = (timeString: string): NotiTime => {
@@ -93,7 +94,10 @@ const MyPage = () => {
           const timeString = formatTimeString(notiTime);
           await updateNotificationSettings({ enabled: true, time: timeString });
         } else {
-          Alert.alert('알림 권한이 필요합니다', '설정에서 알림을 허용해주세요.');
+          Alert.alert(
+            '알림 권한이 필요합니다',
+            '설정에서 알림을 허용해주세요.',
+          );
         }
       } catch (error) {
         console.error('알림 권한 요청 오류:', error);
@@ -109,7 +113,7 @@ const MyPage = () => {
   const handleNotificationTimeChange = async (newNotiTime: NotiTime) => {
     setNotiTime(newNotiTime);
     await AsyncStorage.setItem('@NotiTime', JSON.stringify(newNotiTime));
-    
+
     if (isAlertOn) {
       const timeString = formatTimeString(newNotiTime);
       await updateNotificationSettings({ enabled: true, time: timeString });
@@ -141,14 +145,14 @@ const MyPage = () => {
 
   const handlePasswordToggle = async (newState: boolean) => {
     setIsPasswordOn(newState);
-    
+
     if (newState) {
       navigation.navigate('PasswordPage');
     } else {
       await AsyncStorage.removeItem('@password');
     }
   };
-  
+
   const handlePasswordChange = () => {
     navigation.navigate('PasswordPage');
   };
@@ -168,9 +172,12 @@ const MyPage = () => {
 
   return (
     <View
-style={[styles.container, {
-        backgroundColor: OndoColors.get(colorState.color),
-      }]}
+      style={[
+        styles.container,
+        {
+          backgroundColor: OndoColors.get(colorState.color),
+        },
+      ]}
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
@@ -180,11 +187,7 @@ style={[styles.container, {
               navigation.goBack();
             }}
           />
-          <Text
-            style={[typography.heading2]}
-          >
-            내 정보
-          </Text>
+          <Text style={[typography.heading2]}>내 정보</Text>
           {/* 내 정보 타이틀의 가운데 배치를 위해 여백 추가 */}
           <View style={styles.spacer} />
         </View>
@@ -236,8 +239,7 @@ style={[styles.container, {
                   style={styles.touchableContainer}
                   onPress={handlePasswordChange}
                 >
-                  <View style={styles.rowContainer}
-                  >
+                  <View style={styles.rowContainer}>
                     <Text style={styles.sectionContentLabel}>
                       비밀번호 변경
                     </Text>
@@ -255,8 +257,7 @@ style={[styles.container, {
                 style={styles.touchableContainer}
                 onPress={() => navigation.navigate('Entrance')}
               >
-                <View style={styles.rowContainer}
-                >
+                <View style={styles.rowContainer}>
                   <Text style={styles.sectionContentLabel}>로그인</Text>
                   <Icon name={IconName.arrow} />
                 </View>
