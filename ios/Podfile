@@ -20,6 +20,8 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
+
 target 'onthemood' do
   config = use_native_modules!
 

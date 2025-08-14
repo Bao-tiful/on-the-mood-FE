@@ -62,7 +62,8 @@ function HomeScreen() {
     };
 
     getTemperature();
-  }, [geoLocation, setBackgroundColor, isLoadingWeather]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [geoLocation, setBackgroundColor]);
 
   const updateDate = (newDate: Date) => {
     setDate(newDate);
