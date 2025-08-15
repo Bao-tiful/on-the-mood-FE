@@ -1,7 +1,7 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
-import BottomSheet from "./BottomSheet";
-import { Picker } from "@react-native-picker/picker";
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import BottomSheet from './BottomSheet';
+import { Picker } from '@react-native-picker/picker';
 
 interface BottomSheetProps {
   modalVisible: boolean; // boolean이면 boolean으로 명확하게 타입 지정 가능
@@ -43,7 +43,7 @@ export default function CalendarDatePicker({
               onValueChange={(itemValue: string) => {
                 // TODO: iOS에서 disable 처리 로직 따로 필요함
                 setTempDate(
-                  new Date(tempDate.getFullYear(), Number(itemValue))
+                  new Date(tempDate.getFullYear(), Number(itemValue)),
                 );
               }}
             >
@@ -78,23 +78,23 @@ const styles = StyleSheet.create({
   bottomSheetContainer: {
     paddingHorizontal: 24,
     paddingVertical: 32,
-    width: "100%",
+    width: '100%',
   },
   bottomSheetButton: {
-    backgroundColor: "orange",
+    backgroundColor: 'orange',
 
-    width: "100%",
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     height: 50,
     borderRadius: 16,
   },
   pickerContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   datePicker: {
     flex: 1,

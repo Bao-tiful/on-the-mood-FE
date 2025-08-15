@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+import { Text, View } from 'react-native';
+import React from 'react';
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
 
 type PasswordIndicator = {
   label: string;
@@ -14,22 +14,22 @@ const PasswordIndicator = ({ label, password }: PasswordIndicator) => {
       style={{
         flex: 1,
         paddingVertical: 100,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <View style={{ gap: 32 }}>
         <Text
-          style={{ ...typography.heading2, textAlign: "center", minHeight: 48 }}
+          style={{ ...typography.heading2, textAlign: 'center', minHeight: 48 }}
         >
           {label}
         </Text>
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: 'row',
             gap: 24,
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           <PasswordCell isValid={password.length >= 1} />
@@ -48,7 +48,7 @@ const PasswordCell = ({ isValid }: { isValid: boolean }) => {
       style={{
         width: 14,
         height: 14,
-        borderRadius: "50%",
+        borderRadius: '50%',
         backgroundColor: isValid ? Colors.black100 : Colors.black18,
       }}
     />
@@ -56,5 +56,3 @@ const PasswordCell = ({ isValid }: { isValid: boolean }) => {
 };
 
 export default PasswordIndicator;
-
-const styles = StyleSheet.create({});

@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -5,174 +6,227 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native";
+} from 'react-native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
 
-import { IconName } from "@/src/components/Icon";
-import { ToolbarButton } from "@/src/components/ToolbarButton";
-import LocationAndTemperature from "@/src/components/editpage/LocationAndTemperature";
-import NoteEditor from "@/src/components/editpage/NoteEditor";
-import TemperatureSlider from "@/src/components/editpage/TemperatureSlider";
-import typography from "@/src/styles/Typography";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
-import { OndoColors } from "@/src/styles/Colors";
-import { editNote, postNote } from "@/src/api/endpoints/daily-notes";
-import { toDateString } from "@/src/utils/dateUtils";
-import AnimatedColorView from "@/src/components/editpage/AnimatedColorView";
-import { LocationData } from "@/src/api/endpoints/weather";
-import { useMoodKeyword } from "@/src/hooks/useKeywords";
-import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
+import { IconName } from '@/components/Icon';
+import { ToolbarButton } from '@/components/ToolbarButton';
+import LocationAndTemperature from '@/components/editpage/LocationAndTemperature';
+import NoteEditor from '@/components/editpage/NoteEditor';
+import TemperatureSlider from '@/components/editpage/TemperatureSlider';
+import AnimatedColorView from '@/components/editpage/AnimatedColorView';
+
+import { Colors, OndoColors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+
+import { editNote, postNote } from '@/api/endpoints/daily-notes';
+import { LocationData } from '@/api/endpoints/weather';
+
+import { toDateString } from '@/utils/dateUtils';
+
+import { useMoodKeyword } from '@/hooks/useKeywords';
+import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+
+import { NoteItem } from '@/models/NoteItem';
+
+// Types
+type EditPageRouteParams = {
+  noteData?: string;
+  locationData?: string;
+};
+
+// Constants
+const TEMPERATURE_OFFSET = 40;
+const ANIMATION_DURATION = 200;
+
+// Utility functions
+const parseNoteData = (noteDataString: string): NoteItem | null => {
+  try {
+    if (Array.isArray(noteDataString)) {
+      throw new Error('noteData가 string[] 타입입니다');
+    }
+
+    const parsedNote = JSON.parse(noteDataString);
+
+    return {
+      id: parsedNote.id,
+      location: parsedNote.location,
+      custom_temp: parsedNote.custom_temp,
+      content: parsedNote.content,
+      created_at: new Date(parsedNote.created_at),
+      updated_at: new Date(parsedNote.updated_at),
+    };
+  } catch (error) {
+    console.error('유효하지 않은 JSON을 변환하려 합니다:', error);
+    return null;
+  }
+};
+
+const parseLocationData = (locationDataString: string): LocationData | null => {
+  try {
+    if (Array.isArray(locationDataString)) {
+      throw new Error('locationData가 string[] 타입입니다');
+    }
+
+    return JSON.parse(locationDataString.toLowerCase());
+  } catch (error) {
+    console.error('유효하지 않은 JSON을 변환하려 합니다:', error);
+    return null;
+  }
+};
 
 const EditPage = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
+  const route =
+    useRoute<RouteProp<{ EditPage: EditPageRouteParams }, 'EditPage'>>();
   const { colorState } = useBackgroundColor();
-  const { noteData, locationData } = useLocalSearchParams();
+  const { noteData, locationData } = route.params || {};
+  const { moodKeywordSet } = useMoodKeyword();
 
   const date = new Date();
 
+  // State
   const [feelsLikeTemp, setFeelsLikeTemp] = useState(0);
+  const [myMoodOndo, setMyMoodOndo] = useState(0);
+  const [memo, setMemo] = useState('');
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [location, setLocation] = useState<LocationData | undefined>(undefined);
-  const { moodKeywordSet } = useMoodKeyword();
 
   // 온도 가져와서 기본 배경색 지정하기
   useEffect(() => {
-    setFeelsLikeTemp(Number(colorState.color));
-  }, []);
+    const temperature = Number(colorState.color);
+    setFeelsLikeTemp(temperature);
+    if (!note) {
+      setMyMoodOndo(temperature);
+    }
+  }, [colorState.color, note]);
 
+  // JSON 데이터 파싱 및 상태 업데이트
   useEffect(() => {
-    try {
-      if (Array.isArray(noteData))
-        throw new Error("noteData가 string[] 타입입니다");
-
-      if (noteData) {
-        const parsedNote = JSON.parse(noteData);
-        // TODO: JSON -> NoteItem 만드는 Util 함수 추가하기
-        setNote({
-          id: parsedNote.id,
-          location: parsedNote.location,
-          custom_temp: parsedNote.custom_temp,
-          content: parsedNote.content,
-          created_at: new Date(parsedNote.created_at),
-          updated_at: new Date(parsedNote.updated_at),
-        });
+    if (noteData) {
+      const parsedNote = parseNoteData(noteData);
+      if (parsedNote) {
+        setNote(parsedNote);
         setMyMoodOndo(parsedNote.custom_temp);
-      } else {
-        setMyMoodOndo(Number(colorState.color));
       }
-    } catch (error) {
-      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
   }, [noteData]);
 
   useEffect(() => {
-    try {
-      if (Array.isArray(locationData))
-        throw new Error("editableData가 string[] 타입입니다");
-
-      if (locationData) {
-        setLocation(JSON.parse(locationData.toLowerCase()));
+    if (locationData) {
+      const parsedLocation = parseLocationData(locationData);
+      if (parsedLocation) {
+        setLocation(parsedLocation);
       }
-    } catch (error) {
-      console.error("유효하지 않은 JSON을 변환하려 합니다 :", error);
     }
   }, [locationData]);
 
-  const [myMoodOndo, setMyMoodOndo] = useState(feelsLikeTemp);
-  const [memo, setMemo] = useState("");
-
+  // Memoized values
   const colors = useMemo(
     () =>
       Array.from(OndoColors.keys())
         .sort((a, b) => a - b)
-        .map((key) => {
-          return OndoColors.get(key)!;
-        }),
-
-    []
+        .map(key => OndoColors.get(key)!),
+    [],
   );
+
+  const temperatureLabel = useMemo(
+    () => (feelsLikeTemp === myMoodOndo ? '체감 온도' : '기록 온도'),
+    [feelsLikeTemp, myMoodOndo],
+  );
+
+  // Event handlers
+  const handleBackPress = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const handleTemperatureChange = useCallback((temperature: number) => {
+    setMyMoodOndo(temperature);
+  }, []);
+
+  const handleMemoChange = useCallback((newMemo: string) => {
+    setMemo(newMemo);
+  }, []);
+
+  const handleSavePress = useCallback(async () => {
+    try {
+      if (note) {
+        // 노트 수정
+        await editNote({
+          id: note.id,
+          content: memo,
+          custom_temp: myMoodOndo,
+        });
+      } else {
+        // 새 노트 작성
+        await postNote({
+          location: location?.name ?? 'Seoul',
+          content: memo,
+          custom_temp: myMoodOndo,
+        });
+      }
+      navigation.goBack();
+    } catch (error) {
+      console.error('노트 저장 실패:', error);
+    }
+  }, [note, memo, myMoodOndo, location, navigation]);
 
   return (
     <AnimatedColorView
-      style={{
-        flex: 1,
-      }}
+      style={styles.animatedContainer}
       colors={colors}
-      activeIndex={myMoodOndo + 40}
-      duration={200}
+      activeIndex={myMoodOndo + TEMPERATURE_OFFSET}
+      duration={ANIMATION_DURATION}
     >
-      <View style={{ flex: 1 }}>
-        <SafeAreaView style={styles.container}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1, gap: 12 }}
-          >
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardAvoidingView}
+        >
+          <SafeAreaView style={styles.safeAreaContainer}>
+            {/* Header Section */}
             <View>
               <View style={styles.topToolbar}>
-                <ToolbarButton
-                  name={IconName.back}
-                  onPress={() => {
-                    router.back();
-                  }}
-                />
-
+                <ToolbarButton name={IconName.back} onPress={handleBackPress} />
                 <Text style={typography.heading2}>{toDateString(date)}</Text>
                 <ToolbarButton
                   name={IconName.check}
-                  onPress={async () => {
-                    try {
-                      // 노트를 수정하려는 경우
-                      if (note) {
-                        const prop = {
-                          id: note.id,
-                          content: memo,
-                          custom_temp: myMoodOndo,
-                        };
-                        const result = await editNote(prop);
-                      }
-                      // 오늘 노트를 처음 작성하는 경우
-                      else {
-                        const prop = {
-                          location: location?.name ?? "Seoul",
-                          content: memo,
-                          custom_temp: myMoodOndo,
-                        };
-                        const result = await postNote(prop);
-                      }
-
-                      router.back();
-                    } catch (error) {
-                      console.error("ERROR : ", error);
-                    }
-                  }}
+                  onPress={handleSavePress}
                 />
               </View>
               <LocationAndTemperature
-                location={location?.name_ko ?? ""}
+                location={location?.name_ko ?? ''}
                 temperature={feelsLikeTemp}
               />
             </View>
 
-            <View style={{ marginTop: 16 }}>
+            {/* Temperature Label */}
+            <Text style={[styles.temperatureLabel, typography.label4]}>
+              {temperatureLabel}
+            </Text>
+
+            {/* Temperature Slider */}
+            <View style={styles.sliderContainer}>
               <TemperatureSlider
                 feelsLikeTemp={feelsLikeTemp}
                 myMoodOndo={myMoodOndo}
-                // TODO: 만약 note 정보가 있다면 해당 날짜에 선택한 온도 넣어주기
-                changeMoodTemp={(temperature) => {
-                  setMyMoodOndo(temperature);
-                }}
+                changeMoodTemp={handleTemperatureChange}
               />
             </View>
-            <View style={{ flex: 1 }}>
+
+            {/* Note Editor */}
+            <View style={styles.editorContainer}>
               <NoteEditor
                 keywordList={moodKeywordSet.getKeywordsByTemp(feelsLikeTemp)}
                 memo={memo}
-                onMemoChanged={(memo) => setMemo(memo)}
+                onMemoChanged={handleMemoChange}
                 defaultValue={note?.content}
                 autoFocus={!note}
               />
             </View>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
       </View>
     </AnimatedColorView>
   );
@@ -181,29 +235,36 @@ const EditPage = () => {
 export default EditPage;
 
 const styles = StyleSheet.create({
-  containerStyle: {
-    height: 200,
-    width: 200,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 20,
-    backgroundColor: "pink",
-    marginBottom: 50,
-  },
-  animatedStyle: {
-    borderWidth: 5,
-    borderColor: "grey",
-    borderRadius: 100,
+  animatedContainer: {
+    flex: 1,
   },
   container: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  safeAreaContainer: {
     margin: 12,
     flex: 1,
   },
   topToolbar: {
-    flexDirection: "row",
-    paddingVertical: 12,
+    flexDirection: 'row',
+    paddingTop: 12,
     marginHorizontal: 4,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  temperatureLabel: {
+    alignSelf: 'center',
+    marginTop: 20,
+    color: Colors.black70,
+  },
+  sliderContainer: {
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  editorContainer: {
+    flex: 1,
   },
 });

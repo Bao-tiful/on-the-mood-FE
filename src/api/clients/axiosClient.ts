@@ -1,12 +1,12 @@
 // GPT
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: "http://3.35.230.131:8000",
+  baseURL: 'https://onthemood.p-e.kr/',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -14,7 +14,7 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   async (config) => {
     // AsyncStorage에서 토큰을 가져옵니다
-    const token = await AsyncStorage.getItem("accessToken");
+    const token = await AsyncStorage.getItem('accessToken');
 
     // 토큰이 있으면 Authorization 헤더에 추가
     if (token) {

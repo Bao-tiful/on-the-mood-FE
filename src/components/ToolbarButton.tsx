@@ -1,6 +1,7 @@
-import { TouchableOpacity, StyleSheet, Image } from "react-native";
-import Icon, { IconName } from "./Icon";
-import { Colors } from "@/src/styles/Colors";
+import React from 'react';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import Icon, { IconName } from './Icon';
+import { Colors } from '@/styles/Colors';
 
 type ToolbarButtonProps = {
   name: IconName;
@@ -23,10 +24,10 @@ export const ToolbarButton = ({
 
 const styles = StyleSheet.create({
   toolbarButton: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
 
-    borderRadius: "50%",
+    borderRadius: '50%',
     backgroundColor: Colors.black18,
   },
 });

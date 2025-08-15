@@ -1,5 +1,5 @@
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
 import {
   Modal,
   TouchableOpacity,
@@ -9,7 +9,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
-} from "react-native";
+} from 'react-native';
 
 type AlertModalProps = {
   isModalVisible: boolean;
@@ -24,10 +24,10 @@ type AlertModalProps = {
 
 const AlertModal = ({
   isModalVisible,
-  title = "",
-  content = "",
-  primaryLabel = "",
-  secondaryLabel = "",
+  title = '',
+  content = '',
+  primaryLabel = '',
+  secondaryLabel = '',
   onPressPrimary = () => {},
   onPressSecondary = () => {},
   dismissHandler = () => {},
@@ -39,7 +39,7 @@ const AlertModal = ({
           <View style={styles.modalContainer}>
             <Text style={styles.titleLabel}>{title}</Text>
             <Text style={styles.contentLabel}>{content}</Text>
-            <View style={{ flexDirection: "row", gap: 16 }}>
+            <View style={{ flexDirection: 'row', gap: 16 }}>
               <TouchableOpacity
                 onPress={onPressSecondary}
                 style={styles.secondaryActionButton}
@@ -68,8 +68,8 @@ export default AlertModal;
 
 const actionButton: ViewStyle = {
   flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
+  justifyContent: 'center',
+  alignItems: 'center',
   borderRadius: 12,
   height: 50,
 };
@@ -80,16 +80,16 @@ const actionButtonLabel: ViewStyle | TextStyle = {
 const styles = StyleSheet.create({
   modalBackground: {
     backgroundColor: Colors.black40,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     flex: 1,
   },
   modalContainer: {
-    width: "90%",
-    backgroundColor: "white",
+    width: '90%',
+    backgroundColor: 'white',
     padding: 24,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 24,
     gap: 16,
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   contentLabel: {
     ...typography.body,
     color: Colors.gray,
-    textAlign: "center",
+    textAlign: 'center',
   },
 
   primaryActionButton: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   secondaryActionButton: {
     ...actionButton,
     backgroundColor: Colors.lightGray,
-    borderColor: "#EAEDF1",
+    borderColor: '#EAEDF1',
     borderWidth: 1,
     color: Colors.gray,
   },

@@ -1,14 +1,15 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import { IconName } from "@/src/components/Icon";
-import { ToolbarButton } from "@/src/components/ToolbarButton";
-import { Colors, OndoColors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import { router } from "expo-router";
-import PasswordKeypad from "@/src/components/myPage/PasswordKeypad";
-import PasswordIndicator from "@/src/components/myPage/PasswordIndicator";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useBackgroundColor } from "@/src/hooks/useBackgroundColor";
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { IconName } from '@/components/Icon';
+import { ToolbarButton } from '@/components/ToolbarButton';
+import { Colors, OndoColors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
+import PasswordKeypad from '@/components/myPage/PasswordKeypad';
+import PasswordIndicator from '@/components/myPage/PasswordIndicator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 
 enum PasswordConfigStep {
   checkCurrent = 0,
@@ -19,24 +20,25 @@ enum PasswordConfigStep {
 }
 
 const PasswordPage = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
   const { colorState } = useBackgroundColor();
-  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState('');
   const [step, setStep] = useState(0);
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   const indicatorLabel = [
-    "현재 비밀번호를 입력해주세요.",
-    "현재 비밀번호가 일치하지 않아요.\n다시 시도해주세요.",
-    "새로운 비밀번호를 입력해주세요.",
-    "확인을 위해 한 번 더 입력해주세요.",
-    "비밀번호가 일치하지 않아요.\n처음부터 다시 시도해주세요.",
+    '현재 비밀번호를 입력해주세요.',
+    '현재 비밀번호가 일치하지 않아요.\n다시 시도해주세요.',
+    '새로운 비밀번호를 입력해주세요.',
+    '확인을 위해 한 번 더 입력해주세요.',
+    '비밀번호가 일치하지 않아요.\n처음부터 다시 시도해주세요.',
   ];
 
   useEffect(() => {
     const loadPassword = async () => {
-      const storedPassword = await AsyncStorage.getItem("@password");
+      const storedPassword = await AsyncStorage.getItem('@password');
 
       if (storedPassword && storedPassword.length == 4) {
         // 설정된 비밀번호가 있다면 && 정확히 4자리라면
@@ -51,8 +53,9 @@ const PasswordPage = () => {
     loadPassword();
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const savePassword = async () => {
-    await AsyncStorage.setItem("@password", newPassword);
+    await AsyncStorage.setItem('@password', newPassword);
   };
 
   useEffect(() => {
@@ -62,23 +65,23 @@ const PasswordPage = () => {
           // 기존 비밀번호 확인
           if (currentPassword == passwordInput) {
             // 비밀번호가 일치하는 경우 > 변경으로 이동
-            setPasswordInput("");
+            setPasswordInput('');
             setStep(PasswordConfigStep.inputNew);
           } else {
             // 일치하지 않는 경우
-            setPasswordInput("");
+            setPasswordInput('');
             setStep(PasswordConfigStep.checkCurrentAgain);
           }
 
           break;
         case PasswordConfigStep.checkCurrentAgain:
           if (currentPassword == passwordInput) {
-            setPasswordInput("");
+            setPasswordInput('');
             setStep(PasswordConfigStep.inputNew);
           }
           // 일치하지 않는 경우
           else {
-            setPasswordInput("");
+            setPasswordInput('');
             setStep(PasswordConfigStep.checkCurrentAgain);
           }
           break;
@@ -86,7 +89,7 @@ const PasswordPage = () => {
           // 새로운 비밀번호 입력하기
           // 입력된 패스워드 임시 저장
           setNewPassword(passwordInput);
-          setPasswordInput("");
+          setPasswordInput('');
           setStep(step + 1);
           break;
         case PasswordConfigStep.validateNew:
@@ -95,11 +98,11 @@ const PasswordPage = () => {
           if (passwordInput == newPassword) {
             // 패스워드 저장하고 돌아가기
             savePassword();
-            router.back();
+            navigation.goBack();
           }
           // 일치하지 않는 경우
           else {
-            setPasswordInput("");
+            setPasswordInput('');
             setStep(step + 1);
           }
 
@@ -109,17 +112,24 @@ const PasswordPage = () => {
           if (passwordInput == newPassword) {
             // 패스워드 저장하고 돌아가기
             savePassword();
-            router.back();
+            navigation.goBack();
           }
           // 일치하지 않는 경우
           else {
-            setPasswordInput("");
+            setPasswordInput('');
           }
 
           break;
       }
     }
-  }, [passwordInput]);
+  }, [
+    currentPassword,
+    navigation,
+    newPassword,
+    passwordInput,
+    savePassword,
+    step,
+  ]);
 
   return (
     <View
@@ -134,7 +144,7 @@ const PasswordPage = () => {
           <ToolbarButton
             name={IconName.back}
             onPress={() => {
-              router.back();
+              navigation.goBack();
             }}
           />
           <Text
@@ -154,7 +164,7 @@ const PasswordPage = () => {
 
         {/* 비밀번호 패드 */}
         <PasswordKeypad
-          onNextInput={(newInput) => {
+          onNextInput={newInput => {
             switch (true) {
               case newInput >= 0:
                 setPasswordInput(passwordInput.concat(newInput.toString()));
@@ -174,19 +184,19 @@ export default PasswordPage;
 
 const styles = StyleSheet.create({
   topToolbar: {
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     paddingVertical: 12,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   safeArea: { gap: 20, margin: 12, flex: 1 },
   button: {
     flex: 1,
     paddingVertical: 24,
     color: Colors.black100,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 8,
   },
   text: {

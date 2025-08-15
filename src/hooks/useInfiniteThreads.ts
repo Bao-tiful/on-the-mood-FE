@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { getThreads } from "../api/endpoints/thread";
-import { Thread } from "../types/thread";
+import { useCallback, useEffect, useState } from 'react';
+import { getThreads } from '../api/endpoints/thread';
+import { Thread } from '../types/thread';
 
 interface UseInfiniteThreadsProps {
   pageSize?: number;

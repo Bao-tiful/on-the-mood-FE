@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getNotes, Note } from "../api/endpoints/daily-notes";
+import { useEffect, useState } from 'react';
+import { getNotes, Note } from '../api/endpoints/daily-notes';
 
 export function useNotes() {
   const [notes, setNotes] = useState<NoteItem[]>([]);
@@ -25,7 +25,7 @@ export function useNotes() {
       const fetchedNotes = result.map((note): NoteItem => convertNote(note));
       setNotes(fetchedNotes);
     } catch (error) {
-      console.error("Error fetching notes:", error);
+      console.error('Error fetching notes:', error);
     }
   };
 

@@ -1,11 +1,11 @@
-import { Colors } from "@/src/styles/Colors";
-import typography from "@/src/styles/Typography";
-import { View, StyleSheet, Text, Dimensions, Pressable } from "react-native";
+import { Colors } from '@/styles/Colors';
+import typography from '@/styles/Typography';
+import { View, StyleSheet, Text, Dimensions, Pressable } from 'react-native';
 import Toast, {
   BaseToast,
   ErrorToast,
   ToastShowParams,
-} from "react-native-toast-message";
+} from 'react-native-toast-message';
 
 /// 사용 방법
 /// Toast.show 메서드를 호출하여 토스트 메시지를 화면에 띄울 수 있습니다.
@@ -19,7 +19,7 @@ import Toast, {
 
 export const toastConfig = {
   info: (params: ToastShowParams) => {
-    const { height } = Dimensions.get("window"); // 화면 높이를 가져옴
+    const { height } = Dimensions.get('window'); // 화면 높이를 가져옴
     return (
       <View
         style={{
@@ -56,11 +56,11 @@ export const toastConfig = {
   success: (props: ToastShowParams) => (
     <BaseToast
       {...props}
-      style={{ borderLeftColor: "pink" }}
+      style={{ borderLeftColor: 'pink' }}
       contentContainerStyle={{ paddingHorizontal: 15 }}
       text1Style={{
         fontSize: 15,
-        fontWeight: "400",
+        fontWeight: '400',
       }}
     />
   ),
@@ -86,14 +86,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     paddingVertical: 16,
     borderRadius: 8,
-    width: "100%",
+    width: '100%',
     backgroundColor: Colors.black100,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   toastLabel: {
     ...typography.body,
     color: Colors.white100,
-    textAlign: "center",
+    textAlign: 'center',
   },
 });
