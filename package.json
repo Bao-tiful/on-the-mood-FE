@@ -7,7 +7,11 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "clean:ios": "cd ios && rm -rf build && rm -rf Podfile.lock && rm -rf Pods && pod install && cd ..",
+    "clean:cache": "rm -rf node_modules/.cache && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/react-*",
+    "clean:all": "npm run clean:ios && npm run clean:cache",
+    "build:ios": "npm run clean:all && cd ios && bundle exec fastlane firebase_distribution"
   },
   "dependencies": {
     "@miblanchard/react-native-slider": "^2.6.0",
