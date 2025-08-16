@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   todayWriteButton: {
     width: 68,
     aspectRatio: 1,
-    borderRadius: '50%',
+    borderRadius: 1000,
     backgroundColor: Colors.black100,
     alignItems: 'center',
     justifyContent: 'center',

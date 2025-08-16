@@ -48,6 +48,66 @@ export const toastConfig = {
       </View>
     );
   },
+  default: (params: ToastShowParams) => {
+    const { height } = Dimensions.get('window'); // 화면 높이를 가져옴
+    return (
+      <View
+        style={{
+          flex: 1,
+          // 아래로부터 (화면 크기의 1/2 - toast의 높이)에 배치
+          bottom: height / 2 - 60,
+          marginHorizontal: 40,
+        }}
+      >
+        <Pressable
+          // 토스트를 탭하면 바로 닫기
+          onPress={() => {
+            Toast.hide();
+          }}
+          style={styles.toastContainer}
+        >
+          <Text
+            style={styles.toastLabel}
+            // 토스트 메시지의 최대 길이는 2줄로 지정해두었음
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {params.text1}
+          </Text>
+        </Pressable>
+      </View>
+    );
+  },
+  white: (params: ToastShowParams) => {
+    const { height } = Dimensions.get('window'); // 화면 높이를 가져옴
+    return (
+      <View
+        style={{
+          flex: 1,
+          // 아래로부터 (화면 크기의 1/2 - toast의 높이)에 배치
+          bottom: height / 2 - 60,
+          marginHorizontal: 40,
+        }}
+      >
+        <Pressable
+          // 토스트를 탭하면 바로 닫기
+          onPress={() => {
+            Toast.hide();
+          }}
+          style={styles.whiteToastContainer}
+        >
+          <Text
+            style={styles.whiteToastLabel}
+            // 토스트 메시지의 최대 길이는 2줄로 지정해두었음
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {params.text1}
+          </Text>
+        </Pressable>
+      </View>
+    );
+  },
   // 아래는 Default Toast Configuration
   /*
     Overwrite 'success' type,
@@ -85,7 +145,7 @@ const styles = StyleSheet.create({
   toastContainer: {
     paddingHorizontal: 40,
     paddingVertical: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     width: '100%',
     backgroundColor: Colors.black100,
     alignItems: 'center',
@@ -94,6 +154,20 @@ const styles = StyleSheet.create({
   toastLabel: {
     ...typography.body,
     color: Colors.white100,
+    textAlign: 'center',
+  },
+  whiteToastContainer: {
+    paddingHorizontal: 40,
+    paddingVertical: 16,
+    borderRadius: 12,
+    width: '100%',
+    backgroundColor: Colors.white100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  whiteToastLabel: {
+    ...typography.body,
+    color: Colors.black100,
     textAlign: 'center',
   },
 });

@@ -48,7 +48,7 @@ const PasswordCell = ({ isValid }: { isValid: boolean }) => {
       style={{
         width: 14,
         height: 14,
-        borderRadius: '50%',
+        borderRadius: 1000,
         backgroundColor: isValid ? Colors.black100 : Colors.black18,
       }}
     />
