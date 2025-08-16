@@ -1,7 +1,8 @@
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import BottomSheet from '@components/BottomSheet';
+import { ActionButton } from '@components/ActionButton';
 import typography from '@/styles/Typography';
 import { Colors } from '@/styles/Colors';
 
@@ -87,15 +88,13 @@ export const CalendarDatePicker = ({
               ))}
             </Picker>
           </View>
-          <TouchableOpacity
-            style={styles.bottomSheetButton}
+          <ActionButton
+            title="보러가기"
             onPress={() => {
               changeCalendarDate(tempDate);
               changeModalVisible(false);
             }}
-          >
-            <Text style={styles.bottomSheetButtonLabel}>보러가기</Text>
-          </TouchableOpacity>
+          />
         </View>
       </BottomSheet>
     </View>
@@ -107,20 +106,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 32,
     width: '100%',
-  },
-  bottomSheetButton: {
-    backgroundColor: Colors.black100,
-    width: '100%',
-    alignContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 56,
-    borderRadius: 28,
-  },
-  bottomSheetButtonLabel: {
-    ...typography.body,
-    fontWeight: 600,
-    color: Colors.white100,
   },
   pickerContainer: {
     width: '100%',
