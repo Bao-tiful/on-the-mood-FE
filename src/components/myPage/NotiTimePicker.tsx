@@ -2,12 +2,13 @@ import React from 'react';
 import typography from '@/styles/Typography';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 
 import BottomSheet from '../BottomSheet';
 import { Colors } from '@/styles/Colors';
 
 import { Meridiem, NotiTime } from '@/models/NotiTime';
+import { ActionButton } from '../ActionButton';
 
 interface NotiTimePickerProps {
   initialTime: NotiTime;
@@ -121,8 +122,8 @@ export const NotiTimePicker = ({
               ))}
             </Picker>
           </View>
-          <TouchableOpacity
-            style={styles.bottomSheetButton}
+          <ActionButton
+            title="변경하기"
             onPress={() => {
               const newNotiTime: NotiTime = {
                 hour: hour,
@@ -133,9 +134,8 @@ export const NotiTimePicker = ({
               changeNotiTime(newNotiTime);
               changeModalVisible(false);
             }}
-          >
-            <Text style={styles.bottomSheetButtonLabel}>변경하기</Text>
-          </TouchableOpacity>
+            variant="default"
+          />
         </View>
       </BottomSheet>
     </View>

@@ -45,10 +45,10 @@ export const AuthInfo = ({
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: backgroundColor,
-          borderRadius: '50%',
+          borderRadius: 1000,
         }}
       >
-        <Icon name={iconName} size={12} />
+        <Icon name={iconName} size={12} color={Colors.white100} />
       </View>
       <Text style={typography.headline}>{email}</Text>
     </View>

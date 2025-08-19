@@ -139,6 +139,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.black18,
     height: '100%',
     width: 2,
-    borderRadius: '50%',
+    borderRadius: 1000,
   },
 });

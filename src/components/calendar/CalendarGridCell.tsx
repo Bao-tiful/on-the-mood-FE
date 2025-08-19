@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   calendarCell: {
     flex: 1,
     aspectRatio: 1,
-    borderRadius: '50%',
+    borderRadius: 1000,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   todayDot: {
     position: 'absolute',
     bottom: '16%',
-    borderRadius: '50%',
+    borderRadius: 1000,
     width: 4,
     height: 4,
     fontWeight: 'bold',
