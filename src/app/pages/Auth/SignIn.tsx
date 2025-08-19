@@ -14,6 +14,7 @@ import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { logIn } from '@/api/endpoints/auth';
 import { saveAccessToken } from '@/utils/storage';
+import InputField from '@/components/InputField';
 
 const SignIn = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -33,19 +34,37 @@ const SignIn = () => {
       </View>
       <View style={{ gap: 4 }}>
         <Text>로그인</Text>
-        <TextInput
+        <InputField
+          value={email}
+          placeholder="이메일"
+          validationRules={[
+            {
+              condition: email.length >= 8,
+              message: '8자~20자 이내',
+            },
+            {
+              condition: /[!@#$%^&*]/.test(email),
+              message: '특수문자포함',
+            },
+          ]}
+          obscure={true}
+          onChangeText={input => {
+            setEmail(input);
+          }}
+        />
+        {/* <TextInput
           style={{ backgroundColor: '#aaaaaa', padding: 8 }}
           placeholder="이메일"
           autoCapitalize="none"
           placeholderTextColor="#ffffff"
-          onChangeText={(v) => setEmail(v)}
-        />
+          onChangeText={v => setEmail(v)}
+        /> */}
         <TextInput
           style={{ backgroundColor: '#aaaaaa', padding: 8 }}
           autoCapitalize="none"
           placeholder="비밀번호"
           placeholderTextColor="#ffffff"
-          onChangeText={(v) => setPassword(v)}
+          onChangeText={v => setPassword(v)}
         />
         <Button
           onPress={async () => {
