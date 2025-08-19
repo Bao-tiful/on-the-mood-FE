@@ -1,6 +1,6 @@
 import { CalendarDatePicker } from '@/components/calendar/CalendarDatePicker';
 import { CalendarContent } from '@/components/calendar/CalendarContent';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useNotes } from '@/hooks/useNotes';
 import { LocationData } from '@/api/endpoints/weather';
@@ -22,7 +22,9 @@ const Calendar = ({
 }: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   // 현재 보고 있는 달/년도 (달력 그리기용)
-  const [currentDate, setCurrentDate] = useState(new Date(date.getFullYear(), date.getMonth(), 1));
+  const [currentDate, setCurrentDate] = useState(
+    new Date(date.getFullYear(), date.getMonth(), 1),
+  );
   // 실제 선택된 날짜 (UI 표시용)
   const [selectedDate, setSelectedDate] = useState<Date | null>(date);
 
@@ -37,11 +39,11 @@ const Calendar = ({
     // 현재 보고 있는 달의 년/월과 같은 노트들만 필터링
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
-    
+
     for (const note of notes) {
       const noteYear = note.created_at.getFullYear();
       const noteMonth = note.created_at.getMonth();
-      
+
       // 같은 년/월인 노트만 맵에 추가
       if (noteYear === currentYear && noteMonth === currentMonth) {
         map.set(note.created_at.getDate(), note);
@@ -55,20 +57,21 @@ const Calendar = ({
     const newYear = newDate.getFullYear();
     const newMonth = newDate.getMonth();
     const today = new Date();
-    
+
     // 1. 달력은 새로운 달로 이동 (1일로 설정)
     setCurrentDate(new Date(newYear, newMonth, 1));
-    
+
     // 2. 오늘 날짜가 이 달에 포함되는지 확인
-    const isTodayInThisMonth = today.getFullYear() === newYear && today.getMonth() === newMonth;
-    
+    const isTodayInThisMonth =
+      today.getFullYear() === newYear && today.getMonth() === newMonth;
+
     // 3. 새로운 달의 노트들 찾기
     const monthNotes = notes.filter(note => {
       const noteYear = note.created_at.getFullYear();
       const noteMonth = note.created_at.getMonth();
       return noteYear === newYear && noteMonth === newMonth;
     });
-    
+
     // 4. 선택 우선순위: 오늘 날짜 > 첫 번째 노트 > null
     if (isTodayInThisMonth) {
       // 오늘 날짜가 이 달에 있으면 오늘 선택
@@ -79,7 +82,7 @@ const Calendar = ({
       const sortedDates = monthNotes
         .map(note => note.created_at.getDate())
         .sort((a, b) => a - b);
-      
+
       const firstNoteDate = new Date(newYear, newMonth, sortedDates[0]);
       setSelectedDate(firstNoteDate);
       updateDate(firstNoteDate);
