@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getNotes, Note } from '../api/endpoints/daily-notes';
+import { NoteItem } from '@/models/NoteItem';
 
 export function useNotes() {
   const [notes, setNotes] = useState<NoteItem[]>([]);

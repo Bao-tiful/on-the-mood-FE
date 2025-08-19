@@ -30,11 +30,21 @@ const Calendar = ({
 
   const notesMap = useMemo(() => {
     const map = new Map<number, NoteItem>();
+    // 현재 선택된 날짜의 년/월과 같은 노트들만 필터링
+    const currentYear = date.getFullYear();
+    const currentMonth = date.getMonth();
+    
     for (const note of notes) {
-      map.set(note.created_at.getDate(), note);
+      const noteYear = note.created_at.getFullYear();
+      const noteMonth = note.created_at.getMonth();
+      
+      // 같은 년/월인 노트만 맵에 추가
+      if (noteYear === currentYear && noteMonth === currentMonth) {
+        map.set(note.created_at.getDate(), note);
+      }
     }
     return map;
-  }, [notes]);
+  }, [notes, date]);
 
   return (
     <>
