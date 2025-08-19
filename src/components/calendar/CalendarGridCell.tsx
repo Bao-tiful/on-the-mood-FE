@@ -36,7 +36,8 @@ export function CalendarCell({
         selectedStyle,
         isToday ? { borderColor: Colors.black100, borderWidth: 2 } : null,
       ]}
-      onPressOut={() => onPress(date)}
+      onPressOut={data || isToday ? () => onPress(date) : undefined}
+      disabled={!data && !isToday}
     >
       <Text
         style={[

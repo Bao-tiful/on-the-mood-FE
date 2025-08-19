@@ -7,11 +7,8 @@ import {
 } from '@components/calendar/CalendarGridCell';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
-import {
-  firstDayOfMonth,
-  isSameDay,
-  lastDayOfMonth,
-} from '@/utils/dateUtils';
+import { firstDayOfMonth, isSameDay, lastDayOfMonth } from '@/utils/dateUtils';
+import { NoteItem } from '@/models/NoteItem';
 
 interface CalendarGridProps {
   date: Date;
@@ -45,7 +42,7 @@ export const CalendarGrid = ({
           let cellDate = new Date(
             date.getFullYear(),
             date.getMonth(),
-            item.date
+            item.date,
           );
 
           if (item.date > 0 && item.date <= lastDate) {
@@ -61,14 +58,14 @@ export const CalendarGrid = ({
               />
             );
           } else {
-            if (item.date > 0 && item.date - lastDate - cellDate.getDay() > 0)
-              {return <PlaceholderCalendarCell />;}
-            else {
+            if (item.date > 0 && item.date - lastDate - cellDate.getDay() > 0) {
+              return <PlaceholderCalendarCell />;
+            } else {
               return <EmptyCalendarCell />;
             }
           }
         }}
-        keyExtractor={(item) => item.date.toString()}
+        keyExtractor={item => item.date.toString()}
         numColumns={7}
         scrollEnabled={false}
       />
