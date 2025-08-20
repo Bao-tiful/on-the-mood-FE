@@ -20,6 +20,7 @@ export function CalendarCell({
 }: CalendarCellProps) {
   const isToday = isDateToday(date);
 
+
   const cellStyle = data
     ? {
         ...styles.calendarCellWithData,

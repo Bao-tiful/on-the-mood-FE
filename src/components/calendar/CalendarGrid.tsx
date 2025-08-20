@@ -50,7 +50,9 @@ export const CalendarGrid = ({
           if (item.date > 0 && item.date <= lastDate) {
             // 1일부터 마지막 날까지
 
-            let isSelected = selectedDate ? isSameDay(selectedDate, cellDate) : false;
+            let isSelected = selectedDate
+              ? isSameDay(selectedDate, cellDate)
+              : false;
             return (
               <CalendarCell
                 isSelected={isSelected}

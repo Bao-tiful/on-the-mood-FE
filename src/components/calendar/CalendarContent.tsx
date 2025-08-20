@@ -72,11 +72,11 @@ export const CalendarContent = ({
               isLargeScreen ? typography.heading1 : typography.heading2,
             ]}
           >
-            {selectedDate ? (
-              `${selectedDate.getDate()}일 ${getKrWeekday(selectedDate)}요일`
-            ) : (
-              `${currentDate.getFullYear()}.${(currentDate.getMonth() + 1).toString().padStart(2, '0')} 기록 없음`
-            )}
+            {selectedDate
+              ? `${selectedDate.getDate()}일 ${getKrWeekday(selectedDate)}요일`
+              : `${currentDate.getFullYear()}.${(currentDate.getMonth() + 1)
+                  .toString()
+                  .padStart(2, '0')} 기록 없음`}
           </Text>
           {MonthPicker}
         </View>
