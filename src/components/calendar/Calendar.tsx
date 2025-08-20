@@ -32,25 +32,22 @@ const Calendar = ({
     setModalVisible(isModalOn);
   };
 
-  const { notes } = useNotes();
+  const { notes } = useNotes(currentDate);
 
   const notesMap = useMemo(() => {
     const map = new Map<number, NoteItem>();
-    // 현재 보고 있는 달의 년/월과 같은 노트들만 필터링
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-
+    // useNotes에서 이미 currentDate 기준으로 데이터를 받아오므로
+    // 추가 필터링 없이 바로 날짜별로 매핑
+    console.log('Notes received in Calendar:', notes);
+    
     for (const note of notes) {
-      const noteYear = note.created_at.getFullYear();
-      const noteMonth = note.created_at.getMonth();
-
-      // 같은 년/월인 노트만 맵에 추가
-      if (noteYear === currentYear && noteMonth === currentMonth) {
-        map.set(note.created_at.getDate(), note);
-      }
+      console.log('Processing note:', note.created_at, note.content);
+      map.set(note.created_at.getDate(), note);
     }
+    
+    console.log('Final notesMap:', map);
     return map;
-  }, [notes, currentDate]);
+  }, [notes]);
 
   // 달 변경 시 해당 달의 첫 번째 노트 날짜로 자동 이동하는 로직
   const handleDateChange = (newDate: Date) => {

@@ -17,7 +17,11 @@ type ThreadCalendarCellProps = {
   location?: LocationData;
 };
 
-const ThreadCalendarCell = ({ date, note, location }: ThreadCalendarCellProps) => {
+const ThreadCalendarCell = ({
+  date,
+  note,
+  location,
+}: ThreadCalendarCellProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const WeatherCell = (
     <View style={[styles.todayCell]}>
@@ -33,7 +37,9 @@ const ThreadCalendarCell = ({ date, note, location }: ThreadCalendarCellProps) =
           <Icon name={IconName.location} size={17} />
           <Text style={[styles.todayWeatherLocation]}>{location?.name_ko}</Text>
         </View>
-        <Text style={[styles.temperature, typography.title1]}>{77}°</Text>
+        <Text style={[styles.temperature, typography.title1]}>
+          {note?.average_feels_like_temp}°
+        </Text>
         <View style={styles.feelsLikeBox}>
           <Icon name={IconName.temperature} size={16} />
           <Text style={[styles.feelsLikeText, typography.label2]}>
@@ -59,8 +65,8 @@ const ThreadCalendarCell = ({ date, note, location }: ThreadCalendarCellProps) =
                     existingNote: JSON.stringify(note),
                   });
                 } else {
-                  navigation.navigate('DetailPage', { 
-                    noteData: JSON.stringify(note) 
+                  navigation.navigate('DetailPage', {
+                    noteData: JSON.stringify(note),
                   });
                 }
               }
