@@ -143,8 +143,18 @@ export default function App() {
   const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
 
   useEffect(() => {
-    const checkPasswordAndSetInitialRoute = async () => {
+    const checkAppStateAndSetInitialRoute = async () => {
       try {
+        // 첫 실행 여부 확인
+        const hasCompletedOnboarding = await AsyncStorage.getItem('@hasCompletedOnboarding');
+        
+        if (!hasCompletedOnboarding) {
+          // 첫 실행이면 온보딩부터 시작
+          setInitialRoute('Onboarding');
+          return;
+        }
+
+        // 온보딩을 완료했다면 비밀번호 설정 여부 확인
         const storedPassword = await AsyncStorage.getItem('@password');
         if (storedPassword && storedPassword.length === 4) {
           // 비밀번호가 설정되어 있으면 PasswordUnlockPage로 시작
@@ -154,12 +164,12 @@ export default function App() {
           setInitialRoute('Home');
         }
       } catch (error) {
-        console.error('비밀번호 확인 중 오류 발생:', error);
+        console.error('앱 상태 확인 중 오류 발생:', error);
         setInitialRoute('Home');
       }
     };
 
-    checkPasswordAndSetInitialRoute();
+    checkAppStateAndSetInitialRoute();
   }, []);
 
   // 초기 라우트가 결정되기 전까지 로딩
