@@ -15,12 +15,14 @@ import { Colors, OndoColors } from '@/styles/Colors';
 import { useGeoLocation } from '@/hooks/useGeoLocation';
 import { getWeather, LocationData } from '@/api/endpoints/weather';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Auth screens
 import Entrance from '@/app/pages/Auth/Entrance';
 import SignIn from '@/app/pages/Auth/SignIn';
 import SignUp from '@/app/pages/Auth/SignUp';
 import Onboarding from '@/app/pages/Auth/Onboarding';
 import Withdraw from '@/app/pages/Auth/Withdraw';
+import PasswordUnlockPage from '@/app/pages/Auth/PasswordUnlockPage';
 // Content screens
 import DetailPage from '@/app/pages/DetailPage';
 import EditPage from '@/app/pages/EditPage';
@@ -138,6 +140,33 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+
+  useEffect(() => {
+    const checkPasswordAndSetInitialRoute = async () => {
+      try {
+        const storedPassword = await AsyncStorage.getItem('@password');
+        if (storedPassword && storedPassword.length === 4) {
+          // 비밀번호가 설정되어 있으면 PasswordUnlockPage로 시작
+          setInitialRoute('PasswordUnlockPage');
+        } else {
+          // 비밀번호가 설정되어 있지 않으면 Home으로 시작
+          setInitialRoute('Home');
+        }
+      } catch (error) {
+        console.error('비밀번호 확인 중 오류 발생:', error);
+        setInitialRoute('Home');
+      }
+    };
+
+    checkPasswordAndSetInitialRoute();
+  }, []);
+
+  // 초기 라우트가 결정되기 전까지 로딩
+  if (initialRoute === null) {
+    return null;
+  }
+
   return (
     <BackgroundColorProvider>
       <NavigationContainer>
@@ -145,7 +174,7 @@ export default function App() {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="Home"
+          initialRouteName={initialRoute}
         >
           {/* Main screens */}
           <Stack.Screen name="Home" component={HomeScreen} />
@@ -157,6 +186,7 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Withdraw" component={Withdraw} />
+          <Stack.Screen name="PasswordUnlockPage" component={PasswordUnlockPage} />
 
           {/* Content screens */}
           <Stack.Screen name="DetailPage" component={DetailPage} />
