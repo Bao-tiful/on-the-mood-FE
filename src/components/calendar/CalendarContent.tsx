@@ -5,6 +5,7 @@ import ThreadCalendarCell from './ThreadCalendarCell';
 import Icon, { IconName } from '../Icon';
 import { Colors } from '@/styles/Colors';
 import TodayNoteCell from './TodayNoteCell';
+import EmptyMonthCell from './EmptyMonthCell';
 import typography from '@/styles/Typography';
 import { getKrWeekday, isDateToday } from '@/utils/dateUtils';
 import { LocationData } from '@/api/endpoints/weather';
@@ -12,7 +13,8 @@ import { useScreenSize } from '@/hooks/useScreenSize';
 import { NoteItem } from '@/models/NoteItem';
 
 interface CalendarContentProp {
-  date: Date;
+  currentDate: Date;
+  selectedDate: Date | null;
   notes: Map<number, NoteItem>;
   feelLikeTemp: number;
   location?: LocationData;
@@ -22,7 +24,8 @@ interface CalendarContentProp {
 
 export const CalendarContent = ({
   changeModalVisible: changeModalVisible,
-  date,
+  currentDate,
+  selectedDate,
   changeCalendarDate,
   notes,
   feelLikeTemp,
@@ -31,15 +34,15 @@ export const CalendarContent = ({
   // 기기별 ScreenHeight 에 따라 UI를 다르게 보여주기 위해 사용
   const { isLargeScreen } = useScreenSize();
 
-  const isToday = isDateToday(date);
+  const isToday = selectedDate ? isDateToday(selectedDate) : false;
 
   const MonthPicker = (
     <TouchableOpacity onPress={() => changeModalVisible(true)}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={[isLargeScreen ? typography.title2 : typography.title3]}>
           {/* month는 1월이 0부터 시작하기 때문에 1 더해줌 */}
-          {date.getFullYear().toString()}.
-          {(date.getMonth() + 1).toString().padStart(2, '0')}
+          {currentDate.getFullYear().toString()}.
+          {(currentDate.getMonth() + 1).toString().padStart(2, '0')}
         </Text>
 
         <View style={styles.monthPickerIcon}>
@@ -69,13 +72,18 @@ export const CalendarContent = ({
               isLargeScreen ? typography.heading1 : typography.heading2,
             ]}
           >
-            {date.getDate().toString()}일 {getKrWeekday(date)}요일
+            {selectedDate
+              ? `${selectedDate.getDate()}일 ${getKrWeekday(selectedDate)}요일`
+              : `${currentDate.getFullYear()}.${(currentDate.getMonth() + 1)
+                  .toString()
+                  .padStart(2, '0')} 기록 없음`}
           </Text>
           {MonthPicker}
         </View>
         <View style={{ height: 8 }} />
         <CalendarGrid
-          date={date}
+          currentDate={currentDate}
+          selectedDate={selectedDate}
           changeDate={changeCalendarDate}
           notes={notes}
         />
@@ -92,12 +100,14 @@ export const CalendarContent = ({
           },
         ]}
       >
-        {isToday && notes.get(date.getDate()) == undefined ? (
+        {selectedDate === null ? (
+          <EmptyMonthCell currentDate={currentDate} />
+        ) : isToday && notes.get(selectedDate.getDate()) == undefined ? (
           <TodayNoteCell location={location} temperature={feelLikeTemp} />
         ) : (
           <ThreadCalendarCell
-            date={date}
-            note={notes.get(date.getDate())}
+            date={selectedDate}
+            note={notes.get(selectedDate.getDate())}
             location={location}
           />
         )}

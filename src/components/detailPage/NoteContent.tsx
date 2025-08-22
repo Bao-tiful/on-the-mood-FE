@@ -2,6 +2,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import React from 'react';
 import typography from '@/styles/Typography';
 import { Colors } from '@/styles/Colors';
+import { NoteItem } from '@/models/NoteItem';
 
 const NoteContent = ({ note }: { note: NoteItem }) => {
   return (

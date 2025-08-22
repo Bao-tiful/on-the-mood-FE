@@ -34,9 +34,9 @@ export const lastDayOfMonth = (date: Date): Date => {
 /// 두 Date 데이터가 같은 날짜에 속해있는지 확인하고, boolean 값을 반환합니다.
 export const isSameDay = (from: Date, target: Date): boolean => {
   return (
-    from.getFullYear() == target.getFullYear() &&
-    from.getMonth() == target.getMonth() &&
-    from.getDate() == target.getDate()
+    from.getFullYear() === target.getFullYear() &&
+    from.getMonth() === target.getMonth() &&
+    from.getDate() === target.getDate()
   );
 };
 

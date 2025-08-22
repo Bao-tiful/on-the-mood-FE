@@ -15,34 +15,44 @@ type TodayNoteCellProps = {
 
 const TodayNoteCell = ({ location, temperature }: TodayNoteCellProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  return (
-    <View style={styles.container}>
-      <View style={styles.todayCell}>
-        <Text style={styles.todayCellTitle}>{'Today \nOndo'}</Text>
-        <View style={{ width: '100%' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Icon name={IconName.location} size={17} />
-            <Text style={styles.todayWeatherLocation}>{location?.name_ko}</Text>
-          </View>
-          <Text style={styles.todayWeatherTemperature}>
-            {temperature ?? '-'}°
+
+  const WeatherCell = (
+    <View style={[styles.todayCell]}>
+      <Text style={styles.todayCellTitle}>{'오늘의 \n체감 온도'}</Text>
+      <View style={{ width: '100%' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 4,
+          }}
+        >
+          <Icon name={IconName.location} size={17} color={Colors.black70} />
+          <Text style={[styles.todayWeatherLocation]}>
+            {location?.name_ko ?? ' -'}
+          </Text>
+        </View>
+        <View style={styles.feelsLikeBox}>
+          <Icon name={IconName.temperature} size={16} />
+          <Text style={[styles.feelsLikeText, typography.label2]}>
+            체감 {temperature}°
           </Text>
         </View>
       </View>
-      <View style={styles.todayCell}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-            gap: 8,
-          }}
-        >
-          <Text style={styles.todayCellTitle}>{'Today \nMood Note'}</Text>
-          <Text style={styles.todayCellDescription}>
-            {'오늘의 하루를 \n+버튼을 눌러 기록해보세요.'}
-          </Text>
-        </View>
+    </View>
+  );
+
+  const NoteCell = (
+    <View style={styles.todayCell}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Text style={styles.todayCellTitle}>{'무드온도\n일기'}</Text>
         <TouchableOpacity
           style={styles.todayWriteButton}
           onPress={() => {
@@ -52,17 +62,19 @@ const TodayNoteCell = ({ location, temperature }: TodayNoteCellProps) => {
             });
           }}
         >
-          {/* + SVG 아이콘의 색상 변경이 불가능해, 우선은 텍스트로 넣었음 => svgIcon 의 컬러값에 currentColor 사용후 적용 가능함*/}
-          <Text
-            style={{
-              color: styles.todayWriteButton.color,
-              fontSize: styles.todayWriteButton.fontSize,
-            }}
-          >
-            +
-          </Text>
+          <Icon name={IconName.plus} size={24} />
         </TouchableOpacity>
+        <Text style={styles.todayCellDescription}>
+          {'버튼을 눌러\n오늘 하루를 기록해보세요\n* 당일에만 기록할 수 있어요'}
+        </Text>
       </View>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      {WeatherCell}
+      {NoteCell}
     </View>
   );
 };
@@ -75,28 +87,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     maxHeight: 250,
-    columnGap: 8,
+    columnGap: 1,
+    gap: 2,
   },
   todayCell: {
     width: '100%',
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    borderColor: Colors.black32,
-    borderWidth: 1,
-    borderRadius: 16,
     padding: 16,
+    alignItems: 'center',
+    backgroundColor: Colors.white40,
+    borderRadius: 16,
   },
   todayCellTitle: {
     textAlign: 'left',
     width: '100%',
+    alignSelf: 'flex-start',
     ...typography.label1,
     fontWeight: 700,
     color: Colors.black100,
   },
   todayCellDescription: {
     flexDirection: 'row',
-    textAlign: 'left',
+    textAlign: 'center',
     width: '100%',
     ...typography.label3,
     color: Colors.black32,
@@ -119,10 +133,27 @@ const styles = StyleSheet.create({
     width: 68,
     aspectRatio: 1,
     borderRadius: 1000,
-    backgroundColor: Colors.black100,
+    backgroundColor: Colors.black18,
     alignItems: 'center',
     justifyContent: 'center',
     color: Colors.white100,
     fontSize: 24,
+  },
+  feelsLikeBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 5,
+    marginTop: 4,
+    alignSelf: 'flex-start',
+    backgroundColor: Colors.black18,
+  },
+  feelsLikeText: {
+    color: Colors.black70,
+  },
+  temperature: {
+    color: Colors.black100,
   },
 });

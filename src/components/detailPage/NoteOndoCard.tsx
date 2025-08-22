@@ -5,6 +5,7 @@ import { Colors, OndoColors } from '@/styles/Colors';
 import Tooltip from '../feedback/Tooltip';
 import Icon, { IconName } from '../Icon';
 import Toast from 'react-native-toast-message';
+import { NoteItem } from '@/models/NoteItem';
 
 const NoteOndoCard = ({ note }: { note: NoteItem }) => {
   const maxTemp = 40;

@@ -47,7 +47,7 @@ const SignIn = () => {
               message: '특수문자포함',
             },
           ]}
-          obscure={true}
+          obscure={false}
           onChangeText={input => {
             setEmail(input);
           }}

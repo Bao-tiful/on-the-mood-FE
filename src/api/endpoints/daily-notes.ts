@@ -18,18 +18,24 @@ export const postNote = async (prop: PostNotesProps) => {
   }
 };
 
+
+interface GetNotesProps {
+  date: string;
+}
+
 export interface Note {
   id: string;
   location: string;
   content: string;
   custom_temp: number;
+  avg_feels_like_temp: number;
   created_at: string;
   updated_at: string;
 }
 
-export const getNotes = async () => {
+export const getNotes = async (prop: GetNotesProps) => {
   try {
-    const response = await axiosClient.get<Note[]>('/daily-notes');
+    const response = await axiosClient.get<Note[]>(`/daily-notes?date=${prop.date}`);
     return response.data;
   } catch (error) {
     handleApiError(error);
