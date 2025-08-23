@@ -182,7 +182,7 @@ export const verifyEmailCode = async (email: string, code: string) => {
   try {
     const response = await axiosClient.patch('/auth/authorize', {
       email,
-      code,
+      auth_code: code,
     });
     return response.data;
   } catch (error) {
