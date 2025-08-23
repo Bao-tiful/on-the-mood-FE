@@ -1,83 +1,80 @@
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import React, { useState } from 'react';
-import { ToolbarButton } from '@/components/ToolbarButton';
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { IconName } from '@/components/Icon';
-import { signUp } from '@/api/endpoints/auth';
-import { useNavigation } from '@react-navigation/native';
-import type { NavigationProp } from '@react-navigation/native';
+import { ToolbarButton } from '@/components/ToolbarButton';
+import { VerificationStep } from '@/components/auth/VerificationStep';
+import { PasswordStep } from '@/components/auth/PasswordStep';
+import { useSignUp } from '@/hooks/useSignUp';
+import { EmailStep } from '@/components/auth/EmailStep';
 
 const SignUp = () => {
-  const navigation = useNavigation<NavigationProp<any>>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [signUpResult, setSignUpResult] = useState('');
+  const {
+    currentStep,
+    email,
+    setEmail,
+    verificationCode,
+    setVerificationCode,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    errorMessage,
+    isLoading,
+    handleEmailCheck,
+    handleVerificationCode,
+    handlePasswordSubmit,
+    goToPreviousStep,
+  } = useSignUp();
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 'email':
+        return (
+          <EmailStep
+            email={email}
+            setEmail={setEmail}
+            errorMessage={errorMessage}
+            isLoading={isLoading}
+            onNext={handleEmailCheck}
+          />
+        );
+      case 'verification':
+        return (
+          <VerificationStep
+            email={email}
+            verificationCode={verificationCode}
+            setVerificationCode={setVerificationCode}
+            errorMessage={errorMessage}
+            isLoading={isLoading}
+            onVerify={handleVerificationCode}
+          />
+        );
+      case 'password':
+        return (
+          <PasswordStep
+            password={password}
+            setPassword={setPassword}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            errorMessage={errorMessage}
+            isLoading={isLoading}
+            onSubmit={handlePasswordSubmit}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
-    <SafeAreaView style={{ margin: 16 }}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.topToolbar}>
-        <ToolbarButton
-          name={IconName.back}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
+        <View style={styles.backButton}>
+          <ToolbarButton name={IconName.back} onPress={goToPreviousStep} />
+        </View>
+        <Text style={styles.title}>회원가입</Text>
       </View>
-      <View style={{ gap: 4 }}>
-        <Text>회원가입</Text>
-        <TextInput
-          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
-          placeholder="이메일"
-          autoCapitalize="none"
-          placeholderTextColor="#ffffff"
-          onChangeText={(v) => setEmail(v)}
-        />
-        <TextInput
-          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
-          placeholder="비밀번호"
-          autoCapitalize="none"
-          placeholderTextColor="#ffffff"
-          onChangeText={(v) => setPassword(v)}
-        />
-        <TextInput
-          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
-          placeholder="닉네임"
-          autoCapitalize="none"
-          placeholderTextColor="#ffffff"
-          onChangeText={(v) => setNickname(v)}
-        />
-        <Button
-          onPress={async () => {
-            try {
-              const prop = {
-                username: email,
-                email: email,
-                password: password,
-                password2: password,
-                nickname: nickname,
-              };
-              await signUp(prop);
-              setSignUpResult('회원가입 성공! 로그인 페이지로 이동합니다.');
-
-              // 회원가입 성공 후 SignIn 페이지로 이동
-              navigation.navigate('SignIn');
-            } catch (error) {
-              setSignUpResult('error');
-              console.error('ERROR : ', error);
-            }
-          }}
-          title="회원가입"
-          color="blue"
-        />
-        <Text> - 결과 : {signUpResult}</Text>
-      </View>
+      {renderCurrentStep()}
     </SafeAreaView>
   );
 };
@@ -85,10 +82,25 @@ const SignUp = () => {
 export default SignUp;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 16,
+  },
   topToolbar: {
-    flexDirection: 'row',
+    position: 'relative',
     width: '100%',
     paddingVertical: 12,
-    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 0,
+    zIndex: 1,
+  },
+  title: {
+    fontSize: 20,
+    lineHeight: 24,
+    color: '#1e1e1e',
+    fontWeight: '600',
   },
 });
