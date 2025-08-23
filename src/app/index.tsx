@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { BackgroundColorProvider } from '@/contexts/BackgroundColorProvider';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
 import Calendar from '@/components/calendar/Calendar';
@@ -15,6 +16,8 @@ import { Colors, OndoColors } from '@/styles/Colors';
 import { useGeoLocation } from '@/hooks/useGeoLocation';
 import { getWeather, LocationData } from '@/api/endpoints/weather';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAccessToken } from '@/utils/storage';
 // Auth screens
 import Entrance from '@/app/pages/Auth/Entrance';
 import SignIn from '@/app/pages/Auth/SignIn';
@@ -138,15 +141,63 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+
+  useEffect(() => {
+    const checkAppStateAndSetInitialRoute = async () => {
+      try {
+        // 1. 첫 실행 여부 확인
+        const hasCompletedOnboarding = await AsyncStorage.getItem('@hasCompletedOnboarding');
+        
+        if (!hasCompletedOnboarding) {
+          // 첫 실행이면 온보딩부터 시작
+          setInitialRoute('Onboarding');
+          return;
+        }
+
+        // 2. 비밀번호 등록 여부 확인
+        const storedPassword = await AsyncStorage.getItem('@password');
+        
+        if (storedPassword && storedPassword.length === 4) {
+          // 비밀번호가 설정되어 있으면 PasswordUnlockPage로 시작
+          setInitialRoute('PasswordUnlockPage');
+          return;
+        }
+
+        // 3. 비밀번호가 없다면 로그인 상태 확인
+        const accessToken = await getAccessToken();
+        
+        if (accessToken) {
+          // 로그인되어 있으면 Home으로 시작
+          setInitialRoute('Home');
+        } else {
+          // 로그인되어 있지 않으면 Entrance로 이동
+          setInitialRoute('Entrance');
+        }
+      } catch (error) {
+        console.error('앱 상태 확인 중 오류 발생:', error);
+        setInitialRoute('Entrance');
+      }
+    };
+
+    checkAppStateAndSetInitialRoute();
+  }, []);
+
+  // 초기 라우트가 결정되기 전까지 로딩
+  if (initialRoute === null) {
+    return null;
+  }
+
   return (
-    <BackgroundColorProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-          initialRouteName="Home"
-        >
+    <AuthProvider>
+      <BackgroundColorProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+            initialRouteName={initialRoute}
+          >
           {/* Main screens */}
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="MyPage" component={MyPageScreen} />
@@ -167,5 +218,6 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </BackgroundColorProvider>
+  </AuthProvider>
   );
 }

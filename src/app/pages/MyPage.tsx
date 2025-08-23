@@ -24,6 +24,7 @@ import { Meridiem, NotiTime } from '@/models/NotiTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import { useNotifications } from '@/hooks/useNotifications';
+import { logOut } from '@/api/endpoints/auth';
 
 // 시간 변환 유틸리티 함수들
 const convertTo24Hour = (notiTime: NotiTime): number => {
@@ -157,6 +158,24 @@ const MyPage = () => {
     navigation.navigate('PasswordPage');
   };
 
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      // 로그아웃 성공 시 Entrance 페이지로 이동
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Entrance' }],
+      });
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      // 에러가 발생해도 Entrance 페이지로 이동 (토큰은 이미 삭제됨)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Entrance' }],
+      });
+    }
+  };
+
   // 페이지가 전환될 때 패스워드가 잘 저장되어있는지 확인
   // 만약 패스워드가 없거나 유효하지 않다면 패스워드가 저장되지 않은 상태로 간주
   useFocusEffect(
@@ -249,16 +268,16 @@ const MyPage = () => {
               </SectionContent>
             ) : null}
           </View>
-          {/* 개발용 */}
+          {/* 계정 관리 */}
           <View style={styles.section}>
-            <SectionTitle label="개발용 / 삭제 예정" />
+            <SectionTitle label="계정 관리" />
             <SectionContent>
               <TouchableOpacity
                 style={styles.touchableContainer}
-                onPress={() => navigation.navigate('Entrance')}
+                onPress={handleLogout}
               >
                 <View style={styles.rowContainer}>
-                  <Text style={styles.sectionContentLabel}>로그인</Text>
+                  <Text style={styles.sectionContentLabel}>로그아웃</Text>
                   <Icon name={IconName.arrow} />
                 </View>
               </TouchableOpacity>

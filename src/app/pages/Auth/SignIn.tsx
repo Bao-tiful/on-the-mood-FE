@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { logIn } from '@/api/endpoints/auth';
-import { saveAccessToken } from '@/utils/storage';
+import { saveAccessToken, saveRefreshToken } from '@/utils/storage';
 import InputField from '@/components/InputField';
 
 const SignIn = () => {
@@ -76,8 +76,11 @@ const SignIn = () => {
               const result = await logIn(prop);
               setLogInResult('성공');
 
+              // 액세스 토큰과 리프레시 토큰 모두 저장
               await saveAccessToken(result.access);
-              // 로그인 성공 시 전체 네비게이션 스택을 초기화하고 Home으로 이동
+              await saveRefreshToken(result.refresh);
+              
+              // 로그인 성공 후 바로 Home으로 이동
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'Home' }],
