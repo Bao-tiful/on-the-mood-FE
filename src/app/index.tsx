@@ -24,6 +24,7 @@ import SignIn from '@/app/pages/Auth/SignIn';
 import SignUp from '@/app/pages/Auth/SignUp';
 import Onboarding from '@/app/pages/Auth/Onboarding';
 import Withdraw from '@/app/pages/Auth/Withdraw';
+import PasswordUnlockPage from '@/app/pages/Auth/PasswordUnlockPage';
 // Content screens
 import DetailPage from '@/app/pages/DetailPage';
 import EditPage from '@/app/pages/EditPage';
@@ -208,6 +209,7 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Withdraw" component={Withdraw} />
+          <Stack.Screen name="PasswordUnlockPage" component={PasswordUnlockPage} />
 
           {/* Content screens */}
           <Stack.Screen name="DetailPage" component={DetailPage} />

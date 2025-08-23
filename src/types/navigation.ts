@@ -5,6 +5,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   Onboarding: undefined;
   Withdraw: undefined;
+  PasswordUnlockPage: undefined;
   
   // Main tab screens
   Home: undefined;
