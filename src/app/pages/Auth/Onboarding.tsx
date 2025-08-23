@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import OnboardingCard from '@/components/auth/OnboardingCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -23,10 +24,20 @@ const OnboardingPage = () => {
   const buttonLabel = ['다음', '다음', '다음', '시작하기'];
   const onboardingData = [0, 1, 2, 3];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (index === 3) {
-      // TODO: Navigate to Entrance - need to set up screen name
-      navigation.navigate('Entrance');
+      // 온보딩 완료 플래그 저장
+      try {
+        await AsyncStorage.setItem('@hasCompletedOnboarding', 'true');
+      } catch (error) {
+        console.error('온보딩 완료 플래그 저장 중 오류:', error);
+      }
+      
+      // Entrance 페이지로 이동 (스택 초기화)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Entrance' }],
+      });
       return;
     }
 
