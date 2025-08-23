@@ -64,11 +64,15 @@ const InputField: React.FC<InputFieldProps> = ({
   };
 
   // Check if there are validation errors (only for single validation rule)
-  const hasValidationError = validationRules.length === 1 && value.length > 0 && !validationRules[0].condition;
-  
+  const hasValidationError =
+    validationRules.length === 1 &&
+    value.length > 0 &&
+    !validationRules[0].condition;
+
   // Check if all validation rules are satisfied
-  const isAllValid = validationRules.length > 0 && validationRules.every(rule => rule.condition);
-  
+  const isAllValid =
+    validationRules.length > 0 && validationRules.every(rule => rule.condition);
+
   // Call validation change callback when validation state changes
   useEffect(() => {
     if (onValidationChange && validationRules.length > 0) {
@@ -102,6 +106,7 @@ const InputField: React.FC<InputFieldProps> = ({
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={obscure && isObscured}
+          autoCapitalize={'none'}
         />
 
         {/* Right side content */}
@@ -116,10 +121,10 @@ const InputField: React.FC<InputFieldProps> = ({
 
           {obscure && (
             <Pressable onPress={toggleObscure} style={styles.eyeButton}>
-              <Icon 
-                name={IconName.eye} 
-                size={20} 
-                color={isObscured ? Colors.gray : Colors.black100} 
+              <Icon
+                name={IconName.eye}
+                size={20}
+                color={isObscured ? Colors.gray : Colors.black100}
               />
             </Pressable>
           )}
@@ -131,7 +136,8 @@ const InputField: React.FC<InputFieldProps> = ({
         <View style={styles.validationContainer}>
           {validationRules.length === 1 ? (
             // Single validation rule - only show when there's input and condition fails
-            value.length > 0 && !validationRules[0].condition && (
+            value.length > 0 &&
+            !validationRules[0].condition && (
               <Text style={[styles.validationText, styles.validationTextError]}>
                 {validationRules[0].message}
               </Text>
@@ -144,15 +150,21 @@ const InputField: React.FC<InputFieldProps> = ({
                   <Text
                     style={[
                       styles.validationText,
-                      rule.condition ? styles.validationTextValid : styles.validationTextInvalid,
+                      rule.condition
+                        ? styles.validationTextValid
+                        : styles.validationTextInvalid,
                     ]}
                   >
                     {rule.message}
                   </Text>
-                  <Icon 
-                    name={IconName.check} 
-                    size={14} 
-                    color={rule.condition ? (OndoColors.get(-40) || '#4CAF50') : Colors.black40} 
+                  <Icon
+                    name={IconName.check}
+                    size={14}
+                    color={
+                      rule.condition
+                        ? OndoColors.get(-40) || '#4CAF50'
+                        : Colors.black40
+                    }
                   />
                 </View>
               ))}

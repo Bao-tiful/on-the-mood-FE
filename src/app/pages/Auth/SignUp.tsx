@@ -63,10 +63,11 @@ const SignUp = () => {
                 password2: password,
                 nickname: nickname,
               };
-              const result = await signUp(prop);
-              setSignUpResult(result);
+              await signUp(prop);
+              setSignUpResult('회원가입 성공! 로그인 페이지로 이동합니다.');
 
-              navigation.goBack();
+              // 회원가입 성공 후 SignIn 페이지로 이동
+              navigation.navigate('SignIn');
             } catch (error) {
               setSignUpResult('error');
               console.error('ERROR : ', error);

@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { BackgroundColorProvider } from '@/contexts/BackgroundColorProvider';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
 import Calendar from '@/components/calendar/Calendar';
@@ -16,6 +17,7 @@ import { useGeoLocation } from '@/hooks/useGeoLocation';
 import { getWeather, LocationData } from '@/api/endpoints/weather';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAccessToken } from '@/utils/storage';
 // Auth screens
 import Entrance from '@/app/pages/Auth/Entrance';
 import SignIn from '@/app/pages/Auth/SignIn';
@@ -145,7 +147,7 @@ export default function App() {
   useEffect(() => {
     const checkAppStateAndSetInitialRoute = async () => {
       try {
-        // 첫 실행 여부 확인
+        // 1. 첫 실행 여부 확인
         const hasCompletedOnboarding = await AsyncStorage.getItem('@hasCompletedOnboarding');
         
         if (!hasCompletedOnboarding) {
@@ -154,18 +156,28 @@ export default function App() {
           return;
         }
 
-        // 온보딩을 완료했다면 비밀번호 설정 여부 확인
+        // 2. 비밀번호 등록 여부 확인
         const storedPassword = await AsyncStorage.getItem('@password');
+        
         if (storedPassword && storedPassword.length === 4) {
           // 비밀번호가 설정되어 있으면 PasswordUnlockPage로 시작
           setInitialRoute('PasswordUnlockPage');
-        } else {
-          // 비밀번호가 설정되어 있지 않으면 Home으로 시작
+          return;
+        }
+
+        // 3. 비밀번호가 없다면 로그인 상태 확인
+        const accessToken = await getAccessToken();
+        
+        if (accessToken) {
+          // 로그인되어 있으면 Home으로 시작
           setInitialRoute('Home');
+        } else {
+          // 로그인되어 있지 않으면 Entrance로 이동
+          setInitialRoute('Entrance');
         }
       } catch (error) {
         console.error('앱 상태 확인 중 오류 발생:', error);
-        setInitialRoute('Home');
+        setInitialRoute('Entrance');
       }
     };
 
@@ -178,14 +190,15 @@ export default function App() {
   }
 
   return (
-    <BackgroundColorProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-          initialRouteName={initialRoute}
-        >
+    <AuthProvider>
+      <BackgroundColorProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+            initialRouteName={initialRoute}
+          >
           {/* Main screens */}
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="MyPage" component={MyPageScreen} />
@@ -207,5 +220,6 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </BackgroundColorProvider>
+  </AuthProvider>
   );
 }
