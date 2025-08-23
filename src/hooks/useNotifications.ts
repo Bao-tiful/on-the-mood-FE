@@ -7,7 +7,7 @@ import notifee, {
   AndroidVisibility
 } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NotificationPresets } from '@/types/notification';
+import { NotificationPresets, type NotificationForm } from '@/types/notification';
 
 // 알림 권한 상태 타입
 export type NotificationPermissionStatus = 'authorized' | 'denied' | 'provisional' | 'notDetermined';
@@ -27,6 +27,25 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 const STORAGE_KEY = {
   NOTIFICATION_SETTINGS: '@notification_settings',
   PERMISSION_STATUS: '@notification_permission_status',
+};
+
+// 시간대별 알림 프리셋 선택 함수
+const getNotificationPresetByTime = (time: string): NotificationForm => {
+  const [hours] = time.split(':').map(Number);
+  
+  if (hours >= 6 && hours < 12) {
+    // 06:00~11:59 => 아침
+    return NotificationPresets.MORNING_GREETING;
+  } else if (hours >= 12 && hours < 18) {
+    // 12:00~17:59 => 오후
+    return NotificationPresets.AFTERNOON_GREETING;
+  } else if (hours >= 18 && hours <= 23) {
+    // 18:00~23:59 => 저녁
+    return NotificationPresets.NIGHT_GREETING;
+  } else {
+    // 00:00~05:59 => 늦은밤
+    return NotificationPresets.LATE_NIGHT_GREETING;
+  }
 };
 
 export const useNotifications = () => {
@@ -119,7 +138,8 @@ export const useNotifications = () => {
         scheduledDate.setDate(scheduledDate.getDate() + 1);
       }
 
-      const notificationData = NotificationPresets.DAILY_REMINDER;
+      // 시간대에 따른 알림 프리셋 선택
+      const notificationData = getNotificationPresetByTime(settings.time);
 
       // 매일 반복 알림 생성
       await notifee.createTriggerNotification(
