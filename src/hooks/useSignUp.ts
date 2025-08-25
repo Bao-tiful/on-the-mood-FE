@@ -36,7 +36,7 @@ export const useSignUp = () => {
       setCurrentStep('verification');
     } catch (error: any) {
       if (error.response?.status === 409) {
-        setErrorMessage('이미 가입된 이메일입니다.');
+        setErrorMessage('이미 가입한 이메일입니다.');
       } else {
         setErrorMessage('이메일 확인 중 오류가 발생했습니다.');
       }
@@ -58,7 +58,7 @@ export const useSignUp = () => {
       await verifyEmailCode(email, verificationCode);
       setCurrentStep('password');
     } catch (error) {
-      setErrorMessage('인증 코드가 올바르지 않습니다.');
+      setErrorMessage('잘못된 인증코드입니다. 다시 입력해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +84,7 @@ export const useSignUp = () => {
     setErrorMessage('');
 
     try {
-      await completeSignUp(email, password);
+      await completeSignUp({ email: email, password: password });
       Alert.alert('회원가입 완료', '로그인 페이지로 이동합니다.');
       navigation.navigate('SignIn');
     } catch (error) {
@@ -106,6 +106,10 @@ export const useSignUp = () => {
     }
   };
 
+  const clearErrorMessage = () => {
+    setErrorMessage('');
+  };
+
   return {
     currentStep,
     email,
@@ -122,5 +126,6 @@ export const useSignUp = () => {
     handleVerificationCode,
     handlePasswordSubmit,
     goToPreviousStep,
+    clearErrorMessage,
   };
 };
