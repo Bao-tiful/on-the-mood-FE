@@ -31,7 +31,7 @@ const EmptyMonthCell = ({ currentDate }: EmptyMonthCellProps) => {
 
   const NoteCell = (
     <View style={[styles.todayCell]}>
-      <View style={{ flexDirection: 'row', paddingHorizontal: 0 }}>
+      <View style={{ flexDirection: 'row' }}>
         <Text style={styles.todayCellTitle}>{'무드온도\n일기'}</Text>
       </View>
       <View style={{ width: '100%' }}>

@@ -8,6 +8,8 @@ import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { BackgroundColorProvider } from '@/contexts/BackgroundColorProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/components/feedback/ToastMessage';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
 import Calendar from '@/components/calendar/Calendar';
@@ -271,12 +273,13 @@ export default function App() {
             <Stack.Screen name="DetailPage" component={DetailPage} />
             <Stack.Screen name="EditPage" component={EditPage} />
 
-            {/* Profile screens */}
-            <Stack.Screen name="PasswordPage" component={PasswordPage} />
-            <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </BackgroundColorProvider>
-    </AuthProvider>
+          {/* Profile screens */}
+          <Stack.Screen name="PasswordPage" component={PasswordPage} />
+          <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </BackgroundColorProvider>
+    <Toast config={toastConfig} />
+  </AuthProvider>
   );
 }
