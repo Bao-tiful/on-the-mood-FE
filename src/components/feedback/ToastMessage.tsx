@@ -19,14 +19,16 @@ import Toast, {
 
 export const toastConfig = {
   info: (params: ToastShowParams) => {
-    const { height } = Dimensions.get('window'); // 화면 높이를 가져옴
+    const { height } = Dimensions.get('window');
     return (
       <View
         style={{
-          flex: 1,
-          // 아래로부터 (화면 크기의 1/2 - toast의 높이)에 배치
-          bottom: height / 2 - 60,
-          marginHorizontal: 40,
+          position: 'absolute',
+          top: height / 2 - 80,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          zIndex: 9999,
         }}
       >
         <Pressable
@@ -83,10 +85,12 @@ export const toastConfig = {
     return (
       <View
         style={{
-          flex: 1,
-          // 아래로부터 (화면 크기의 1/2 - toast의 높이)에 배치
-          bottom: height / 2 - 60,
-          marginHorizontal: 40,
+          position: 'absolute',
+          top: height / 2 - 80,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          zIndex: 9999,
         }}
       >
         <Pressable
@@ -143,13 +147,13 @@ export const toastConfig = {
 
 const styles = StyleSheet.create({
   toastContainer: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 16,
     paddingVertical: 16,
     borderRadius: 12,
-    width: '100%',
     backgroundColor: Colors.black100,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   toastLabel: {
     ...typography.body,

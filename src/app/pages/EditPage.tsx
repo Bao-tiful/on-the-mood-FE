@@ -29,6 +29,8 @@ import { useMoodKeyword } from '@/hooks/useKeywords';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 
 import { NoteItem } from '@/models/NoteItem';
+import AlertModal from '@/components/feedback/AlertModal';
+import Toast from 'react-native-toast-message';
 
 // Types
 type EditPageRouteParams = {
@@ -57,6 +59,7 @@ const parseNoteData = (noteDataString: string): NoteItem | null => {
       content: parsedNote.content,
       created_at: new Date(parsedNote.created_at),
       updated_at: new Date(parsedNote.updated_at),
+      avg_feels_like_temp: parsedNote.avg_feels_like_temp,
     };
   } catch (error) {
     console.error('유효하지 않은 JSON을 변환하려 합니다:', error);
@@ -93,6 +96,7 @@ const EditPage = () => {
   const [memo, setMemo] = useState('');
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [location, setLocation] = useState<LocationData | undefined>(undefined);
+  const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
 
   // 온도 가져와서 기본 배경색 지정하기
   useEffect(() => {
@@ -139,8 +143,8 @@ const EditPage = () => {
 
   // Event handlers
   const handleBackPress = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+    setIsAlertModalVisible(true);
+  }, []);
 
   const handleTemperatureChange = useCallback((temperature: number) => {
     setMyMoodOndo(temperature);
@@ -159,6 +163,11 @@ const EditPage = () => {
           content: memo,
           custom_temp: myMoodOndo,
         });
+        Toast.show({
+          type: 'white',
+          text1: '기록을 수정했어요.',
+          visibilityTime: 2000,
+        });
       } else {
         // 새 노트 작성
         await postNote({
@@ -166,12 +175,31 @@ const EditPage = () => {
           content: memo,
           custom_temp: myMoodOndo,
         });
+        Toast.show({
+          type: 'info',
+          text1: '오늘을 기록했어요!',
+          visibilityTime: 2000,
+        });
       }
       navigation.goBack();
     } catch (error) {
       console.error('노트 저장 실패:', error);
+      Toast.show({
+        type: 'info',
+        text1: '일기 저장에 실패했습니다.',
+        visibilityTime: 2000,
+      });
     }
   }, [note, memo, myMoodOndo, location, navigation]);
+
+  const handleConfirmExit = useCallback(() => {
+    setIsAlertModalVisible(false);
+    navigation.goBack();
+  }, [navigation]);
+
+  const handleCancelExit = useCallback(() => {
+    setIsAlertModalVisible(false);
+  }, []);
 
   return (
     <AnimatedColorView
@@ -229,6 +257,16 @@ const EditPage = () => {
           </SafeAreaView>
         </KeyboardAvoidingView>
       </View>
+      <AlertModal
+        isModalVisible={isAlertModalVisible}
+        title="기록을 취소하실건가요?"
+        content={`이대로 나가면\n작성한 일기 내용이 사라져요`}
+        primaryLabel="네"
+        secondaryLabel="아니요"
+        onPressPrimary={handleConfirmExit}
+        onPressSecondary={handleCancelExit}
+        dismissHandler={handleCancelExit}
+      />
     </AnimatedColorView>
   );
 };

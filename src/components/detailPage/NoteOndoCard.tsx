@@ -12,11 +12,8 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
   const minTemp = -40;
 
   const copyColorCode = () => {
-    const colorCode = OndoColors.get(note.custom_temp);
-    if (colorCode) {
-      const Clipboard = require('react-native').Clipboard;
-      Clipboard.setString(colorCode);
-    }
+    // TODO: 클립보드 복사 기능 구현
+    console.log('색상 코드 복사:', OndoColors.get(note.custom_temp));
   };
 
   return (
@@ -72,12 +69,12 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            copyColorCode();
             Toast.show({
               type: 'info',
               text1: '컬러코드를 복사했어요',
-              visibilityTime: 2000, // ms단위
+              visibilityTime: 2000,
             });
+            copyColorCode();
           }}
         >
           <View style={styles.colorCodeContainer}>
