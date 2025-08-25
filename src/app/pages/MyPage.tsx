@@ -252,20 +252,30 @@ const MyPage = () => {
             </SectionContent>
 
             {isPasswordOn ? (
-              <SectionContent>
-                {/* 셀 전체 터치를 위해 label을 child에 포함*/}
+              <>
+                <SectionContent>
+                  {/* 셀 전체 터치를 위해 label을 child에 포함*/}
+                  <TouchableOpacity
+                    style={styles.touchableContainer}
+                    onPress={handlePasswordChange}
+                  >
+                    <View style={styles.rowContainer}>
+                      <Text style={styles.sectionContentLabel}>
+                        비밀번호 변경
+                      </Text>
+                      <Icon name={IconName.arrow} />
+                    </View>
+                  </TouchableOpacity>
+                </SectionContent>
                 <TouchableOpacity
-                  style={styles.touchableContainer}
-                  onPress={handlePasswordChange}
+                  style={styles.withdrawButton}
+                  onPress={() => navigation.navigate('WithdrawPage')}
                 >
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.sectionContentLabel}>
-                      비밀번호 변경
-                    </Text>
-                    <Icon name={IconName.arrow} />
-                  </View>
+                  <Text style={styles.withdrawLabel}>
+                    탈퇴하기
+                  </Text>
                 </TouchableOpacity>
-              </SectionContent>
+              </>
             ) : null}
           </View>
           {/* 계정 관리 */}
@@ -342,5 +352,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  withdrawButton: {
+    paddingVertical: 12,
+    alignItems: 'flex-start',
+  },
+  withdrawLabel: {
+    ...typography.body,
+    color: Colors.black70,
+    textDecorationLine: 'underline',
   },
 });
