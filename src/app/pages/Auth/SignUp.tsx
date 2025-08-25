@@ -24,6 +24,7 @@ const SignUp = () => {
     handleVerificationCode,
     handlePasswordSubmit,
     goToPreviousStep,
+    clearErrorMessage,
   } = useSignUp();
 
   const renderCurrentStep = () => {
@@ -36,6 +37,7 @@ const SignUp = () => {
             errorMessage={errorMessage}
             isLoading={isLoading}
             onNext={handleEmailCheck}
+            onClearError={clearErrorMessage}
           />
         );
       case 'verification':
@@ -47,6 +49,8 @@ const SignUp = () => {
             errorMessage={errorMessage}
             isLoading={isLoading}
             onVerify={handleVerificationCode}
+            onClearError={clearErrorMessage}
+            resendCode={handleEmailCheck}
           />
         );
       case 'password':
@@ -59,6 +63,7 @@ const SignUp = () => {
             errorMessage={errorMessage}
             isLoading={isLoading}
             onSubmit={handlePasswordSubmit}
+            onClearError={clearErrorMessage}
           />
         );
       default:
