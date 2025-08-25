@@ -69,3 +69,23 @@ export const clearAllTokens = async () => {
     console.error('토큰 전체 삭제 실패', error);
   }
 };
+
+// 모든 사용자 데이터 삭제 (탈퇴용)
+export const clearAllUserData = async () => {
+  try {
+    await Promise.all([
+      // 토큰 삭제
+      removeAccessToken(),
+      removeRefreshToken(),
+      // 사용자 설정 삭제
+      AsyncStorage.removeItem('@password'),
+      AsyncStorage.removeItem('@NotiTime'),
+      AsyncStorage.removeItem('@hasCompletedOnboarding'),
+      // 기타 앱 데이터 삭제
+      AsyncStorage.removeItem('@lastSelectedDate'),
+      AsyncStorage.removeItem('@userPreferences'),
+    ]);
+  } catch (error) {
+    console.error('사용자 데이터 전체 삭제 실패', error);
+  }
+};

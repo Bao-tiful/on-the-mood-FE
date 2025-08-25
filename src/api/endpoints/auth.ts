@@ -1,7 +1,7 @@
 
 import axiosClient from '../clients/axiosClient';
 import { handleApiError } from '../apiUtils';
-import { getRefreshToken, saveAccessToken, saveRefreshToken, clearAllTokens } from '@/utils/storage';
+import { getRefreshToken, saveAccessToken, saveRefreshToken, clearAllTokens, clearAllUserData } from '@/utils/storage';
 
 interface SignUpProps {
   username: string;
@@ -105,6 +105,22 @@ export const logOut = async () => {
   } catch (error) {
     // 로그아웃 API 실패해도 로컬 토큰은 삭제
     await clearAllTokens();
+    handleApiError(error);
+    throw error;
+  }
+};
+
+// 회원 탈퇴
+export const withdraw = async () => {
+  try {
+    // 서버에 탈퇴 요청
+    await axiosClient.delete('/auth/withdraw');
+    
+    // 로컬의 모든 사용자 데이터 삭제
+    await clearAllUserData();
+  } catch (error) {
+    // 탈퇴 API 실패해도 로컬 데이터는 삭제
+    await clearAllUserData();
     handleApiError(error);
     throw error;
   }

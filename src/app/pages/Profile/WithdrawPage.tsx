@@ -1,4 +1,5 @@
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -15,11 +16,32 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import { ActionButton } from '@/components/ActionButton';
+import { withdraw } from '@/api/endpoints/auth';
 
 const WithdrawPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const { colorState } = useBackgroundColor();
   const [isWithdrawEnabled, setIsWithdrawEnabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleWithdraw = async () => {
+    if (!isWithdrawEnabled || isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await withdraw();
+      // 탈퇴 성공 시 Entrance 페이지로 이동
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Entrance' }],
+      });
+    } catch (error) {
+      console.error('회원 탈퇴 실패:', error);
+      Alert.alert('오류', '회원 탈퇴 중 문제가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View
@@ -101,9 +123,9 @@ const WithdrawPage = () => {
             </Text>
           </TouchableOpacity>
           <ActionButton
-            title={'탈퇴하기'}
-            onPress={() => {}}
-            variant={isWithdrawEnabled ? 'default' : 'disabled'}
+            title={isLoading ? '처리 중...' : '탈퇴하기'}
+            onPress={handleWithdraw}
+            variant={isWithdrawEnabled && !isLoading ? 'default' : 'disabled'}
           />
         </View>
       </SafeAreaView>
