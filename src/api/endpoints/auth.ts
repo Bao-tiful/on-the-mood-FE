@@ -192,11 +192,19 @@ export const verifyEmailCode = async (email: string, code: string) => {
 };
 
 // 최종 회원가입
-export const completeSignUp = async (email: string, password: string) => {
+export const completeSignUp = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
   try {
     const response = await axiosClient.post('/auth/register', {
-      email,
-      password,
+      username: email,
+      email: email,
+      password: password,
+      password2: password,
     });
     return response.data;
   } catch (error) {
