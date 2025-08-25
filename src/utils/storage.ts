@@ -70,6 +70,45 @@ export const clearAllTokens = async () => {
   }
 };
 
+// 사용자 프로필 정보 인터페이스
+interface UserProfile {
+  id: number;
+  nickname?: string;
+  username: string;
+  email: string;
+  is_active: boolean;
+  date_joined: string;
+}
+
+// 사용자 프로필 저장
+export const saveUserProfile = async (profile: UserProfile) => {
+  try {
+    await AsyncStorage.setItem('@userProfile', JSON.stringify(profile));
+  } catch (error) {
+    console.error('사용자 프로필 저장 실패', error);
+  }
+};
+
+// 사용자 프로필 불러오기
+export const getUserProfile = async (): Promise<UserProfile | null> => {
+  try {
+    const profile = await AsyncStorage.getItem('@userProfile');
+    return profile ? JSON.parse(profile) : null;
+  } catch (error) {
+    console.error('사용자 프로필 불러오기 실패', error);
+    return null;
+  }
+};
+
+// 사용자 프로필 삭제
+export const removeUserProfile = async () => {
+  try {
+    await AsyncStorage.removeItem('@userProfile');
+  } catch (error) {
+    console.error('사용자 프로필 삭제 실패', error);
+  }
+};
+
 // 모든 사용자 데이터 삭제 (탈퇴용)
 export const clearAllUserData = async () => {
   try {
@@ -77,6 +116,8 @@ export const clearAllUserData = async () => {
       // 토큰 삭제
       removeAccessToken(),
       removeRefreshToken(),
+      // 사용자 프로필 삭제
+      removeUserProfile(),
       // 사용자 설정 삭제
       AsyncStorage.removeItem('@password'),
       AsyncStorage.removeItem('@NotiTime'),

@@ -1,7 +1,7 @@
 
 import axiosClient from '../clients/axiosClient';
 import { handleApiError } from '../apiUtils';
-import { getRefreshToken, saveAccessToken, saveRefreshToken, clearAllTokens, clearAllUserData } from '@/utils/storage';
+import { getRefreshToken, saveAccessToken, saveRefreshToken, clearAllTokens, clearAllUserData, saveUserProfile, removeUserProfile } from '@/utils/storage';
 
 interface SignUpProps {
   username: string;
@@ -37,6 +37,24 @@ export const logIn = async (postData: LogInProps) => {
       '/auth/login',
       postData
     );
+    
+    // 토큰 저장
+    await saveAccessToken(response.data.access);
+    await saveRefreshToken(response.data.refresh);
+    
+    // 로그인 성공 후 사용자 프로필 정보 가져와서 저장
+    try {
+      const profileResponse = await axiosClient.get<Profile>('/auth/profile', {
+        headers: {
+          'Authorization': `Bearer ${response.data.access}`
+        }
+      });
+      await saveUserProfile(profileResponse.data);
+    } catch (profileError) {
+      console.error('프로필 정보 저장 실패:', profileError);
+      // 프로필 저장 실패해도 로그인은 성공으로 처리
+    }
+    
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -100,11 +118,13 @@ export const logOut = async () => {
       });
     }
     
-    // 로컬 토큰 삭제
+    // 로컬 토큰 및 프로필 삭제
     await clearAllTokens();
+    await removeUserProfile();
   } catch (error) {
-    // 로그아웃 API 실패해도 로컬 토큰은 삭제
+    // 로그아웃 API 실패해도 로컬 데이터는 삭제
     await clearAllTokens();
+    await removeUserProfile();
     handleApiError(error);
     throw error;
   }
