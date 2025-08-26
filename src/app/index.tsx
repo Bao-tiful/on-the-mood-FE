@@ -31,6 +31,7 @@ import EditPage from '@/app/pages/EditPage';
 // Profile screens
 import MyPageScreen from '@/app/pages/MyPage';
 import PasswordPage from '@/app/pages/Profile/PasswordPage';
+import WithdrawPage from '@/app/pages/Profile/WithdrawPage';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -217,6 +218,7 @@ export default function App() {
 
           {/* Profile screens */}
           <Stack.Screen name="PasswordPage" component={PasswordPage} />
+          <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
         </Stack.Navigator>
       </NavigationContainer>
     </BackgroundColorProvider>

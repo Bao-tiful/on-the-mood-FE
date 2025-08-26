@@ -7,6 +7,7 @@ import { Colors } from '@/styles/Colors';
 export enum AuthType {
   'google',
   'apple',
+  'email',
 }
 
 export const AuthInfo = ({
@@ -26,6 +27,10 @@ export const AuthInfo = ({
       break;
     case AuthType.apple:
       iconName = IconName.appleLogo;
+      backgroundColor = Colors.black100;
+      break;
+    case AuthType.email:
+      iconName = IconName.profile;
       backgroundColor = Colors.black100;
       break;
   }

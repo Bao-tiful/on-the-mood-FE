@@ -25,6 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import { useNotifications } from '@/hooks/useNotifications';
 import { logOut } from '@/api/endpoints/auth';
+import { getUserProfile } from '@/utils/storage';
 
 // 시간 변환 유틸리티 함수들
 const convertTo24Hour = (notiTime: NotiTime): number => {
@@ -61,7 +62,6 @@ const parseTimeStringToNotiTime = (timeString: string): NotiTime => {
 };
 
 // 상수
-const DEFAULT_USER_EMAIL = 'hello@world.com'; // TODO: 실제 사용자 이메일로 교체
 const PASSWORD_LENGTH = 4;
 
 const MyPage = () => {
@@ -84,6 +84,7 @@ const MyPage = () => {
   });
   const [isPasswordOn, setIsPasswordOn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [userEmail, setUserEmail] = useState(' - '); // 기본값
 
   // 핸들러 함수들
   const handleNotificationToggle = async (value: boolean) => {
@@ -176,6 +177,18 @@ const MyPage = () => {
     }
   };
 
+  // 사용자 프로필 로드
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const profile = await getUserProfile();
+      if (profile && profile.email) {
+        setUserEmail(profile.email);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
+
   // 페이지가 전환될 때 패스워드가 잘 저장되어있는지 확인
   // 만약 패스워드가 없거나 유효하지 않다면 패스워드가 저장되지 않은 상태로 간주
   useFocusEffect(
@@ -215,7 +228,7 @@ const MyPage = () => {
           {/* 계정 정보 */}
           <View style={styles.section}>
             <SectionContent>
-              <AuthInfo authType={AuthType.apple} email={DEFAULT_USER_EMAIL} />
+              <AuthInfo authType={AuthType.email} email={userEmail} />
             </SectionContent>
           </View>
           {/* 알림 설정 */}
@@ -252,20 +265,28 @@ const MyPage = () => {
             </SectionContent>
 
             {isPasswordOn ? (
-              <SectionContent>
-                {/* 셀 전체 터치를 위해 label을 child에 포함*/}
+              <>
+                <SectionContent>
+                  {/* 셀 전체 터치를 위해 label을 child에 포함*/}
+                  <TouchableOpacity
+                    style={styles.touchableContainer}
+                    onPress={handlePasswordChange}
+                  >
+                    <View style={styles.rowContainer}>
+                      <Text style={styles.sectionContentLabel}>
+                        비밀번호 변경
+                      </Text>
+                      <Icon name={IconName.arrow} />
+                    </View>
+                  </TouchableOpacity>
+                </SectionContent>
                 <TouchableOpacity
-                  style={styles.touchableContainer}
-                  onPress={handlePasswordChange}
+                  style={styles.withdrawButton}
+                  onPress={() => navigation.navigate('WithdrawPage')}
                 >
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.sectionContentLabel}>
-                      비밀번호 변경
-                    </Text>
-                    <Icon name={IconName.arrow} />
-                  </View>
+                  <Text style={styles.withdrawLabel}>탈퇴하기</Text>
                 </TouchableOpacity>
-              </SectionContent>
+              </>
             ) : null}
           </View>
           {/* 계정 관리 */}
@@ -342,5 +363,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  withdrawButton: {
+    paddingVertical: 12,
+    alignItems: 'flex-start',
+  },
+  withdrawLabel: {
+    ...typography.body,
+    color: Colors.black70,
+    textDecorationLine: 'underline',
   },
 });

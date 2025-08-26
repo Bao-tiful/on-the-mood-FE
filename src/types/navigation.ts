@@ -23,6 +23,7 @@ export type RootStackParamList = {
   
   // Profile screens
   PasswordPage: undefined;
+  WithdrawPage: undefined;
 };
 
 export type TabParamList = {
