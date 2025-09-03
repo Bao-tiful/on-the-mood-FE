@@ -97,6 +97,14 @@ export const CalendarContent = ({
             maxHeight: 230,
             borderRadius: 16,
             overflow: 'hidden',
+            shadowColor: Colors.black100,
+            shadowOffset: {
+              width: 0,
+              height: 8,
+            },
+            shadowOpacity: 0.04,
+            shadowRadius: 16,
+            elevation: 4, // Android shadow
           },
         ]}
       >
