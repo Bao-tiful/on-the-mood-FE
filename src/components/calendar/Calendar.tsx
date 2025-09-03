@@ -12,6 +12,7 @@ interface CalendarProps {
   updateDate: (newDate: Date) => void;
   location?: LocationData;
   feelLikeTemp: number;
+  onSelectedDateChange?: (selectedDate: Date | null, noteData: any) => void;
 }
 
 const Calendar = ({
@@ -19,6 +20,7 @@ const Calendar = ({
   updateDate,
   location,
   feelLikeTemp,
+  onSelectedDateChange,
 }: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   // 현재 보고 있는 달/년도 (달력 그리기용)
@@ -60,14 +62,20 @@ const Calendar = ({
       const earliestDate = sortedNotes[0].created_at;
       setSelectedDate(earliestDate);
       console.log('ETT', earliestDate.toDateString());
+      
+      // HomeScreen으로 선택된 날짜와 노트 정보 전달
+      const noteData = notesMap.get(earliestDate.getDate());
+      onSelectedDateChange?.(earliestDate, noteData);
     } else if (isTodayInThisMonth) {
       // 노트가 없고 오늘이 이 달에 있으면 오늘 선택
       setSelectedDate(today);
+      onSelectedDateChange?.(today, null);
     } else {
       // 노트도 없고 오늘도 아니면 선택 없음
       setSelectedDate(null);
+      onSelectedDateChange?.(null, null);
     }
-  }, [notes, currentDate]);
+  }, [notes, currentDate, notesMap, onSelectedDateChange]);
 
   // 달 변경 시 해당 달의 첫 번째 노트 날짜로 자동 이동하는 로직
   const handleDateChange = (newDate: Date) => {
@@ -124,6 +132,10 @@ const Calendar = ({
           changeCalendarDate={(newDate: Date) => {
             setSelectedDate(newDate);
             // updateDate(newDate);
+            
+            // HomeScreen으로 선택된 날짜와 노트 정보 전달
+            const noteData = notesMap.get(newDate.getDate());
+            onSelectedDateChange?.(newDate, noteData);
           }}
           notes={notesMap}
           location={location}
