@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     // flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    overflow: 'hidden',
+    overflow: 'visible', // 그림자가 잘리지 않도록 변경
   },
   dateLabelContainer: {
     flexGrow: 1,
