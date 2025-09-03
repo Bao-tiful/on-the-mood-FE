@@ -36,9 +36,10 @@ export const CalendarGrid = ({
   }));
 
   return (
-    <View>
+    <View style={styles.container}>
       <WeekdayNames />
       <FlatList
+        style={styles.flatList}
         data={items}
         renderItem={({ item }) => {
           let cellDate = new Date(
@@ -93,6 +94,12 @@ function WeekdayNames() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    overflow: 'visible', // 그림자가 잘리지 않도록
+  },
+  flatList: {
+    overflow: 'visible', // 그림자가 잘리지 않도록
+  },
   weekdayContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
