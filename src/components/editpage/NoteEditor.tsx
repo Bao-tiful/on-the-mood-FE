@@ -17,7 +17,6 @@ const NoteEditor = ({
   memo,
   onMemoChanged,
   autoFocus = true,
-  defaultValue = '',
 }: NoteEditorProps) => {
   const textInputRef = useRef<TextInput>(null);
   const [selectionStart, setSelectionStart] = useState(0);
@@ -28,16 +27,19 @@ const NoteEditor = ({
     const beforeCursor = currentText.substring(0, selectionStart);
     const afterCursor = currentText.substring(selectionStart);
     const newText = beforeCursor + keyword + afterCursor;
-    
+
     // 100자 제한 체크
     if (newText.length <= 100) {
       onMemoChanged(newText);
-      
+
       // 커서 위치를 키워드 뒤로 이동
       const newCursorPosition = selectionStart + keyword.length;
-      
+
       setTimeout(() => {
-        textInputRef.current?.setSelection(newCursorPosition, newCursorPosition);
+        textInputRef.current?.setSelection(
+          newCursorPosition,
+          newCursorPosition,
+        );
         setSelectionStart(newCursorPosition);
       }, 10);
     }
@@ -45,8 +47,8 @@ const NoteEditor = ({
   return (
     <View style={styles.noteEditorContainer}>
       <View style={{ flex: 1 }}>
-        <Keywords 
-          keywordList={keywordList} 
+        <Keywords
+          keywordList={keywordList}
           onKeywordPress={insertKeywordAtCursor}
         />
         <TextInput
@@ -62,7 +64,7 @@ const NoteEditor = ({
           placeholderTextColor={Colors.black40}
           autoFocus={autoFocus}
           onChangeText={onMemoChanged}
-          onSelectionChange={(event) => {
+          onSelectionChange={event => {
             const newSelection = event.nativeEvent.selection.start;
             setSelectionStart(newSelection);
           }}
