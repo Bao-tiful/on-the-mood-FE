@@ -6,23 +6,39 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { IconName } from '@/components/Icon';
 import Icon from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
 import { Colors, OndoColors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import { ActionButton } from '@/components/ActionButton';
 import { withdraw } from '@/api/endpoints/auth';
+import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 
 const WithdrawPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'WithdrawPage'>>();
+  const { currentTemperature } = route.params || {};
   const { colorState } = useBackgroundColor();
   const [isWithdrawEnabled, setIsWithdrawEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // MyPage에서 전달된 온도값 사용, 없으면 colorState 사용
+  const displayTemperature = currentTemperature ?? colorState.color;
+
+  // 온도에 따른 색상 배열 생성 (index.tsx와 동일한 방식)
+  const colors = useMemo(
+    () =>
+      Array.from(OndoColors.keys())
+        .sort((a, b) => a - b)
+        .map(key => OndoColors.get(key)!),
+    [],
+  );
 
   const handleWithdraw = async () => {
     if (!isWithdrawEnabled || isLoading) return;
@@ -44,11 +60,11 @@ const WithdrawPage = () => {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: OndoColors.get(colorState.color),
-      }}
+    <AnimatedColorView
+      style={{ flex: 1 }}
+      colors={colors}
+      activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
+      duration={300} // 부드러운 애니메이션
     >
       <SafeAreaView style={styles.safeArea}>
         {/* Toolbar */}
@@ -129,7 +145,7 @@ const WithdrawPage = () => {
           />
         </View>
       </SafeAreaView>
-    </View>
+    </AnimatedColorView>
   );
 };
 

@@ -22,7 +22,7 @@ interface CalendarContentProp {
   changeModalVisible: (isModalOn: boolean) => void;
 }
 
-export const CalendarContent = ({
+export const CalendarContent = React.memo(({
   changeModalVisible: changeModalVisible,
   currentDate,
   selectedDate,
@@ -97,6 +97,14 @@ export const CalendarContent = ({
             maxHeight: 230,
             borderRadius: 16,
             overflow: 'hidden',
+            shadowColor: Colors.black100,
+            shadowOffset: {
+              width: 0,
+              height: 8,
+            },
+            shadowOpacity: 0.04,
+            shadowRadius: 16,
+            elevation: 4, // Android shadow
           },
         ]}
       >
@@ -114,14 +122,23 @@ export const CalendarContent = ({
       </View>
     </View>
   );
-};
+}, (prevProps, nextProps) => {
+  // 주요 props가 변경되지 않았다면 리렌더링 방지
+  return (
+    prevProps.currentDate.getTime() === nextProps.currentDate.getTime() &&
+    prevProps.selectedDate?.getTime() === nextProps.selectedDate?.getTime() &&
+    prevProps.notes === nextProps.notes &&
+    prevProps.feelLikeTemp === nextProps.feelLikeTemp &&
+    prevProps.location?.name === nextProps.location?.name
+  );
+});
 
 const styles = StyleSheet.create({
   calendarContainer: {
     // flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    overflow: 'hidden',
+    overflow: 'visible', // 그림자가 잘리지 않도록 변경
   },
   dateLabelContainer: {
     flexGrow: 1,

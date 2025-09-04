@@ -1,19 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 
 type KeywordsProps = {
   keywordList: string[];
+  onKeywordPress?: (keyword: string) => void;
 };
 
-const Keywords = ({ keywordList }: KeywordsProps) => {
+const Keywords = ({ keywordList, onKeywordPress }: KeywordsProps) => {
   return (
     <View style={styles.keywordContainer}>
       {Array.from(keywordList).map((keyword, index) => (
-        <View style={styles.keywordCell} key={index}>
+        <TouchableOpacity 
+          key={index}
+          style={styles.keywordCell} 
+          onPress={() => onKeywordPress?.(keyword)}
+          activeOpacity={0.7}
+        >
           <Text style={styles.keywordLabel}>{keyword}</Text>
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
