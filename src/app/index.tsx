@@ -130,7 +130,9 @@ function HomeScreen() {
           <ToolbarButton
             name={IconName.profile}
             onPress={() => {
-              navigation.navigate('MyPage');
+              navigation.navigate('MyPage', {
+                currentTemperature: currentBackgroundTemp,
+              });
             }}
           />
           <ToolbarButton

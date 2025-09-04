@@ -59,7 +59,6 @@ const parseNoteData = (noteDataString: string): NoteItem | null => {
       content: parsedNote.content,
       created_at: new Date(parsedNote.created_at),
       updated_at: new Date(parsedNote.updated_at),
-      avg_feels_like_temp: parsedNote.avg_feels_like_temp,
     };
   } catch (error) {
     console.error('유효하지 않은 JSON을 변환하려 합니다:', error);
