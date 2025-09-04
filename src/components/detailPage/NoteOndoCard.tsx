@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Clipboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import typography from '@/styles/Typography';
 import { Colors, OndoColors } from '@/styles/Colors';
@@ -13,7 +19,11 @@ const NoteOndoCard = ({ note }: { note: NoteItem }) => {
 
   const copyColorCode = () => {
     // TODO: 클립보드 복사 기능 구현
-    console.log('색상 코드 복사:', OndoColors.get(note.custom_temp));
+    const colorCode = OndoColors.get(note.custom_temp);
+    if (colorCode) {
+      Clipboard.setString(colorCode);
+      console.log('색상 코드 복사:', colorCode);
+    }
   };
 
   return (
