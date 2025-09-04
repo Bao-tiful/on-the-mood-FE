@@ -12,7 +12,7 @@ export type RootStackParamList = {
   // Main tab screens
   Home: undefined;
   MyPage: { currentTemperature?: number };
-  
+
   // Content screens
   DetailPage: {
     noteData?: string;
@@ -21,6 +21,7 @@ export type RootStackParamList = {
   EditPage: {
     selectedDate?: string;
     existingNote?: string;
+    locationData?: string;
   };
 
   // Profile screens

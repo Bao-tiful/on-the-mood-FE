@@ -118,6 +118,7 @@ const EditPage = () => {
   }, [noteData]);
 
   useEffect(() => {
+    console.log('Help');
     if (locationData) {
       const parsedLocation = parseLocationData(locationData);
       if (parsedLocation) {
