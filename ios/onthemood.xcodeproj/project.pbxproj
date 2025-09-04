@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		343D5B972E68A7D8006E297E /* libRNReactNativeHapticFeedback.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 343D5B962E68A7D8006E297E /* libRNReactNativeHapticFeedback.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9275B0E79EF1C2B9776C274B /* libPods-onthemood.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E112E96A25919FC4D82B491 /* libPods-onthemood.a */; };
@@ -21,6 +22,7 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = onthemood/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		25F3A3AE4D14E0ABAA87E825 /* Pods-onthemood.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-onthemood.debug.xcconfig"; path = "Target Support Files/Pods-onthemood/Pods-onthemood.debug.xcconfig"; sourceTree = "<group>"; };
 		342F73AC2E420310005EF554 /* onthemood.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = onthemood.entitlements; path = onthemood/onthemood.entitlements; sourceTree = "<group>"; };
+		343D5B962E68A7D8006E297E /* libRNReactNativeHapticFeedback.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNReactNativeHapticFeedback.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E4F4481B833AD2BCEECFAA /* Pods-onthemood.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-onthemood.release.xcconfig"; path = "Target Support Files/Pods-onthemood/Pods-onthemood.release.xcconfig"; sourceTree = "<group>"; };
 		5E112E96A25919FC4D82B491 /* libPods-onthemood.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-onthemood.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = onthemood/AppDelegate.swift; sourceTree = "<group>"; };
@@ -33,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				343D5B972E68A7D8006E297E /* libRNReactNativeHapticFeedback.a in Frameworks */,
 				9275B0E79EF1C2B9776C274B /* libPods-onthemood.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,6 +59,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				343D5B962E68A7D8006E297E /* libRNReactNativeHapticFeedback.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5E112E96A25919FC4D82B491 /* libPods-onthemood.a */,
 			);
