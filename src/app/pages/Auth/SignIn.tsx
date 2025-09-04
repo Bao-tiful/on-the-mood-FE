@@ -1,100 +1,206 @@
 import {
-  Button,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  SafeAreaView,
 } from 'react-native';
 import React, { useState } from 'react';
 import { ToolbarButton } from '@/components/ToolbarButton';
-import { IconName } from '@/components/Icon';
+import Icon, { IconName } from '@/components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { logIn } from '@/api/endpoints/auth';
-import { saveAccessToken, saveRefreshToken } from '@/utils/storage';
-import InputField from '@/components/InputField';
+// 토큰 저장은 endpoint에서 처리
 
 const SignIn = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const [emailFormatError, setEmailFormatError] = useState('');
   const [password, setPassword] = useState('');
   const [logInResult, setLogInResult] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 이메일 형식 검증: UI 일관성 유지 목적
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validateEmailFormat = (value: string) => {
+    if (value.length === 0) {
+      setEmailFormatError('');
+      return true;
+    }
+    if (!emailRegex.test(value)) {
+      setEmailFormatError('올바른 이메일 형식을 입력해주세요.');
+      return false;
+    }
+    setEmailFormatError('');
+    return true;
+  };
+
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    validateEmailFormat(text);
+    // 사용자가 수정 시, 이전 에러 상태는 의미가 없으므로 초기화
+    if (logInResult) setLogInResult('');
+  };
+
+  const handleClearEmail = () => {
+    setEmail('');
+    setEmailFormatError('');
+    if (logInResult) setLogInResult('');
+  };
+
+  const getInputBorderColor = () => {
+    if (logInResult === 'error' || emailFormatError) return '#F86262';
+    if (isFocused) return '#000000';
+    return '#e0e0e0';
+  };
+
+  const isButtonDisabled = () => {
+    return (
+      email.length === 0 ||
+      password.length === 0 ||
+      isLoading ||
+      emailFormatError.length > 0
+    );
+  };
 
   return (
-    <SafeAreaView style={{ margin: 16 }}>
+    <SafeAreaView style={styles.safeContainer}>
       <View style={styles.topToolbar}>
-        <ToolbarButton
-          name={IconName.back}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
+        <View style={styles.backButton}>
+          <ToolbarButton
+            name={IconName.back}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        </View>
+        <Text style={styles.title}>로그인</Text>
       </View>
-      <View style={{ gap: 4 }}>
-        <Text>로그인</Text>
-        <InputField
-          value={email}
-          placeholder="이메일"
-          validationRules={[
-            {
-              condition: email.length >= 8,
-              message: '8자~20자 이내',
-            },
-            {
-              condition: /[!@#$%^&*]/.test(email),
-              message: '특수문자포함',
-            },
-          ]}
-          obscure={false}
-          onChangeText={input => {
-            setEmail(input);
-          }}
-        />
-        {/* <TextInput
-          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
-          placeholder="이메일"
-          autoCapitalize="none"
-          placeholderTextColor="#ffffff"
-          onChangeText={v => setEmail(v)}
-        /> */}
-        <TextInput
-          style={{ backgroundColor: '#aaaaaa', padding: 8 }}
-          autoCapitalize="none"
-          placeholder="비밀번호"
-          placeholderTextColor="#ffffff"
-          onChangeText={v => setPassword(v)}
-        />
-        <Button
-          onPress={async () => {
-            try {
-              const prop = {
-                username: email,
-                password: password,
-              };
-              const result = await logIn(prop);
-              setLogInResult('성공');
 
-              // 액세스 토큰과 리프레시 토큰 모두 저장
-              await saveAccessToken(result.access);
-              await saveRefreshToken(result.refresh);
-              
-              // 로그인 성공 후 바로 Home으로 이동
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-              });
-            } catch (error) {
-              setLogInResult('error');
-              console.error('ERROR : ', error);
-            }
-          }}
-          title="로그인"
-          color="blue"
-        />
-        <Text> - 결과 : {logInResult}</Text>
-      </View>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <View style={styles.topSection}>
+              <View style={{ gap: 12 }}>
+                {/* 이메일 */}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        borderBottomColor: getInputBorderColor(),
+                        borderBottomWidth: 1,
+                        paddingLeft: 2,
+                        paddingRight: 26,
+                        paddingVertical: 12,
+                      },
+                    ]}
+                    placeholder="이메일을 입력해주세요"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    value={email}
+                    onChangeText={handleEmailChange}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                  />
+                  {email.length > 0 && (
+                    <TouchableOpacity
+                      style={styles.clearButton}
+                      onPress={handleClearEmail}
+                      hitSlop={{
+                        top: 10,
+                        bottom: 10,
+                        left: 10,
+                        right: 10,
+                      }}
+                    >
+                      <Icon name={IconName.cancel} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+                {(emailFormatError || logInResult === 'error') && (
+                  <Text style={styles.errorText}>
+                    {emailFormatError || '이메일 또는 비밀번호를 확인해주세요.'}
+                  </Text>
+                )}
+
+                {/* 비밀번호 */}
+                <View style={[styles.inputContainer, { marginTop: 8 }]}>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        borderBottomColor: '#e0e0e0',
+                        borderBottomWidth: 1,
+                        paddingLeft: 2,
+                        paddingRight: 26,
+                        paddingVertical: 12,
+                      },
+                    ]}
+                    autoCapitalize="none"
+                    placeholder="비밀번호"
+                    secureTextEntry
+                    onChangeText={v => setPassword(v)}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.forgotPasswordButton}
+                  onPress={() => navigation.navigate('PasswordUnlockPage')}
+                >
+                  <Text style={styles.forgotPasswordText}>
+                    비밀번호가 기억나지 않나요?
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* 하단 버튼 영역 */}
+            <View style={styles.bottomSection}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  isButtonDisabled() && styles.buttonDisabled,
+                ]}
+                disabled={isButtonDisabled()}
+                onPress={async () => {
+                  try {
+                    setIsLoading(true);
+                    await logIn({ username: email, password });
+                    setLogInResult('성공');
+                    navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+                  } catch (error) {
+                    setLogInResult('error');
+                    console.error('ERROR : ', error);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+              >
+                <Text
+                  style={[
+                    styles.buttonText,
+                    isButtonDisabled() && styles.buttonTextDisabled,
+                  ]}
+                >
+                  {isLoading ? '로그인 중...' : '로그인'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -102,10 +208,102 @@ const SignIn = () => {
 export default SignIn;
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    margin: 16,
+  },
+  container: {
+    flex: 1,
+  },
+  topSection: {
+    flex: 1,
+    paddingHorizontal: 20,
+    padding: 16,
+  },
+  bottomSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  headerContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 32,
+    paddingVertical: 8,
+  },
+  stepTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1e1e1e',
+    textAlign: 'left',
+    lineHeight: 30,
+  },
   topToolbar: {
-    flexDirection: 'row',
+    position: 'relative',
     width: '100%',
     paddingVertical: 12,
-    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 0,
+    zIndex: 1,
+  },
+  title: {
+    fontSize: 20,
+    lineHeight: 24,
+    color: '#1e1e1e',
+    fontWeight: '600',
+  },
+  inputContainer: {
+    position: 'relative',
+  },
+  input: {
+    backgroundColor: 'transparent',
+    padding: 16,
+    paddingBottom: 8,
+    fontSize: 16,
+    fontWeight: 600,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+  },
+  clearButton: {
+    position: 'absolute',
+    right: 0,
+    top: 12,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#F86262',
+    fontSize: 14,
+    textAlign: 'left',
+    marginTop: 8,
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#000000',
+    borderRadius: 999,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#CCCCCC',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  buttonTextDisabled: {
+    color: '#FFFFFF',
+  },
+  forgotPasswordButton: {},
+  forgotPasswordText: {
+    color: '#1E1E1E',
+    fontSize: 14,
+    textDecorationLine: 'underline',
   },
 });
