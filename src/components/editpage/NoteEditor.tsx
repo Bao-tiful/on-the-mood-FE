@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Colors } from '@/styles/Colors';
 import Keywords from './Keywords';
 import typography from '@/styles/Typography';
@@ -19,12 +19,39 @@ const NoteEditor = ({
   autoFocus = true,
   defaultValue = '',
 }: NoteEditorProps) => {
+  const textInputRef = useRef<TextInput>(null);
+  const [selectionStart, setSelectionStart] = useState(0);
+
+  // 키워드 삽입 함수
+  const insertKeywordAtCursor = (keyword: string) => {
+    const currentText = memo;
+    const beforeCursor = currentText.substring(0, selectionStart);
+    const afterCursor = currentText.substring(selectionStart);
+    const newText = beforeCursor + keyword + afterCursor;
+    
+    // 100자 제한 체크
+    if (newText.length <= 100) {
+      onMemoChanged(newText);
+      
+      // 커서 위치를 키워드 뒤로 이동
+      const newCursorPosition = selectionStart + keyword.length;
+      
+      setTimeout(() => {
+        textInputRef.current?.setSelection(newCursorPosition, newCursorPosition);
+        setSelectionStart(newCursorPosition);
+      }, 10);
+    }
+  };
   return (
     <View style={styles.noteEditorContainer}>
       <View style={{ flex: 1 }}>
-        <Keywords keywordList={keywordList} />
+        <Keywords 
+          keywordList={keywordList} 
+          onKeywordPress={insertKeywordAtCursor}
+        />
         <TextInput
-          defaultValue={defaultValue}
+          ref={textInputRef}
+          value={memo}
           style={styles.noteEditor}
           multiline={true}
           numberOfLines={3}
@@ -34,8 +61,10 @@ const NoteEditor = ({
           }
           placeholderTextColor={Colors.black40}
           autoFocus={autoFocus}
-          onChangeText={(memo) => {
-            onMemoChanged(memo);
+          onChangeText={onMemoChanged}
+          onSelectionChange={(event) => {
+            const newSelection = event.nativeEvent.selection.start;
+            setSelectionStart(newSelection);
           }}
         />
       </View>
