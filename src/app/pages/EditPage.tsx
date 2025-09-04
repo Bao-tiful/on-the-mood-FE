@@ -53,6 +53,7 @@ const parseNoteData = (noteDataString: string): NoteItem | null => {
       id: parsedNote.id,
       location: parsedNote.location,
       custom_temp: parsedNote.custom_temp,
+      avg_feels_like_temp: parsedNote.avg_feels_like_temp,
       content: parsedNote.content,
       created_at: new Date(parsedNote.created_at),
       updated_at: new Date(parsedNote.updated_at),

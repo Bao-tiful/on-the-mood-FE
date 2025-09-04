@@ -40,7 +40,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 function HomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const [isGridMode, setIsGreedMode] = useState(true);
+  const [isGridMode, setIsGridMode] = useState(true);
   const [date, setDate] = useState(new Date());
   const [todayTemperature, setTodayTemperature] = useState(0);
   const { colorState, setBackgroundColor } = useBackgroundColor();
@@ -134,9 +134,9 @@ function HomeScreen() {
             }}
           />
           <ToolbarButton
-            name={IconName.list}
+            name={isGridMode ? IconName.list : IconName.calendar}
             onPress={() => {
-              setIsGreedMode(!isGridMode);
+              setIsGridMode(!isGridMode);
             }}
           />
         </View>
