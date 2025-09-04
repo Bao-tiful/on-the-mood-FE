@@ -11,8 +11,8 @@ export type RootStackParamList = {
 
   // Main tab screens
   Home: undefined;
-  MyPage: undefined;
-
+  MyPage: { currentTemperature?: number };
+  
   // Content screens
   DetailPage: {
     noteData?: string;
@@ -24,8 +24,8 @@ export type RootStackParamList = {
   };
 
   // Profile screens
-  PasswordPage: undefined;
-  WithdrawPage: undefined;
+  PasswordPage: { currentTemperature?: number };
+  WithdrawPage: { currentTemperature?: number };
 };
 
 export type TabParamList = {

@@ -1,16 +1,18 @@
 import { SafeAreaView, StyleSheet, Text, View, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
 import { Colors, OndoColors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
 import PasswordKeypad from '@/components/myPage/PasswordKeypad';
 import PasswordIndicator from '@/components/myPage/PasswordIndicator';
 import AlertModal from '@/components/feedback/AlertModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import Toast from 'react-native-toast-message';
 
@@ -24,9 +26,23 @@ enum PasswordConfigStep {
 
 const PasswordPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'PasswordPage'>>();
+  const { currentTemperature } = route.params || {};
   const { colorState } = useBackgroundColor();
   const [passwordInput, setPasswordInput] = useState('');
   const [step, setStep] = useState(0);
+  
+  // MyPage에서 전달된 온도값 사용, 없으면 colorState 사용
+  const displayTemperature = currentTemperature ?? colorState.color;
+
+  // 온도에 따른 색상 배열 생성 (index.tsx와 동일한 방식)
+  const colors = useMemo(
+    () =>
+      Array.from(OndoColors.keys())
+        .sort((a, b) => a - b)
+        .map(key => OndoColors.get(key)!),
+    [],
+  );
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -197,12 +213,11 @@ const PasswordPage = () => {
   ]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        // 작성한 온도에 따른 배경색 지정
-        backgroundColor: OndoColors.get(colorState.color),
-      }}
+    <AnimatedColorView
+      style={{ flex: 1 }}
+      colors={colors}
+      activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
+      duration={300} // 부드러운 애니메이션
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
@@ -255,7 +270,7 @@ const PasswordPage = () => {
           dismissHandler={handleBiometricCancel}
         />
       </SafeAreaView>
-    </View>
+    </AnimatedColorView>
   );
 };
 

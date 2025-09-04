@@ -29,6 +29,8 @@ const Calendar = ({
   );
   // 실제 선택된 날짜 (UI 표시용)
   const [selectedDate, setSelectedDate] = useState<Date | null>(date);
+  // 사용자가 수동으로 날짜를 선택했는지 확인하는 상태
+  const [isManualSelection, setIsManualSelection] = useState(false);
 
   const changeModalVisible = (isModalOn: boolean) => {
     setModalVisible(isModalOn);
@@ -46,8 +48,13 @@ const Calendar = ({
     return map;
   }, [notes]);
 
-  // notes가 변경될 때마다 selectedDate를 가장 이른 날짜로 설정
+  // notes가 변경될 때마다 selectedDate를 가장 이른 날짜로 설정 (수동 선택이 아닌 경우에만)
   useEffect(() => {
+    // 사용자가 수동으로 선택한 날짜가 있으면 자동 설정하지 않음
+    if (isManualSelection) {
+      return;
+    }
+
     const today = new Date();
     const isTodayInThisMonth =
       today.getFullYear() === currentDate.getFullYear() &&
@@ -75,7 +82,7 @@ const Calendar = ({
       setSelectedDate(null);
       onSelectedDateChange?.(null, null);
     }
-  }, [notes, currentDate, notesMap, onSelectedDateChange]);
+  }, [notes, currentDate, notesMap, onSelectedDateChange, isManualSelection]);
 
   // 달 변경 시 해당 달의 첫 번째 노트 날짜로 자동 이동하는 로직
   const handleDateChange = (newDate: Date) => {
@@ -85,19 +92,22 @@ const Calendar = ({
 
     // 1. 달력은 새로운 달로 이동 (1일로 설정)
     setCurrentDate(new Date(newYear, newMonth, 1));
+    
+    // 2. 달이 바뀔 때는 수동 선택 상태를 초기화하여 자동 선택이 되도록 함
+    setIsManualSelection(false);
 
-    // 2. 오늘 날짜가 이 달에 포함되는지 확인
+    // 3. 오늘 날짜가 이 달에 포함되는지 확인
     const isTodayInThisMonth =
       today.getFullYear() === newYear && today.getMonth() === newMonth;
 
-    // 3. 새로운 달의 노트들 찾기
+    // 4. 새로운 달의 노트들 찾기
     const monthNotes = notes.filter(note => {
       const noteYear = note.created_at.getFullYear();
       const noteMonth = note.created_at.getMonth() - 1;
       return noteYear === newYear && noteMonth === newMonth;
     });
 
-    // 4. 선택 우선순위: 오늘 날짜 > 첫 번째 노트 > null
+    // 5. 선택 우선순위: 오늘 날짜 > 첫 번째 노트 > null
     if (isTodayInThisMonth) {
       // 오늘 날짜가 이 달에 있으면 오늘 선택
       updateDate(today);
@@ -131,6 +141,7 @@ const Calendar = ({
           selectedDate={selectedDate}
           changeCalendarDate={(newDate: Date) => {
             setSelectedDate(newDate);
+            setIsManualSelection(true); // 사용자가 수동으로 날짜를 선택했음을 표시
             // updateDate(newDate);
             
             // HomeScreen으로 선택된 날짜와 노트 정보 전달

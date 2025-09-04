@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Colors, OndoColors } from '@/styles/Colors';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { ToolbarButton } from '@/components/ToolbarButton';
@@ -19,6 +19,7 @@ import { NotiTimePicker } from '@/components/myPage/NotiTimePicker';
 import { AuthInfo, AuthType } from '@/components/myPage/AuthInfo';
 import { SectionContent, SectionTitle } from '@/components/myPage/SectionItem';
 import NotiTimeButton from '@/components/myPage/NotiTimeButton';
+import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 import BiometricSettings from '@/components/myPage/BiometricSettings';
 
 import { Meridiem, NotiTime } from '@/models/NotiTime';
@@ -67,7 +68,21 @@ const PASSWORD_LENGTH = 4;
 
 const MyPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'MyPage'>>();
+  const { currentTemperature } = route.params || {};
   const { colorState } = useBackgroundColor();
+  
+  // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
+  const displayTemperature = currentTemperature ?? colorState.color;
+
+  // 온도에 따른 색상 배열 생성 (index.tsx와 동일한 방식)
+  const colors = useMemo(
+    () =>
+      Array.from(OndoColors.keys())
+        .sort((a, b) => a - b)
+        .map(key => OndoColors.get(key)!),
+    [],
+  );
 
   // 알림 기능 초기화
   const {
@@ -150,14 +165,12 @@ const MyPage = () => {
     setIsPasswordOn(newState);
 
     if (newState) {
-      navigation.navigate('PasswordPage');
+      navigation.navigate('PasswordPage', {
+        currentTemperature: displayTemperature,
+      });
     } else {
       await AsyncStorage.removeItem('@password');
     }
-  };
-
-  const handlePasswordChange = () => {
-    navigation.navigate('PasswordPage');
   };
 
   const handleLogout = async () => {
@@ -204,13 +217,11 @@ const MyPage = () => {
   );
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: OndoColors.get(colorState.color),
-        },
-      ]}
+    <AnimatedColorView
+      style={styles.container}
+      colors={colors}
+      activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
+      duration={300} // 부드러운 애니메이션
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
@@ -271,7 +282,9 @@ const MyPage = () => {
                   {/* 셀 전체 터치를 위해 label을 child에 포함*/}
                   <TouchableOpacity
                     style={styles.touchableContainer}
-                    onPress={handlePasswordChange}
+                    onPress={() => navigation.navigate('PasswordPage', {
+                      currentTemperature: displayTemperature,
+                    })}
                   >
                     <View style={styles.rowContainer}>
                       <Text style={styles.sectionContentLabel}>
@@ -286,7 +299,9 @@ const MyPage = () => {
                 }} />
                 <TouchableOpacity
                   style={styles.withdrawButton}
-                  onPress={() => navigation.navigate('WithdrawPage')}
+                  onPress={() => navigation.navigate('WithdrawPage', {
+                    currentTemperature: displayTemperature,
+                  })}
                 >
                   <Text style={styles.withdrawLabel}>탈퇴하기</Text>
                 </TouchableOpacity>
@@ -318,7 +333,7 @@ const MyPage = () => {
         }}
         changeNotiTime={handleNotificationTimeChange}
       />
-    </View>
+    </AnimatedColorView>
   );
 };
 
