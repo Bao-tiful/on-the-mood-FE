@@ -91,12 +91,6 @@ const MyPage = () => {
     [],
   );
 
-  // 디버깅을 위한 로그
-  useEffect(() => {
-    console.log('MyPage - displayTemperature:', displayTemperature);
-    console.log('MyPage - colors length:', colors.length);
-    console.log('MyPage - activeIndex:', displayTemperature + 40);
-  }, [displayTemperature, colors]);
 
   // 알림 기능 초기화
   const {
