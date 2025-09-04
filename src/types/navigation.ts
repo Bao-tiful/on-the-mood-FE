@@ -6,11 +6,11 @@ export type RootStackParamList = {
   Onboarding: undefined;
   Withdraw: undefined;
   PasswordUnlockPage: undefined;
-  
+
   // Main tab screens
   Home: undefined;
   MyPage: { currentTemperature?: number };
-  
+
   // Content screens
   DetailPage: {
     noteData?: string;
@@ -19,8 +19,9 @@ export type RootStackParamList = {
   EditPage: {
     selectedDate?: string;
     existingNote?: string;
+    locationData?: string;
   };
-  
+
   // Profile screens
   PasswordPage: { currentTemperature?: number };
   WithdrawPage: { currentTemperature?: number };
