@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 import { ActionButton } from '@/components/ActionButton';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import Logo from '@/components/Logo';
@@ -18,6 +18,17 @@ import { NEATBackground } from '@/components/neat';
 const EntrancePage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [animationPaused, setAnimationPaused] = useState(false);
+
+  // 페이지가 포커스될 때 애니메이션 재개 (라우팅 애니메이션 완료 후)
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setTimeout(() => {
+        setAnimationPaused(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }, [])
+  );
 
   const handleNavigation = (screenName: keyof RootStackParamList) => {
     // 네비게이션 시작 시 애니메이션 일시정지
