@@ -5,27 +5,63 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
-import SignInButton, { SignInType } from '@/components/login/SignInButton';
-import { useNavigation } from '@react-navigation/native';
+import { ActionButton } from '@/components/ActionButton';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import Logo from '@/components/Logo';
-import LinearGradient from 'react-native-linear-gradient';
+import { NEATBackground } from '@/components/neat';
 
 const EntrancePage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [animationPaused, setAnimationPaused] = useState(false);
+
+  // 페이지가 포커스될 때 애니메이션 재개 (라우팅 애니메이션 완료 후)
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setTimeout(() => {
+        setAnimationPaused(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }, [])
+  );
+
+  const handleNavigation = (screenName: keyof RootStackParamList) => {
+    // 네비게이션 시작 시 애니메이션 일시정지
+    setAnimationPaused(true);
+
+    // 약간의 딜레이 후 네비게이션 실행 (애니메이션 정지가 적용될 시간)
+    setTimeout(() => {
+      // @ts-ignore - React Navigation 타입 시스템의 복잡한 오버로드 문제로 인한 임시 무시
+      navigation.navigate(screenName);
+    }, 50);
+  };
 
   return (
-    <LinearGradient
-      colors={['#F1FEFB', '#D7F5BA', '#8DF5F9']}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 0, y: 0 }}
-      style={{ flex: 1 }}
+    <NEATBackground
+      style={styles.background}
+      paused={animationPaused}
+      config={{
+        colors: [
+          { color: '#8DF5F9', enabled: true }, // 연한 시안
+          { color: '#D7F5BA', enabled: true }, // 연한 민트
+          { color: '#FFFCEB', enabled: true }, // 연한 노랑
+          { color: '#FEE6E0', enabled: false }, // 연한 핑크
+        ],
+        speed: 3, // 애니메이션 속도 (부드럽게)
+        waveFrequencyX: 4, // 수평 웨이브 주파수 (더 많은 파동)
+        waveFrequencyY: 4, // 수직 웨이브 주파수 (더 많은 파동)
+        colorBlending: 8, // 색상 블렌딩 강도
+        highlights: 0, // 하이라이트 끄기 (원본 색상 유지)
+        colorBrightness: 1, // 밝기 조정 없음 (1 = 원본)
+        colorSaturation: 1, // 채도 조정 없음 (1 = 원본)
+      }}
     >
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.logoContainer}>
             <Logo width={186} />
@@ -38,71 +74,42 @@ const EntrancePage = () => {
           </View>
 
           <View style={styles.signInButtonContainer}>
-            <SignInButton
-              type={SignInType.google}
-              onPress={() => {
-                console.log('google');
-              }}
+            <ActionButton
+              title="회원가입"
+              onPress={() => handleNavigation('SignUp')}
             />
-            <SignInButton
-              type={SignInType.apple}
-              onPress={() => {
-                console.log('apple');
-              }}
-            />
-            {/* TODO: 이메일로 로그인 부분은 나중에 디자인 나오면 수정하기 */}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 16,
-                paddingHorizontal: 40,
-              }}
-            >
+
+            <View style={styles.authOptionsContainer}>
               <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  // TODO: Navigate to SignUp - need to set up screen name
-                  navigation.navigate('SignUp');
-                }}
+                style={styles.authOption}
+                onPress={() => handleNavigation('SignIn')}
               >
-                <Text>회원가입</Text>
-              </TouchableOpacity>
-              <Text>|</Text>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  // TODO: Navigate to SignIn - need to set up screen name
-                  navigation.navigate('SignIn');
-                }}
-              >
-                <Text>이메일로 로그인</Text>
+                <Text style={styles.loginText}>
+                  <Text style={styles.loginPrompt}>이미 계정이 있나요? </Text>
+                  <Text style={styles.loginAction}>로그인</Text>
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </NEATBackground>
   );
 };
 
 export default EntrancePage;
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    marginVertical: 20,
     paddingHorizontal: 16,
-    gap: 40,
+    gap: 44,
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
@@ -115,7 +122,17 @@ const styles = StyleSheet.create({
   },
   signInButtonContainer: {
     width: '100%',
-    gap: 16,
+  },
+  authOptionsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 40,
+    marginTop: 16,
+  },
+  authOption: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
   },
   catchphrase: {
     ...typography.headline,
@@ -125,5 +142,15 @@ const styles = StyleSheet.create({
   catchphraseEmphasis: {
     fontWeight: 'bold',
     color: Colors.black70,
+  },
+  loginText: {
+    ...typography.body,
+  },
+  loginPrompt: {
+    color: Colors.black40,
+  },
+  loginAction: {
+    color: Colors.black100,
+    fontWeight: '600',
   },
 });
