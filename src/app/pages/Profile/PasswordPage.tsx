@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
@@ -11,6 +11,7 @@ import PasswordIndicator from '@/components/myPage/PasswordIndicator';
 import BiometricSettings from '@/components/myPage/BiometricSettings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 
 enum PasswordConfigStep {
   checkCurrent = 0,
@@ -28,6 +29,8 @@ const PasswordPage = () => {
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  
+  const { canUseBiometric, setBiometricEnabled, getBiometricTypeName } = useBiometricAuth();
 
   const indicatorLabel = [
     '현재 비밀번호를 입력해주세요.',
@@ -54,11 +57,66 @@ const PasswordPage = () => {
     loadPassword();
   }, []);
 
+  // 생체인식 설정 Dialog 표시
+  const showBiometricSetupDialog = () => {
+    if (!canUseBiometric) {
+      // 생체인식을 사용할 수 없으면 바로 이전 페이지로 돌아가기
+      navigation.goBack();
+      return;
+    }
+
+    Alert.alert(
+      '생체인식 설정',
+      `비밀번호 대신 ${getBiometricTypeName()}을 사용하여 앱 잠금을 해제하시겠습니까?`,
+      [
+        {
+          text: '아니오',
+          style: 'cancel',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+        {
+          text: '예',
+          onPress: async () => {
+            const success = await setBiometricEnabled(true);
+            if (success) {
+              Alert.alert(
+                '설정 완료',
+                `${getBiometricTypeName()}이 활성화되었습니다.`,
+                [
+                  {
+                    text: '확인',
+                    onPress: () => navigation.goBack(),
+                  },
+                ]
+              );
+            } else {
+              Alert.alert(
+                '설정 실패',
+                '생체인식 설정을 저장하는 중 오류가 발생했습니다.',
+                [
+                  {
+                    text: '확인',
+                    onPress: () => navigation.goBack(),
+                  },
+                ]
+              );
+            }
+          },
+        },
+      ]
+    );
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const savePassword = async () => {
     await AsyncStorage.setItem('@password', newPassword);
     // 비밀번호가 변경될 때 생체인식 설정 초기화 (보안상 이유)
     await AsyncStorage.removeItem('@biometric_enabled');
+    
+    // 비밀번호 저장 후 생체인식 설정 Dialog 표시
+    showBiometricSetupDialog();
   };
 
   useEffect(() => {
@@ -99,9 +157,8 @@ const PasswordPage = () => {
           // 새로운 비밀번호 검사
           // 한 번 더 입력한 비밀번호가 일치하는 경우
           if (passwordInput == newPassword) {
-            // 패스워드 저장하고 돌아가기
+            // 패스워드 저장하고 생체인식 설정 Dialog 표시
             savePassword();
-            navigation.goBack();
           }
           // 일치하지 않는 경우
           else {
@@ -113,9 +170,8 @@ const PasswordPage = () => {
         case PasswordConfigStep.validateAgain:
           // 새로운 비밀번호 검사 불일치
           if (passwordInput == newPassword) {
-            // 패스워드 저장하고 돌아가기
+            // 패스워드 저장하고 생체인식 설정 Dialog 표시
             savePassword();
-            navigation.goBack();
           }
           // 일치하지 않는 경우
           else {
@@ -159,16 +215,20 @@ const PasswordPage = () => {
           </Text>
           <View style={{ width: 44 }} />
         </View>
-        {/* 비밀번호 UI */}
-        <PasswordIndicator
-          label={indicatorLabel[step]}
-          password={passwordInput}
-        />
+        <View style={styles.contentContainer}>
+          {/* 비밀번호 UI */}
+          <PasswordIndicator
+            label={indicatorLabel[step]}
+            password={passwordInput}
+          />
 
-        {/* 생체인식 설정 - 비밀번호가 설정된 상태에서만 표시 */}
-        {(step === PasswordConfigStep.checkCurrent || step === PasswordConfigStep.checkCurrentAgain) && (
-          <BiometricSettings />
-        )}
+          {/* 생체인식 설정 - 비밀번호가 설정된 상태에서만 표시 */}
+          {(step === PasswordConfigStep.checkCurrent || step === PasswordConfigStep.checkCurrentAgain) && (
+            <View style={styles.biometricContainer}>
+              <BiometricSettings />
+            </View>
+          )}
+        </View>
 
         {/* 비밀번호 패드 */}
         <PasswordKeypad
@@ -199,6 +259,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   safeArea: { gap: 20, margin: 12, flex: 1 },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  biometricContainer: {
+    marginTop: -20,
+    marginBottom: -20,
+  },
   button: {
     flex: 1,
     paddingVertical: 24,
