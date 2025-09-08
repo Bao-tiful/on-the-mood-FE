@@ -131,6 +131,60 @@ export const useBiometricAuth = () => {
     }
   }, [biometricCapabilities.available, isBiometricEnabled]);
 
+  // 생체인식 설정을 위한 인증 실행 (활성화 상태와 무관하게 실행)
+  const authenticateBiometricForSetup = useCallback(async (): Promise<BiometricAuthResult> => {
+    if (!biometricCapabilities.available) {
+      return {
+        success: false,
+        error: '생체인식이 사용 불가능합니다.',
+      };
+    }
+
+    setIsLoading(true);
+
+    try {
+      const rnBiometrics = new ReactNativeBiometrics();
+      
+      const { success } = await rnBiometrics.simplePrompt({
+        promptMessage: '생체인식 설정을 위해 인증해주세요',
+        cancelButtonText: '취소',
+      });
+
+      setIsLoading(false);
+
+      if (success) {
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          error: '생체인식 인증이 취소되었습니다.',
+        };
+      }
+    } catch (error: any) {
+      setIsLoading(false);
+      console.error('생체인식 설정 인증 오류:', error);
+      
+      let errorMessage = '생체인식 인증 중 오류가 발생했습니다.';
+      
+      if (error.message) {
+        if (error.message.includes('UserCancel') || error.message.includes('cancelled')) {
+          errorMessage = '생체인식 인증이 취소되었습니다.';
+        } else if (error.message.includes('UserFallback')) {
+          errorMessage = '비밀번호로 인증해주세요.';
+        } else if (error.message.includes('BiometryNotAvailable')) {
+          errorMessage = '생체인식을 사용할 수 없습니다.';
+        } else if (error.message.includes('BiometryNotEnrolled')) {
+          errorMessage = '생체인식이 등록되어 있지 않습니다. 설정에서 등록해주세요.';
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }, [biometricCapabilities.available]);
+
   // 생체인식 타입에 따른 표시명 가져오기
   const getBiometricTypeName = useCallback(() => {
     switch (biometricCapabilities.biometryType) {
@@ -165,7 +219,9 @@ export const useBiometricAuth = () => {
     checkBiometricCapabilities,
     setBiometricEnabled,
     authenticateBiometric,
+    authenticateBiometricForSetup,
     getBiometricTypeName,
+    loadBiometricEnabled,
     
     // 편의 속성
     isAvailable: biometricCapabilities.available && isBiometricEnabled,

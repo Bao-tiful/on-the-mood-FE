@@ -144,9 +144,9 @@ const PasswordUnlockPage = () => {
           password={showPasswordInput ? passwordInput : ''}
         />
 
-        {/* 생체인식 버튼 - 생체인식 실패 후에만 표시 */}
-        {showPasswordInput && canUseBiometric && biometricAttempted && (
-          <View style={styles.biometricContainer}>
+        {/* 생체인식 버튼 - 자리는 항상 확보하되 조건부로 표시 */}
+        <View style={styles.biometricContainer}>
+          {showPasswordInput && canUseBiometric && biometricAttempted ? (
             <TouchableOpacity
               style={styles.biometricButton}
               onPress={() => handleBiometricAuth(false)}
@@ -156,8 +156,10 @@ const PasswordUnlockPage = () => {
                 {isBiometricLoading ? '인증 중...' : `${getBiometricTypeName()}로 다시 시도`}
               </Text>
             </TouchableOpacity>
-          </View>
-        )}
+          ) : (
+            <View style={styles.biometricButtonPlaceholder} />
+          )}
+        </View>
 
         {/* 비밀번호 패드 - 비밀번호 입력이 필요할 때만 표시 */}
         {showPasswordInput && (
@@ -195,6 +197,7 @@ const styles = StyleSheet.create({
   biometricContainer: {
     alignItems: 'center',
     marginVertical: 10,
+    height: 48, // 고정 높이로 자리 확보
   },
   biometricButton: {
     paddingHorizontal: 24,
@@ -203,6 +206,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  biometricButtonPlaceholder: {
+    height: 48, // 버튼과 동일한 높이
+    width: '100%',
+    opacity: 0, // 투명하게 처리
   },
   biometricButtonText: {
     ...typography.body,
