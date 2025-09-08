@@ -53,6 +53,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>앱을 안전하게 잠금 해제하기 위해 Face ID를 사용합니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>이 앱은 날씨 정보를 가져오기 위해 위치 권한이 필요합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

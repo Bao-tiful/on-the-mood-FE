@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import PasswordKeypad from '@/components/myPage/PasswordKeypad';
 import PasswordIndicator from '@/components/myPage/PasswordIndicator';
+import BiometricSettings from '@/components/myPage/BiometricSettings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 
@@ -56,6 +57,8 @@ const PasswordPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const savePassword = async () => {
     await AsyncStorage.setItem('@password', newPassword);
+    // 비밀번호가 변경될 때 생체인식 설정 초기화 (보안상 이유)
+    await AsyncStorage.removeItem('@biometric_enabled');
   };
 
   useEffect(() => {
@@ -161,6 +164,11 @@ const PasswordPage = () => {
           label={indicatorLabel[step]}
           password={passwordInput}
         />
+
+        {/* 생체인식 설정 - 비밀번호가 설정된 상태에서만 표시 */}
+        {(step === PasswordConfigStep.checkCurrent || step === PasswordConfigStep.checkCurrentAgain) && (
+          <BiometricSettings />
+        )}
 
         {/* 비밀번호 패드 */}
         <PasswordKeypad

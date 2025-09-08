@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { OndoColors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
@@ -8,6 +8,7 @@ import PasswordKeypad from '@/components/myPage/PasswordKeypad';
 import PasswordIndicator from '@/components/myPage/PasswordIndicator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 
 const PasswordUnlockPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -15,6 +16,13 @@ const PasswordUnlockPage = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [isError, setIsError] = useState(false);
   const [storedPassword, setStoredPassword] = useState('');
+  const {
+    isAvailable,
+    canUseBiometric,
+    authenticateBiometric,
+    getBiometricTypeName,
+    isLoading: isBiometricLoading,
+  } = useBiometricAuth();
 
   useEffect(() => {
     const loadPassword = async () => {
@@ -32,6 +40,41 @@ const PasswordUnlockPage = () => {
 
     loadPassword();
   }, [navigation]);
+
+  // 생체인식 인증 처리
+  const handleBiometricAuth = async () => {
+    try {
+      const result = await authenticateBiometric();
+      
+      if (result.success) {
+        // 생체인식 인증 성공 시 Home으로 이동
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      } else if (result.error) {
+        // 생체인식 인증 실패 시 에러 메시지 표시
+        Alert.alert('생체인식 인증 실패', result.error);
+      }
+    } catch (error) {
+      console.error('생체인식 인증 중 오류:', error);
+    }
+  };
+
+  // 자동 생체인식 인증 시도
+  useEffect(() => {
+    const attemptBiometricAuth = async () => {
+      if (isAvailable && storedPassword) {
+        // 페이지 로드 후 잠시 대기한 다음 생체인식 인증 시도
+        setTimeout(() => {
+          handleBiometricAuth();
+        }, 500);
+      }
+    };
+
+    attemptBiometricAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAvailable, storedPassword]);
 
   useEffect(() => {
     if (passwordInput.length === 4) {
@@ -85,6 +128,21 @@ const PasswordUnlockPage = () => {
           password={passwordInput}
         />
 
+        {/* 생체인식 버튼 */}
+        {canUseBiometric && (
+          <View style={styles.biometricContainer}>
+            <TouchableOpacity
+              style={styles.biometricButton}
+              onPress={handleBiometricAuth}
+              disabled={isBiometricLoading}
+            >
+              <Text style={styles.biometricButtonText}>
+                {isBiometricLoading ? '인증 중...' : `${getBiometricTypeName()}로 잠금 해제`}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* 비밀번호 패드 */}
         <PasswordKeypad
           onNextInput={newInput => {
@@ -116,4 +174,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   safeArea: { gap: 20, margin: 12, flex: 1 },
+  biometricContainer: {
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  biometricButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  biometricButtonText: {
+    ...typography.body,
+    color: '#333',
+    textAlign: 'center',
+  },
 });
