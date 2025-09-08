@@ -16,6 +16,8 @@ const PasswordUnlockPage = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [isError, setIsError] = useState(false);
   const [storedPassword, setStoredPassword] = useState('');
+  const [biometricAttempted, setBiometricAttempted] = useState(false);
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
   const {
     isAvailable,
     canUseBiometric,
@@ -42,8 +44,11 @@ const PasswordUnlockPage = () => {
   }, [navigation]);
 
   // 생체인식 인증 처리
-  const handleBiometricAuth = async () => {
+  const handleBiometricAuth = async (isAutomatic = false) => {
+    if (biometricAttempted && isAutomatic) return; // 자동 시도는 한 번만
+    
     try {
+      setBiometricAttempted(true);
       const result = await authenticateBiometric();
       
       if (result.success) {
@@ -52,23 +57,31 @@ const PasswordUnlockPage = () => {
           index: 0,
           routes: [{ name: 'Home' }],
         });
-      } else if (result.error) {
-        // 생체인식 인증 실패 시 에러 메시지 표시
-        Alert.alert('생체인식 인증 실패', result.error);
+      } else {
+        // 생체인식 인증 실패 시 비밀번호 입력 화면 표시
+        setShowPasswordInput(true);
+        if (!isAutomatic && result.error && !result.error.includes('취소')) {
+          // 수동 시도이고, 취소가 아닌 실패일 때만 에러 메시지 표시
+          Alert.alert('생체인식 인증 실패', result.error);
+        }
       }
     } catch (error) {
       console.error('생체인식 인증 중 오류:', error);
+      setShowPasswordInput(true);
     }
   };
 
   // 자동 생체인식 인증 시도
   useEffect(() => {
     const attemptBiometricAuth = async () => {
-      if (isAvailable && storedPassword) {
-        // 페이지 로드 후 잠시 대기한 다음 생체인식 인증 시도
+      if (isAvailable && storedPassword && !biometricAttempted) {
+        // 페이지 로드 후 잠시 대기한 다음 생체인식 인증 자동 시도
         setTimeout(() => {
-          handleBiometricAuth();
-        }, 500);
+          handleBiometricAuth(true); // 자동 시도임을 표시
+        }, 300);
+      } else if (storedPassword) {
+        // 생체인식을 사용할 수 없으면 바로 비밀번호 입력 화면 표시
+        setShowPasswordInput(true);
       }
     };
 
@@ -96,6 +109,9 @@ const PasswordUnlockPage = () => {
   }, [passwordInput, storedPassword, navigation]);
 
   const getIndicatorLabel = () => {
+    if (!showPasswordInput && isAvailable) {
+      return '생체인식 인증을 시도하고 있습니다...';
+    }
     if (isError) {
       return '비밀번호가 일치하지 않습니다.\n다시 입력해주세요.';
     }
@@ -125,39 +141,41 @@ const PasswordUnlockPage = () => {
         {/* 비밀번호 UI */}
         <PasswordIndicator
           label={getIndicatorLabel()}
-          password={passwordInput}
+          password={showPasswordInput ? passwordInput : ''}
         />
 
-        {/* 생체인식 버튼 */}
-        {canUseBiometric && (
+        {/* 생체인식 버튼 - 생체인식 실패 후에만 표시 */}
+        {showPasswordInput && canUseBiometric && biometricAttempted && (
           <View style={styles.biometricContainer}>
             <TouchableOpacity
               style={styles.biometricButton}
-              onPress={handleBiometricAuth}
+              onPress={() => handleBiometricAuth(false)}
               disabled={isBiometricLoading}
             >
               <Text style={styles.biometricButtonText}>
-                {isBiometricLoading ? '인증 중...' : `${getBiometricTypeName()}로 잠금 해제`}
+                {isBiometricLoading ? '인증 중...' : `${getBiometricTypeName()}로 다시 시도`}
               </Text>
             </TouchableOpacity>
           </View>
         )}
 
-        {/* 비밀번호 패드 */}
-        <PasswordKeypad
-          onNextInput={newInput => {
-            if (isError) return; // 에러 상태일 때는 입력 무시
-
-            switch (true) {
-              case newInput >= 0:
-                setPasswordInput(passwordInput.concat(newInput.toString()));
-                break;
-              default:
-                setPasswordInput(passwordInput.slice(0, -1));
-                break;
-            }
-          }}
-        />
+        {/* 비밀번호 패드 - 비밀번호 입력이 필요할 때만 표시 */}
+        {showPasswordInput && (
+          <PasswordKeypad
+            onNextInput={newInput => {
+              if (isError) return; // 에러 상태일 때는 입력 무시
+              
+              switch (true) {
+                case newInput >= 0:
+                  setPasswordInput(passwordInput.concat(newInput.toString()));
+                  break;
+                default:
+                  setPasswordInput(passwordInput.slice(0, -1));
+                  break;
+              }
+            }}
+          />
+        )}
       </SafeAreaView>
     </View>
   );

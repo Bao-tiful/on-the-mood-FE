@@ -76,9 +76,9 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
     <View style={styles.container}>
       <View style={styles.settingRow}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{getBiometricTypeName()} 사용</Text>
+          <Text style={styles.title}>생체인식 사용</Text>
           <Text style={styles.description}>
-            비밀번호 대신 {getBiometricTypeName()}으로 앱 잠금을 해제합니다.
+            비밀번호 대신 생체인식으로 앱 잠금을 해제합니다.
           </Text>
         </View>
         <Switch
@@ -96,7 +96,7 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   settingRow: {
     flexDirection: 'row',
