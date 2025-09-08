@@ -19,6 +19,7 @@ import { NotiTimePicker } from '@/components/myPage/NotiTimePicker';
 import { AuthInfo, AuthType } from '@/components/myPage/AuthInfo';
 import { SectionContent, SectionTitle } from '@/components/myPage/SectionItem';
 import NotiTimeButton from '@/components/myPage/NotiTimeButton';
+import BiometricSettings from '@/components/myPage/BiometricSettings';
 
 import { Meridiem, NotiTime } from '@/models/NotiTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -189,7 +190,7 @@ const MyPage = () => {
     loadUserProfile();
   }, []);
 
-  // 페이지가 전환될 때 패스워드가 잘 저장되어있는지 확인
+  // 페이지가 전환될 때 패스워드 상태를 확인
   // 만약 패스워드가 없거나 유효하지 않다면 패스워드가 저장되지 않은 상태로 간주
   useFocusEffect(
     useCallback(() => {
@@ -280,6 +281,9 @@ const MyPage = () => {
                     </View>
                   </TouchableOpacity>
                 </SectionContent>
+                <BiometricSettings onBiometricSettingsChange={(_enabled) => {
+                  // Optional callback handling if needed
+                }} />
                 <TouchableOpacity
                   style={styles.withdrawButton}
                   onPress={() => navigation.navigate('WithdrawPage')}
