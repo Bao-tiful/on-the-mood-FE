@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import {
@@ -84,8 +83,7 @@ export const useForgotPassword = () => {
 
     try {
       await completeForgotPassword({ email, password });
-      Alert.alert('비밀번호 재설정 완료', '새로운 비밀번호로 로그인해주세요.');
-      navigation.navigate('SignIn');
+      navigation.navigate('SuccessChangePassword');
     } catch (error) {
       setErrorMessage('비밀번호 재설정 중 오류가 발생했습니다.');
     } finally {

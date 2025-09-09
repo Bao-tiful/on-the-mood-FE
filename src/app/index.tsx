@@ -33,6 +33,7 @@ import MyPageScreen from '@/app/pages/MyPage';
 import PasswordPage from '@/app/pages/Profile/PasswordPage';
 import WithdrawPage from '@/app/pages/Profile/WithdrawPage';
 import ForgotPassword from './pages/Auth/ForgotPassword';
+import SuccessChangePassword from './pages/Auth/SuccessChangePassword';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -219,6 +220,10 @@ export default function App() {
             <Stack.Screen
               name="PasswordUnlockPage"
               component={PasswordUnlockPage}
+            />
+            <Stack.Screen
+              name="SuccessChangePassword"
+              component={SuccessChangePassword}
             />
 
             {/* Content screens */}
