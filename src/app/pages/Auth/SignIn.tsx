@@ -18,6 +18,7 @@ import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { logIn } from '@/api/endpoints/auth';
 import { Colors } from '@/styles/Colors';
+import { ActionButton } from '@/components/ActionButton';
 // 토큰 저장은 endpoint에서 처리
 
 const SignIn = () => {
@@ -143,7 +144,7 @@ const SignIn = () => {
                     style={[
                       styles.input,
                       {
-                        borderBottomColor: '#e0e0e0',
+                        borderBottomColor: getInputBorderColor(),
                         borderBottomWidth: 1,
                         paddingLeft: 2,
                         paddingRight: 26,
@@ -169,18 +170,17 @@ const SignIn = () => {
 
             {/* 하단 버튼 영역 */}
             <View style={styles.bottomSection}>
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  isButtonDisabled() && styles.buttonDisabled,
-                ]}
-                disabled={isButtonDisabled()}
+              <ActionButton
+                title={isLoading ? '로그인 중...' : '로그인'}
                 onPress={async () => {
                   try {
                     setIsLoading(true);
                     await logIn({ username: email, password });
                     setLogInResult('성공');
-                    navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Home' }],
+                    });
                   } catch (error) {
                     setLogInResult('error');
                     console.error('ERROR : ', error);
@@ -188,16 +188,7 @@ const SignIn = () => {
                     setIsLoading(false);
                   }
                 }}
-              >
-                <Text
-                  style={[
-                    styles.buttonText,
-                    isButtonDisabled() && styles.buttonTextDisabled,
-                  ]}
-                >
-                  {isLoading ? '로그인 중...' : '로그인'}
-                </Text>
-              </TouchableOpacity>
+              />
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -212,7 +203,6 @@ const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
     margin: 16,
-    backgroundColor: 'red',
   },
   container: {
     flex: 1,
