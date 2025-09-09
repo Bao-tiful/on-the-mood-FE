@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon, { IconName } from '../Icon';
+import { ActionButton } from '../ActionButton';
+import { Colors } from '@/styles/Colors';
 
 interface EmailStepProps {
   email: string;
@@ -19,15 +21,21 @@ interface EmailStepProps {
   isLoading: boolean;
   onNext: () => void;
   onClearError?: () => void;
+  title?: string[];
+  subtitle?: string;
+  buttonText?: string;
 }
 
 export const EmailStep = ({
   email,
   setEmail,
   errorMessage,
-  isLoading,
   onNext,
   onClearError,
+  isLoading,
+  title = ['로그인에 사용할', '이메일을 입력해주세요.'],
+  subtitle,
+  buttonText = '인증하기',
 }: EmailStepProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [emailFormatError, setEmailFormatError] = useState('');
@@ -35,13 +43,13 @@ export const EmailStep = ({
   // 이메일 형식 검증 정규표현식
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const validateEmailFormat = (email: string) => {
-    if (email.length === 0) {
+  const validateEmailFormat = (emailValue: string) => {
+    if (emailValue.length === 0) {
       setEmailFormatError('');
       return true;
     }
 
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(emailValue)) {
       setEmailFormatError('올바른 이메일 형식을 입력해주세요.');
       return false;
     }
@@ -69,9 +77,13 @@ export const EmailStep = ({
   };
 
   const getInputBorderColor = () => {
-    if (errorMessage || emailFormatError) return '#F86262';
-    if (isFocused) return '#000000';
-    return '#e0e0e0';
+    if (errorMessage || emailFormatError) return Colors.error;
+    if (isFocused) return Colors.black100;
+    return Colors.black32;
+  };
+
+  const getDisplayErrorMessage = () => {
+    return errorMessage || emailFormatError;
   };
 
   const isButtonDisabled = () => {
@@ -81,10 +93,6 @@ export const EmailStep = ({
       errorMessage.length > 0 ||
       emailFormatError.length > 0
     );
-  };
-
-  const getDisplayErrorMessage = () => {
-    return errorMessage || emailFormatError;
   };
 
   return (
@@ -98,8 +106,12 @@ export const EmailStep = ({
           {/* 상단 영역 */}
           <View style={styles.topSection}>
             <View style={styles.headerContainer}>
-              <Text style={styles.stepTitle}>로그인에 사용할</Text>
-              <Text style={styles.stepTitle}>이메일을 입력해주세요.</Text>
+              {title.map((line, index) => (
+                <Text key={index} style={styles.stepTitle}>
+                  {line}
+                </Text>
+              ))}
+              {subtitle && <Text style={styles.stepSubtitle}>{subtitle}</Text>}
             </View>
             <View style={styles.inputContainer}>
               <TextInput
@@ -138,23 +150,11 @@ export const EmailStep = ({
 
           {/* 하단 버튼 영역 */}
           <View style={styles.bottomSection}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                isButtonDisabled() && styles.buttonDisabled,
-              ]}
+            <ActionButton
+              title={buttonText}
               onPress={onNext}
-              disabled={isButtonDisabled()}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  isButtonDisabled() && styles.buttonTextDisabled,
-                ]}
-              >
-                인증하기
-              </Text>
-            </TouchableOpacity>
+              variant={isButtonDisabled() ? 'disabled' : 'default'}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -168,11 +168,9 @@ const styles = StyleSheet.create({
   },
   topSection: {
     flex: 1,
-    paddingHorizontal: 20,
-    padding: 16,
+    paddingVertical: 16,
   },
   bottomSection: {
-    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   headerContainer: {
@@ -186,6 +184,13 @@ const styles = StyleSheet.create({
     color: '#1e1e1e',
     textAlign: 'left',
     lineHeight: 30,
+  },
+  stepSubtitle: {
+    fontSize: 14,
+    color: '#666666',
+    textAlign: 'left',
+    marginTop: 8,
+    lineHeight: 21,
   },
   inputContainer: {
     position: 'relative',

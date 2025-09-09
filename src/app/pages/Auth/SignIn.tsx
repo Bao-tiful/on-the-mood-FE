@@ -64,15 +64,6 @@ const SignIn = () => {
     return Colors.black32;
   };
 
-  const isButtonDisabled = () => {
-    return (
-      email.length === 0 ||
-      password.length === 0 ||
-      isLoading ||
-      emailFormatError.length > 0
-    );
-  };
-
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.topToolbar}>
@@ -159,7 +150,7 @@ const SignIn = () => {
                 </View>
                 <TouchableOpacity
                   style={styles.forgotPasswordButton}
-                  onPress={() => navigation.navigate('PasswordUnlockPage')}
+                  onPress={() => navigation.navigate('ForgotPassword')}
                 >
                   <Text style={styles.forgotPasswordText}>
                     비밀번호가 기억나지 않나요?
