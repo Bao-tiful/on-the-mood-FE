@@ -212,3 +212,24 @@ export const completeSignUp = async ({
     throw error;
   }
 };
+
+// 최종 비밀번호 재설정
+export const completeForgotPassword = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  try {
+    const response = await axiosClient.post('/auth/reset-password', {
+      email: email,
+      password: password,
+      password2: password,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+    throw error;
+  }
+};

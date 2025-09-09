@@ -1,3 +1,4 @@
+import { Colors } from '@/styles/Colors';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -11,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { ActionButton } from '../ActionButton';
 
 interface VerificationStepProps {
   email: string;
@@ -21,6 +23,8 @@ interface VerificationStepProps {
   onVerify: () => void;
   onClearError?: () => void;
   resendCode: () => void;
+  title?: string;
+  subtitle?: string;
 }
 
 export const VerificationStep = ({
@@ -32,6 +36,8 @@ export const VerificationStep = ({
   onVerify,
   onClearError,
   resendCode,
+  title = '이메일의 코드를 입력해주세요.',
+  subtitle,
 }: VerificationStepProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [countdown, setCountdown] = useState(180); // 3분 = 180초
@@ -66,9 +72,9 @@ export const VerificationStep = ({
   };
 
   const getInputBorderColor = () => {
-    if (errorMessage) return '#F86262';
-    if (isFocused) return '#000000';
-    return '#e0e0e0';
+    if (errorMessage) return Colors.error;
+    if (isFocused) return Colors.black100;
+    return Colors.black32;
   };
 
   const isButtonDisabled = () => {
@@ -88,9 +94,9 @@ export const VerificationStep = ({
           {/* 상단 영역 */}
           <View style={styles.topSection}>
             <View style={styles.headerContainer}>
-              <Text style={styles.stepTitle}>이메일의 코드를 입력해주세요.</Text>
+              <Text style={styles.stepTitle}>{title}</Text>
               <Text style={styles.stepSubtitle}>
-                {email} 인증을 위해 코드를 입력해주세요.
+                {subtitle || `${email} 인증을 위해 코드를 입력해주세요.`}
               </Text>
             </View>
             <View style={styles.inputContainer}>
@@ -136,23 +142,11 @@ export const VerificationStep = ({
             >
               <Text style={styles.resendText}>인증코드를 받지 못했나요?</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                isButtonDisabled() && styles.buttonDisabled,
-              ]}
+            <ActionButton
+              title="다음"
               onPress={onVerify}
-              disabled={isButtonDisabled()}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  isButtonDisabled() && styles.buttonTextDisabled,
-                ]}
-              >
-                다음
-              </Text>
-            </TouchableOpacity>
+              variant={isButtonDisabled() ? 'disabled' : 'default'}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -166,11 +160,9 @@ const styles = StyleSheet.create({
   },
   topSection: {
     flex: 1,
-    paddingHorizontal: 20,
-    padding: 16,
+    paddingVertical: 16,
   },
   bottomSection: {
-    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   headerContainer: {
@@ -190,6 +182,7 @@ const styles = StyleSheet.create({
     color: '#666666',
     textAlign: 'left',
     marginTop: 8,
+    lineHeight: 21,
   },
   inputContainer: {
     position: 'relative',
