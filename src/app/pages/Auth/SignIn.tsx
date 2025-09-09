@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { logIn } from '@/api/endpoints/auth';
+import { Colors } from '@/styles/Colors';
 // 토큰 저장은 endpoint에서 처리
 
 const SignIn = () => {
@@ -57,9 +58,9 @@ const SignIn = () => {
   };
 
   const getInputBorderColor = () => {
-    if (logInResult === 'error' || emailFormatError) return '#F86262';
-    if (isFocused) return '#000000';
-    return '#e0e0e0';
+    if (logInResult === 'error' || emailFormatError) return Colors.error;
+    if (isFocused) return Colors.black100;
+    return Colors.black32;
   };
 
   const isButtonDisabled = () => {
