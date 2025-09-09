@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon, { IconName } from '../Icon';
+import { Colors } from '@/styles/Colors';
+import { ActionButton } from '../ActionButton';
 
 interface PasswordStepProps {
   password: string;
@@ -21,6 +23,8 @@ interface PasswordStepProps {
   isLoading: boolean;
   onSubmit: () => void;
   onClearError?: () => void;
+  title?: string[];
+  buttonText?: string;
 }
 
 export const PasswordStep = ({
@@ -32,6 +36,8 @@ export const PasswordStep = ({
   isLoading,
   onSubmit,
   onClearError,
+  title = ['로그인에 사용할', '비밀번호를 입력해주세요.'],
+  buttonText = '시작하기',
 }: PasswordStepProps) => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] =
@@ -58,9 +64,9 @@ export const PasswordStep = ({
   };
 
   const getInputBorderColor = (isFocused: boolean) => {
-    if (errorMessage) return '#F86262';
-    if (isFocused) return '#1E1E1E';
-    return '#e0e0e0';
+    if (errorMessage) return Colors.error;
+    if (isFocused) return Colors.black100;
+    return Colors.black32;
   };
 
   // 비밀번호 검증 함수들
@@ -102,8 +108,11 @@ export const PasswordStep = ({
           {/* 상단 영역 */}
           <View style={styles.topSection}>
             <View style={styles.headerContainer}>
-              <Text style={styles.stepTitle}>로그인에 사용할</Text>
-              <Text style={styles.stepTitle}>비밀번호를 입력해주세요.</Text>
+              {title.map((line, index) => (
+                <Text key={index} style={styles.stepTitle}>
+                  {line}
+                </Text>
+              ))}
             </View>
 
             {/* 비밀번호 입력 필드 */}
@@ -234,23 +243,11 @@ export const PasswordStep = ({
 
           {/* 하단 버튼 영역 */}
           <View style={styles.bottomSection}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                isButtonDisabled() && styles.buttonDisabled,
-              ]}
+            <ActionButton
+              title={buttonText}
               onPress={onSubmit}
-              disabled={isButtonDisabled()}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  isButtonDisabled() && styles.buttonTextDisabled,
-                ]}
-              >
-                시작하기
-              </Text>
-            </TouchableOpacity>
+              variant={isButtonDisabled() ? 'disabled' : 'default'}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -264,11 +261,9 @@ const styles = StyleSheet.create({
   },
   topSection: {
     flex: 1,
-    paddingHorizontal: 20,
-    padding: 16,
+    paddingVertical: 16,
   },
   bottomSection: {
-    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   headerContainer: {

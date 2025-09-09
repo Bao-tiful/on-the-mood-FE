@@ -32,6 +32,8 @@ import EditPage from '@/app/pages/EditPage';
 import MyPageScreen from '@/app/pages/MyPage';
 import PasswordPage from '@/app/pages/Profile/PasswordPage';
 import WithdrawPage from '@/app/pages/Profile/WithdrawPage';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import SuccessChangePassword from './pages/Auth/SuccessChangePassword';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -143,14 +145,18 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
-  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList | null>(null);
+  const [initialRoute, setInitialRoute] = useState<
+    keyof RootStackParamList | null
+  >(null);
 
   useEffect(() => {
     const checkAppStateAndSetInitialRoute = async () => {
       try {
         // 1. 첫 실행 여부 확인
-        const hasCompletedOnboarding = await AsyncStorage.getItem('@hasCompletedOnboarding');
-        
+        const hasCompletedOnboarding = await AsyncStorage.getItem(
+          '@hasCompletedOnboarding',
+        );
+
         if (!hasCompletedOnboarding) {
           // 첫 실행이면 온보딩부터 시작
           setInitialRoute('Onboarding');
@@ -159,7 +165,7 @@ export default function App() {
 
         // 2. 비밀번호 등록 여부 확인
         const storedPassword = await AsyncStorage.getItem('@password');
-        
+
         if (storedPassword && storedPassword.length === 4) {
           // 비밀번호가 설정되어 있으면 PasswordUnlockPage로 시작
           setInitialRoute('PasswordUnlockPage');
@@ -168,7 +174,7 @@ export default function App() {
 
         // 3. 비밀번호가 없다면 로그인 상태 확인
         const accessToken = await getAccessToken();
-        
+
         if (accessToken) {
           // 로그인되어 있으면 Home으로 시작
           setInitialRoute('Home');
@@ -200,28 +206,36 @@ export default function App() {
             }}
             initialRouteName={initialRoute}
           >
-          {/* Main screens */}
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="MyPage" component={MyPageScreen} />
+            {/* Main screens */}
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="MyPage" component={MyPageScreen} />
 
-          {/* Auth screens */}
-          <Stack.Screen name="Entrance" component={Entrance} />
-          <Stack.Screen name="SignIn" component={SignIn} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="Onboarding" component={Onboarding} />
-          <Stack.Screen name="Withdraw" component={Withdraw} />
-          <Stack.Screen name="PasswordUnlockPage" component={PasswordUnlockPage} />
+            {/* Auth screens */}
+            <Stack.Screen name="Entrance" component={Entrance} />
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="Onboarding" component={Onboarding} />
+            <Stack.Screen name="Withdraw" component={Withdraw} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen
+              name="PasswordUnlockPage"
+              component={PasswordUnlockPage}
+            />
+            <Stack.Screen
+              name="SuccessChangePassword"
+              component={SuccessChangePassword}
+            />
 
-          {/* Content screens */}
-          <Stack.Screen name="DetailPage" component={DetailPage} />
-          <Stack.Screen name="EditPage" component={EditPage} />
+            {/* Content screens */}
+            <Stack.Screen name="DetailPage" component={DetailPage} />
+            <Stack.Screen name="EditPage" component={EditPage} />
 
-          {/* Profile screens */}
-          <Stack.Screen name="PasswordPage" component={PasswordPage} />
-          <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </BackgroundColorProvider>
-  </AuthProvider>
+            {/* Profile screens */}
+            <Stack.Screen name="PasswordPage" component={PasswordPage} />
+            <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </BackgroundColorProvider>
+    </AuthProvider>
   );
 }

@@ -3,14 +3,16 @@ export type RootStackParamList = {
   Entrance: undefined;
   SignIn: undefined;
   SignUp: undefined;
+  ForgotPassword: undefined;
+  SuccessChangePassword: undefined;
   Onboarding: undefined;
   Withdraw: undefined;
   PasswordUnlockPage: undefined;
-  
+
   // Main tab screens
   Home: undefined;
   MyPage: undefined;
-  
+
   // Content screens
   DetailPage: {
     noteData?: string;
@@ -20,7 +22,7 @@ export type RootStackParamList = {
     selectedDate?: string;
     existingNote?: string;
   };
-  
+
   // Profile screens
   PasswordPage: undefined;
   WithdrawPage: undefined;

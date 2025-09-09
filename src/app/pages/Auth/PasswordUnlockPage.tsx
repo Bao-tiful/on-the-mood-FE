@@ -78,7 +78,7 @@ const PasswordUnlockPage = () => {
           </Text>
           <View style={{ width: 44 }} />
         </View>
-        
+
         {/* 비밀번호 UI */}
         <PasswordIndicator
           label={getIndicatorLabel()}
@@ -89,7 +89,7 @@ const PasswordUnlockPage = () => {
         <PasswordKeypad
           onNextInput={newInput => {
             if (isError) return; // 에러 상태일 때는 입력 무시
-            
+
             switch (true) {
               case newInput >= 0:
                 setPasswordInput(passwordInput.concat(newInput.toString()));
