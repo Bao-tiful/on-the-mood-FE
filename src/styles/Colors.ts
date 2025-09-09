@@ -14,6 +14,7 @@ export const Colors = {
   white40: '#FFFFFF66',
   white100: '#FFFFFF',
   modalBackground: '#383838BF',
+  error: '#F86262',
 };
 
 export const OndoColors = new Map<number, string>([
