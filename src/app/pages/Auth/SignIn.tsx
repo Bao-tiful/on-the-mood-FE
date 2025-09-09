@@ -212,18 +212,17 @@ const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
     margin: 16,
+    backgroundColor: 'red',
   },
   container: {
     flex: 1,
   },
   topSection: {
     flex: 1,
-    paddingHorizontal: 20,
-    padding: 16,
+    paddingVertical: 16,
   },
   bottomSection: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 16,
   },
   headerContainer: {
     alignItems: 'flex-start',
