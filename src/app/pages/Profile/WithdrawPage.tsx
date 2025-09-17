@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { IconName } from '@/components/Icon';
 import Icon from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
-import { Colors, OndoColors } from '@/styles/Colors';
+import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
@@ -27,18 +27,9 @@ const WithdrawPage = () => {
   const { colorState } = useBackgroundColor();
   const [isWithdrawEnabled, setIsWithdrawEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // MyPage에서 전달된 온도값 사용, 없으면 colorState 사용
   const displayTemperature = currentTemperature ?? colorState.color;
-
-  // 온도에 따른 색상 배열 생성 (index.tsx와 동일한 방식)
-  const colors = useMemo(
-    () =>
-      Array.from(OndoColors.keys())
-        .sort((a, b) => a - b)
-        .map(key => OndoColors.get(key)!),
-    [],
-  );
 
   const handleWithdraw = async () => {
     if (!isWithdrawEnabled || isLoading) return;
@@ -62,7 +53,6 @@ const WithdrawPage = () => {
   return (
     <AnimatedColorView
       style={{ flex: 1 }}
-      colors={colors}
       activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
       duration={300} // 부드러운 애니메이션
     >

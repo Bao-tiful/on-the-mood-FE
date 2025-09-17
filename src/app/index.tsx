@@ -123,7 +123,6 @@ function HomeScreen() {
   return (
     <AnimatedColorView
       style={styles.background}
-      colors={colors}
       activeIndex={currentBackgroundTemp + 40} // EditPage와 동일한 TEMPERATURE_OFFSET
       duration={300} // 부드러운 애니메이션을 위해 300ms
     >
@@ -275,13 +274,13 @@ export default function App() {
             <Stack.Screen name="DetailPage" component={DetailPage} />
             <Stack.Screen name="EditPage" component={EditPage} />
 
-          {/* Profile screens */}
-          <Stack.Screen name="PasswordPage" component={PasswordPage} />
-          <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </BackgroundColorProvider>
-    <Toast config={toastConfig} />
-  </AuthProvider>
+            {/* Profile screens */}
+            <Stack.Screen name="PasswordPage" component={PasswordPage} />
+            <Stack.Screen name="WithdrawPage" component={WithdrawPage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </BackgroundColorProvider>
+      <Toast config={toastConfig} />
+    </AuthProvider>
   );
 }

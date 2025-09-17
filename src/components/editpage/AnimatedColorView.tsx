@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Animated,
   Easing,
@@ -7,12 +7,12 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import { OndoColors } from '@/styles/Colors';
 
 interface AnimatedColorViewProps {
   children: React.ReactNode;
   activeIndex: number;
   duration?: number;
-  colors?: string[];
   style?: ViewStyle;
   easing?: EasingFunction;
 }
@@ -21,10 +21,17 @@ const AnimatedColorView = ({
   children,
   activeIndex,
   duration = 400,
-  colors = [],
   style = {},
   easing = Easing.ease,
 }: AnimatedColorViewProps) => {
+  // OndoColors Map에서 colors 배열 생성
+  const colors = useMemo(
+    () =>
+      Array.from(OndoColors.keys())
+        .sort((a, b) => a - b)
+        .map(key => OndoColors.get(key)!),
+    [],
+  );
   // 애니메이션 값을 저장할 색상팔레트 레퍼런스 배열 생성
   // Value는 투명도(opacity) -> 1이면 색상이 보이고 0이면 색상이 보이지 않음
   const animatedValues = useRef(

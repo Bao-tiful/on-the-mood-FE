@@ -17,7 +17,7 @@ import NoteEditor from '@/components/editpage/NoteEditor';
 import TemperatureSlider from '@/components/editpage/TemperatureSlider';
 import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 
-import { Colors, OndoColors } from '@/styles/Colors';
+import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 
 import { editNote, postNote } from '@/api/endpoints/daily-notes';
@@ -128,13 +128,6 @@ const EditPage = () => {
   }, [locationData]);
 
   // Memoized values
-  const colors = useMemo(
-    () =>
-      Array.from(OndoColors.keys())
-        .sort((a, b) => a - b)
-        .map(key => OndoColors.get(key)!),
-    [],
-  );
 
   const temperatureLabel = useMemo(
     () => (feelsLikeTemp === myMoodOndo ? '체감 온도' : '기록 온도'),
@@ -204,7 +197,6 @@ const EditPage = () => {
   return (
     <AnimatedColorView
       style={styles.animatedContainer}
-      colors={colors}
       activeIndex={myMoodOndo + TEMPERATURE_OFFSET}
       duration={ANIMATION_DURATION}
     >

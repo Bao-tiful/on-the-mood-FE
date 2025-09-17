@@ -1,8 +1,8 @@
 import { SafeAreaView, StyleSheet, Text, View, Alert } from 'react-native';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
-import { Colors, OndoColors } from '@/styles/Colors';
+import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
@@ -31,24 +31,20 @@ const PasswordPage = () => {
   const { colorState } = useBackgroundColor();
   const [passwordInput, setPasswordInput] = useState('');
   const [step, setStep] = useState(0);
-  
+
   // MyPage에서 전달된 온도값 사용, 없으면 colorState 사용
   const displayTemperature = currentTemperature ?? colorState.color;
-
-  // 온도에 따른 색상 배열 생성 (index.tsx와 동일한 방식)
-  const colors = useMemo(
-    () =>
-      Array.from(OndoColors.keys())
-        .sort((a, b) => a - b)
-        .map(key => OndoColors.get(key)!),
-    [],
-  );
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [showBiometricModal, setShowBiometricModal] = useState(false);
-  
-  const { canUseBiometric, setBiometricEnabled, getBiometricTypeName, authenticateBiometricForSetup } = useBiometricAuth();
+
+  const {
+    canUseBiometric,
+    setBiometricEnabled,
+    getBiometricTypeName,
+    authenticateBiometricForSetup,
+  } = useBiometricAuth();
 
   const indicatorLabel = [
     '현재 비밀번호를 입력해주세요.',
@@ -89,11 +85,11 @@ const PasswordPage = () => {
   // 생체인식 설정 '예' 선택 시
   const handleBiometricEnable = async () => {
     setShowBiometricModal(false);
-    
+
     try {
       // 먼저 생체인증을 요청 (설정용 - 활성화 상태와 무관)
       const authResult = await authenticateBiometricForSetup();
-      
+
       if (authResult.success) {
         // 생체인증 성공 시 설정 저장
         const success = await setBiometricEnabled(true);
@@ -108,7 +104,7 @@ const PasswordPage = () => {
           Alert.alert(
             '설정 실패',
             '생체인식 설정을 저장하는 중 오류가 발생했습니다.',
-            [{ text: '확인' }]
+            [{ text: '확인' }],
           );
         }
       } else {
@@ -121,7 +117,7 @@ const PasswordPage = () => {
       console.error('생체인증 중 오류:', error);
       Alert.alert('오류', '생체인증 중 오류가 발생했습니다.');
     }
-    
+
     navigation.goBack();
   };
 
@@ -136,7 +132,7 @@ const PasswordPage = () => {
     await AsyncStorage.setItem('@password', newPassword);
     // 비밀번호가 변경될 때 생체인식 설정 초기화 (보안상 이유)
     await AsyncStorage.removeItem('@biometric_enabled');
-    
+
     // 비밀번호 저장 후 생체인식 설정 Dialog 표시
     showBiometricSetupDialog();
   };
@@ -215,7 +211,6 @@ const PasswordPage = () => {
   return (
     <AnimatedColorView
       style={{ flex: 1 }}
-      colors={colors}
       activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
       duration={300} // 부드러운 애니메이션
     >

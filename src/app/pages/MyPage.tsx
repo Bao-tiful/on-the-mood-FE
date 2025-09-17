@@ -9,8 +9,8 @@ import {
   View,
   Linking,
 } from 'react-native';
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { Colors, OndoColors } from '@/styles/Colors';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Colors } from '@/styles/Colors';
 import {
   useNavigation,
   useFocusEffect,
@@ -76,21 +76,8 @@ const PASSWORD_LENGTH = 4;
 const MyPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'MyPage'>>();
-  const { currentTemperature } = route.params || {};
   const { colorState } = useBackgroundColor();
-
-  // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
-  const displayTemperature = currentTemperature ?? colorState.color;
-
-  // 온도에 따른 색상 배열 생성 (index.tsx와 동일한 방식)
-  const colors = useMemo(
-    () =>
-      Array.from(OndoColors.keys())
-        .sort((a, b) => a - b)
-        .map(key => OndoColors.get(key)!),
-    [],
-  );
-
+  const displayTemperature = route.params?.currentTemperature || colorState.color; // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
 
   // 알림 기능 초기화
   const {
@@ -239,7 +226,6 @@ const MyPage = () => {
   return (
     <AnimatedColorView
       style={styles.container}
-      colors={colors}
       activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
       duration={300} // 부드러운 애니메이션
     >
@@ -320,9 +306,11 @@ const MyPage = () => {
                     </View>
                   </TouchableOpacity>
                 </SectionContent>
-                <BiometricSettings onBiometricSettingsChange={(_enabled) => {
-                  // Optional callback handling if needed
-                }} />
+                <BiometricSettings
+                  onBiometricSettingsChange={_enabled => {
+                    // Optional callback handling if needed
+                  }}
+                />
                 <TouchableOpacity
                   style={styles.withdrawButton}
                   onPress={() =>
@@ -381,10 +369,10 @@ const styles = StyleSheet.create({
   spacer: {
     width: 44,
   },
-  safeArea: { 
-    flex: 1, 
-    gap: 20, 
-    marginHorizontal: 12 
+  safeArea: {
+    flex: 1,
+    gap: 20,
+    marginHorizontal: 12,
   },
   scrollView: { flex: 1 },
   list: { gap: 16, paddingVertical: 16 },
