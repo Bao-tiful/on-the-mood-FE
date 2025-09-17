@@ -1,15 +1,22 @@
 import {
   Alert,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Colors, OndoColors } from '@/styles/Colors';
-import { useNavigation, useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { ToolbarButton } from '@/components/ToolbarButton';
@@ -71,7 +78,7 @@ const MyPage = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'MyPage'>>();
   const { currentTemperature } = route.params || {};
   const { colorState } = useBackgroundColor();
-  
+
   // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
   const displayTemperature = currentTemperature ?? colorState.color;
 
@@ -83,6 +90,7 @@ const MyPage = () => {
         .map(key => OndoColors.get(key)!),
     [],
   );
+
 
   // 알림 기능 초기화
   const {
@@ -115,6 +123,18 @@ const MyPage = () => {
           Alert.alert(
             '알림 권한이 필요합니다',
             '설정에서 알림을 허용해주세요.',
+            [
+              {
+                text: '취소',
+                style: 'cancel',
+              },
+              {
+                text: '설정으로 이동',
+                onPress: () => {
+                  Linking.openSettings();
+                },
+              },
+            ],
           );
         }
       } catch (error) {
@@ -236,7 +256,11 @@ const MyPage = () => {
           <View style={styles.spacer} />
         </View>
 
-        <View style={styles.list}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+        >
           {/* 계정 정보 */}
           <View style={styles.section}>
             <SectionContent>
@@ -282,9 +306,11 @@ const MyPage = () => {
                   {/* 셀 전체 터치를 위해 label을 child에 포함*/}
                   <TouchableOpacity
                     style={styles.touchableContainer}
-                    onPress={() => navigation.navigate('PasswordPage', {
-                      currentTemperature: displayTemperature,
-                    })}
+                    onPress={() =>
+                      navigation.navigate('PasswordPage', {
+                        currentTemperature: displayTemperature,
+                      })
+                    }
                   >
                     <View style={styles.rowContainer}>
                       <Text style={styles.sectionContentLabel}>
@@ -299,9 +325,11 @@ const MyPage = () => {
                 }} />
                 <TouchableOpacity
                   style={styles.withdrawButton}
-                  onPress={() => navigation.navigate('WithdrawPage', {
-                    currentTemperature: displayTemperature,
-                  })}
+                  onPress={() =>
+                    navigation.navigate('WithdrawPage', {
+                      currentTemperature: displayTemperature,
+                    })
+                  }
                 >
                   <Text style={styles.withdrawLabel}>탈퇴하기</Text>
                 </TouchableOpacity>
@@ -323,7 +351,7 @@ const MyPage = () => {
               </TouchableOpacity>
             </SectionContent>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
       <NotiTimePicker
         initialTime={notiTime}
@@ -353,7 +381,12 @@ const styles = StyleSheet.create({
   spacer: {
     width: 44,
   },
-  safeArea: { gap: 20, margin: 12 },
+  safeArea: { 
+    flex: 1, 
+    gap: 20, 
+    marginHorizontal: 12 
+  },
+  scrollView: { flex: 1 },
   list: { gap: 16, paddingVertical: 16 },
   section: {
     gap: 24,
