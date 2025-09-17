@@ -28,7 +28,7 @@ export const useBiometricAuth = () => {
     try {
       const rnBiometrics = new ReactNativeBiometrics();
       const { available, biometryType } = await rnBiometrics.isSensorAvailable();
-      
+
       setBiometricCapabilities({
         available,
         biometryType: biometryType || null,
@@ -90,7 +90,7 @@ export const useBiometricAuth = () => {
 
     try {
       const rnBiometrics = new ReactNativeBiometrics();
-      
+
       const { success } = await rnBiometrics.simplePrompt({
         promptMessage: '생체인식으로 앱 잠금을 해제하세요',
         cancelButtonText: '취소',
@@ -109,17 +109,20 @@ export const useBiometricAuth = () => {
     } catch (error: any) {
       setIsLoading(false);
       console.error('생체인식 인증 오류:', error);
-      
+
       let errorMessage = '생체인식 인증 중 오류가 발생했습니다.';
-      
+
       if (error.message) {
         if (error.message.includes('UserCancel') || error.message.includes('cancelled')) {
           errorMessage = '생체인식 인증이 취소되었습니다.';
-        } else if (error.message.includes('UserFallback')) {
+        }
+        if (error.message.includes('UserFallback')) {
           errorMessage = '비밀번호로 인증해주세요.';
-        } else if (error.message.includes('BiometryNotAvailable')) {
+        }
+        if (error.message.includes('BiometryNotAvailable')) {
           errorMessage = '생체인식을 사용할 수 없습니다.';
-        } else if (error.message.includes('BiometryNotEnrolled')) {
+        }
+        if (error.message.includes('BiometryNotEnrolled')) {
           errorMessage = '생체인식이 등록되어 있지 않습니다. 설정에서 등록해주세요.';
         }
       }
@@ -144,7 +147,7 @@ export const useBiometricAuth = () => {
 
     try {
       const rnBiometrics = new ReactNativeBiometrics();
-      
+
       const { success } = await rnBiometrics.simplePrompt({
         promptMessage: '생체인식 설정을 위해 인증해주세요',
         cancelButtonText: '취소',
@@ -163,17 +166,20 @@ export const useBiometricAuth = () => {
     } catch (error: any) {
       setIsLoading(false);
       console.error('생체인식 설정 인증 오류:', error);
-      
+
       let errorMessage = '생체인식 인증 중 오류가 발생했습니다.';
-      
+
       if (error.message) {
         if (error.message.includes('UserCancel') || error.message.includes('cancelled')) {
           errorMessage = '생체인식 인증이 취소되었습니다.';
-        } else if (error.message.includes('UserFallback')) {
+        }
+        if (error.message.includes('UserFallback')) {
           errorMessage = '비밀번호로 인증해주세요.';
-        } else if (error.message.includes('BiometryNotAvailable')) {
+        }
+        if (error.message.includes('BiometryNotAvailable')) {
           errorMessage = '생체인식을 사용할 수 없습니다.';
-        } else if (error.message.includes('BiometryNotEnrolled')) {
+        }
+        if (error.message.includes('BiometryNotEnrolled')) {
           errorMessage = '생체인식이 등록되어 있지 않습니다. 설정에서 등록해주세요.';
         }
       }
@@ -205,7 +211,7 @@ export const useBiometricAuth = () => {
       await checkBiometricCapabilities();
       await loadBiometricEnabled();
     };
-    
+
     initialize();
   }, [checkBiometricCapabilities, loadBiometricEnabled]);
 
@@ -214,7 +220,7 @@ export const useBiometricAuth = () => {
     isLoading,
     biometricCapabilities,
     isBiometricEnabled,
-    
+
     // 메서드
     checkBiometricCapabilities,
     setBiometricEnabled,
@@ -222,7 +228,7 @@ export const useBiometricAuth = () => {
     authenticateBiometricForSetup,
     getBiometricTypeName,
     loadBiometricEnabled,
-    
+
     // 편의 속성
     isAvailable: biometricCapabilities.available && isBiometricEnabled,
     canUseBiometric: biometricCapabilities.available,
