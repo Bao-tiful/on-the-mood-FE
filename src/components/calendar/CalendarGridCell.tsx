@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOpacity: 1,
     shadowColor: Colors.black18,
+    elevation: 8, // Android shadow
     // TODO: 각 날짜의 색상 넣어주기
     color: Colors.black100,
     borderColor: 'white',

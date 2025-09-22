@@ -23,7 +23,7 @@ platform :ios do
     package_json = JSON.parse(File.read('../../package.json'))
     version = package_json['version']
     
-    # 이미 빌드된 IPA 파일 경로 (실제 경로로 수정 필요)
+    # 이미 빌드된 IPA 파일 경로
     ipa_path = "./builds/onthemood.ipa"
     
     increment_version_number(
@@ -58,14 +58,27 @@ platform :ios do
       output_directory: "./builds",
       export_team_id: "JPL38XBHJ4", # Development Team ID
       export_options: {
-        provisioningProfiles: {
-          "com.baotiful.onthemood" => "match AdHoc com.baotiful.onthemood"
-        },
         teamID: "JPL38XBHJ4",
-        signingStyle: "automatic"
+        signingStyle: "automatic",
+        method: "ad-hoc"
       }
     )
     
+   # build_app(
+    #   scheme: "onthemood",
+    #   export_method: "ad-hoc",
+    #   output_directory: "./builds",
+    #   destination: "generic/platform=iOS,OS=18.5",
+    #   export_team_id: "JPL38XBHJ4", # Development Team ID
+    #   export_options: {
+    #     provisioningProfiles: {
+    #       "com.baotiful.onthemood" => "match AdHoc com.baotiful.onthemood"
+    #     },
+    #     teamID: "JPL38XBHJ4",
+    #     signingStyle: "automatic"
+    #   }
+    # )
+
     firebase_app_distribution(
       app: "1:62590143382:ios:5636a388aa09baa6c2abb7",
       groups: "Baotiful",

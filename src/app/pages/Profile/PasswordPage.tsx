@@ -2,15 +2,17 @@ import { SafeAreaView, StyleSheet, Text, View, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { IconName } from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
-import { Colors, OndoColors } from '@/styles/Colors';
+import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/types/navigation';
 import PasswordKeypad from '@/components/myPage/PasswordKeypad';
 import PasswordIndicator from '@/components/myPage/PasswordIndicator';
 import AlertModal from '@/components/feedback/AlertModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBackgroundColor } from '@/hooks/useBackgroundColor';
+import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import Toast from 'react-native-toast-message';
 
@@ -24,15 +26,25 @@ enum PasswordConfigStep {
 
 const PasswordPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'PasswordPage'>>();
+  const { currentTemperature } = route.params || {};
   const { colorState } = useBackgroundColor();
   const [passwordInput, setPasswordInput] = useState('');
   const [step, setStep] = useState(0);
 
+  // MyPage에서 전달된 온도값 사용, 없으면 colorState 사용
+  const displayTemperature = currentTemperature ?? colorState.color;
+
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [showBiometricModal, setShowBiometricModal] = useState(false);
-  
-  const { canUseBiometric, setBiometricEnabled, getBiometricTypeName, authenticateBiometricForSetup } = useBiometricAuth();
+
+  const {
+    canUseBiometric,
+    setBiometricEnabled,
+    getBiometricTypeName,
+    authenticateBiometricForSetup,
+  } = useBiometricAuth();
 
   const indicatorLabel = [
     '현재 비밀번호를 입력해주세요.',
@@ -73,11 +85,11 @@ const PasswordPage = () => {
   // 생체인식 설정 '예' 선택 시
   const handleBiometricEnable = async () => {
     setShowBiometricModal(false);
-    
+
     try {
       // 먼저 생체인증을 요청 (설정용 - 활성화 상태와 무관)
       const authResult = await authenticateBiometricForSetup();
-      
+
       if (authResult.success) {
         // 생체인증 성공 시 설정 저장
         const success = await setBiometricEnabled(true);
@@ -92,7 +104,7 @@ const PasswordPage = () => {
           Alert.alert(
             '설정 실패',
             '생체인식 설정을 저장하는 중 오류가 발생했습니다.',
-            [{ text: '확인' }]
+            [{ text: '확인' }],
           );
         }
       } else {
@@ -105,7 +117,7 @@ const PasswordPage = () => {
       console.error('생체인증 중 오류:', error);
       Alert.alert('오류', '생체인증 중 오류가 발생했습니다.');
     }
-    
+
     navigation.goBack();
   };
 
@@ -120,7 +132,7 @@ const PasswordPage = () => {
     await AsyncStorage.setItem('@password', newPassword);
     // 비밀번호가 변경될 때 생체인식 설정 초기화 (보안상 이유)
     await AsyncStorage.removeItem('@biometric_enabled');
-    
+
     // 비밀번호 저장 후 생체인식 설정 Dialog 표시
     showBiometricSetupDialog();
   };
@@ -197,12 +209,10 @@ const PasswordPage = () => {
   ]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        // 작성한 온도에 따른 배경색 지정
-        backgroundColor: OndoColors.get(colorState.color),
-      }}
+    <AnimatedColorView
+      style={{ flex: 1 }}
+      activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
+      duration={300} // 부드러운 애니메이션
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
@@ -255,7 +265,7 @@ const PasswordPage = () => {
           dismissHandler={handleBiometricCancel}
         />
       </SafeAreaView>
-    </View>
+    </AnimatedColorView>
   );
 };
 

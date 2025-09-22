@@ -37,11 +37,7 @@ const Tooltip = ({ title, content, children }: TooltipProp) => {
     >
       <View style={[styles.container]}>
         <Text style={styles.titleLabel}>{title}</Text>
-        <Text
-          style={styles.contentLabel}
-          numberOfLines={3}
-          ellipsizeMode="tail"
-        >
+        <Text style={styles.contentLabel}>
           {content}
         </Text>
       </View>

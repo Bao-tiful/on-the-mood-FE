@@ -59,6 +59,7 @@ const TodayNoteCell = ({ location, temperature }: TodayNoteCellProps) => {
             const today = new Date();
             navigation.navigate('EditPage', {
               selectedDate: today.toISOString(),
+              locationData: JSON.stringify(location),
             });
           }}
         >

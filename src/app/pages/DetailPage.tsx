@@ -35,6 +35,7 @@ const DetailPage = () => {
           id: parsedNote.id,
           location: parsedNote.location,
           custom_temp: parsedNote.custom_temp,
+          avg_feels_like_temp: parsedNote.avg_feels_like_temp,
           content: parsedNote.content,
           created_at: new Date(parsedNote.created_at),
           updated_at: new Date(parsedNote.updated_at),
@@ -72,7 +73,7 @@ const DetailPage = () => {
             <NoteInfoCell
               createdAt={note.created_at}
               location={note.location}
-              feelLikeTemp={note.custom_temp} // TODO: 실제 체감온도로 변경해주기
+              feelLikeTemp={note.avg_feels_like_temp} // TODO: 실제 체감온도로 변경해주기
             />
             {/* 노트 정보 */}
             <View style={styles.noteInfoContainer}>

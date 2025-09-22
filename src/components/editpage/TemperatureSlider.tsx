@@ -1,5 +1,6 @@
 import React from 'react';
-import { Vibration } from 'react-native';
+import { Platform, Vibration } from 'react-native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 import { RulerPicker } from '@/components/editpage/RulerPicker';
@@ -18,8 +19,20 @@ const TemperatureSlider = ({
   const maxValue = 40;
 
   const onTemperatureChanged = (number: number) => {
-    // React Native 내장 진동 피드백 사용 (부드러운 햅틱 효과)
-    Vibration.vibrate(50); // 50ms 부드러운 진동
+    // 매우 약한 햅틱 피드백 - 기본 Vibration만 사용 (RNHapticFeedback은 라이브러리만 유지)
+    if (Platform.OS === 'ios') {
+      // iOS에서 아주 약한 진동 (10ms)
+      // Vibration.vibrate(10);
+      const options = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false,
+      };
+      ReactNativeHapticFeedback.trigger('selection', options);
+    } else {
+      // Android에서 약한 진동 (2ms)
+      Vibration.vibrate(2);
+    }
+
     changeMoodTemp(number);
   };
 

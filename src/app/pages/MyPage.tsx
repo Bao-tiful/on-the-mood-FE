@@ -1,15 +1,22 @@
 import {
   Alert,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Colors, OndoColors } from '@/styles/Colors';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { Colors } from '@/styles/Colors';
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/types/navigation';
 import { ToolbarButton } from '@/components/ToolbarButton';
@@ -19,6 +26,7 @@ import { NotiTimePicker } from '@/components/myPage/NotiTimePicker';
 import { AuthInfo, AuthType } from '@/components/myPage/AuthInfo';
 import { SectionContent, SectionTitle } from '@/components/myPage/SectionItem';
 import NotiTimeButton from '@/components/myPage/NotiTimeButton';
+import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 import BiometricSettings from '@/components/myPage/BiometricSettings';
 
 import { Meridiem, NotiTime } from '@/models/NotiTime';
@@ -67,7 +75,9 @@ const PASSWORD_LENGTH = 4;
 
 const MyPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'MyPage'>>();
   const { colorState } = useBackgroundColor();
+  const displayTemperature = route.params?.currentTemperature || colorState.color; // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
 
   // 알림 기능 초기화
   const {
@@ -100,6 +110,18 @@ const MyPage = () => {
           Alert.alert(
             '알림 권한이 필요합니다',
             '설정에서 알림을 허용해주세요.',
+            [
+              {
+                text: '취소',
+                style: 'cancel',
+              },
+              {
+                text: '설정으로 이동',
+                onPress: () => {
+                  Linking.openSettings();
+                },
+              },
+            ],
           );
         }
       } catch (error) {
@@ -150,14 +172,12 @@ const MyPage = () => {
     setIsPasswordOn(newState);
 
     if (newState) {
-      navigation.navigate('PasswordPage');
+      navigation.navigate('PasswordPage', {
+        currentTemperature: displayTemperature,
+      });
     } else {
       await AsyncStorage.removeItem('@password');
     }
-  };
-
-  const handlePasswordChange = () => {
-    navigation.navigate('PasswordPage');
   };
 
   const handleLogout = async () => {
@@ -204,13 +224,10 @@ const MyPage = () => {
   );
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: OndoColors.get(colorState.color),
-        },
-      ]}
+    <AnimatedColorView
+      style={styles.container}
+      activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
+      duration={300} // 부드러운 애니메이션
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.topToolbar}>
@@ -225,7 +242,11 @@ const MyPage = () => {
           <View style={styles.spacer} />
         </View>
 
-        <View style={styles.list}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+        >
           {/* 계정 정보 */}
           <View style={styles.section}>
             <SectionContent>
@@ -271,7 +292,11 @@ const MyPage = () => {
                   {/* 셀 전체 터치를 위해 label을 child에 포함*/}
                   <TouchableOpacity
                     style={styles.touchableContainer}
-                    onPress={handlePasswordChange}
+                    onPress={() =>
+                      navigation.navigate('PasswordPage', {
+                        currentTemperature: displayTemperature,
+                      })
+                    }
                   >
                     <View style={styles.rowContainer}>
                       <Text style={styles.sectionContentLabel}>
@@ -281,12 +306,18 @@ const MyPage = () => {
                     </View>
                   </TouchableOpacity>
                 </SectionContent>
-                <BiometricSettings onBiometricSettingsChange={(_enabled) => {
-                  // Optional callback handling if needed
-                }} />
+                <BiometricSettings
+                  onBiometricSettingsChange={_enabled => {
+                    // Optional callback handling if needed
+                  }}
+                />
                 <TouchableOpacity
                   style={styles.withdrawButton}
-                  onPress={() => navigation.navigate('WithdrawPage')}
+                  onPress={() =>
+                    navigation.navigate('WithdrawPage', {
+                      currentTemperature: displayTemperature,
+                    })
+                  }
                 >
                   <Text style={styles.withdrawLabel}>탈퇴하기</Text>
                 </TouchableOpacity>
@@ -308,7 +339,7 @@ const MyPage = () => {
               </TouchableOpacity>
             </SectionContent>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
       <NotiTimePicker
         initialTime={notiTime}
@@ -318,7 +349,7 @@ const MyPage = () => {
         }}
         changeNotiTime={handleNotificationTimeChange}
       />
-    </View>
+    </AnimatedColorView>
   );
 };
 
@@ -338,7 +369,12 @@ const styles = StyleSheet.create({
   spacer: {
     width: 44,
   },
-  safeArea: { gap: 20, margin: 12 },
+  safeArea: {
+    flex: 1,
+    gap: 20,
+    marginHorizontal: 12,
+  },
+  scrollView: { flex: 1 },
   list: { gap: 16, paddingVertical: 16 },
   section: {
     gap: 24,
