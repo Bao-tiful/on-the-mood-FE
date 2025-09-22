@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.21</string>
+	<string>0.0.23</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -43,15 +43,7 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 		<key>NSExceptionDomains</key>
-		<dict>
-			<key>3.35.230.131</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSExceptionMinimumTLSVersion</key>
-				<string>TLSv1.2</string>
-			</dict>
-		</dict>
+		<dict/>
 	</dict>
 	<key>NSFaceIDUsageDescription</key>
 	<string>앱을 안전하게 잠금 해제하기 위해 Face ID를 사용합니다.</string>
