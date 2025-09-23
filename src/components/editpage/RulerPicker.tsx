@@ -33,6 +33,7 @@ export interface RulerPickerItemProps {
   step?: number;
   initialValue?: number;
   currentSelectedValue?: number;
+  tempTagValue?: number;
 }
 
 export interface RulerPickerProps extends Partial<RulerPickerItemProps> {
@@ -42,6 +43,7 @@ export interface RulerPickerProps extends Partial<RulerPickerItemProps> {
   max: number;
   step?: number;
   initialValue?: number;
+  tempTagValue?: number;
   fractionDigits?: number;
   unit?: string;
   indicatorHeight?: number;
@@ -90,7 +92,8 @@ export const RulerPicker = ({
   min,
   max,
   step = DEFAULT_VALUES.step,
-  initialValue = min,
+  initialValue = 0,
+  tempTagValue = 0,
   fractionDigits = DEFAULT_VALUES.fractionDigits,
   unit = DEFAULT_VALUES.unit,
   indicatorHeight = DEFAULT_VALUES.indicatorHeight,
@@ -108,11 +111,14 @@ export const RulerPicker = ({
   onValueChangeEnd,
 }: RulerPickerProps) => {
   // State
-  const [containerWidth, setContainerWidth] = useState<number>(width || windowWidth);
-  const [currentSelectedValue, setCurrentSelectedValue] = useState<number>(initialValue);
-  
+  const [containerWidth, setContainerWidth] = useState<number>(
+    width || windowWidth,
+  );
+  const [currentSelectedValue, setCurrentSelectedValue] =
+    useState<number>(initialValue);
+
   // Refs
-  const fixedInitialValue = useRef<number>(initialValue);
+  const temperatureTagValue = useRef<number>(tempTagValue);
   const listRef = useRef<any>(null);
   const stepTextRef = useRef<TextInput>(null);
   const prevValue = useRef<number>(initialValue);
@@ -175,10 +181,10 @@ export const RulerPicker = ({
         prevMomentumValue.current = initialValue;
       }
       if (
-        fixedInitialValue.current === 0 ||
-        Math.abs(fixedInitialValue.current - initialValue) > 0
+        temperatureTagValue.current === 0 ||
+        Math.abs(temperatureTagValue.current - initialValue) > 0
       ) {
-        fixedInitialValue.current = initialValue;
+        temperatureTagValue.current = initialValue;
       }
     }
   }, [initialValue, min, max]);
@@ -192,7 +198,14 @@ export const RulerPicker = ({
   );
 
   const renderSeparator = useCallback(
-    () => <View style={[styles.separator, { width: containerWidth * 0.5 - stepWidth * 0.5 }]} />,
+    () => (
+      <View
+        style={[
+          styles.separator,
+          { width: containerWidth * 0.5 - stepWidth * 0.5 },
+        ]}
+      />
+    ),
     [stepWidth, containerWidth],
   );
 
@@ -209,8 +222,9 @@ export const RulerPicker = ({
         longStepColor={longStepColor}
         min={min}
         step={step}
-        initialValue={fixedInitialValue.current}
+        initialValue={temperatureTagValue.current}
         currentSelectedValue={currentSelectedValue}
+        tempTagValue={tempTagValue}
       />
     ),
     [
@@ -224,6 +238,7 @@ export const RulerPicker = ({
       min,
       step,
       currentSelectedValue,
+      tempTagValue,
     ],
   );
 
@@ -296,7 +311,7 @@ export const RulerPicker = ({
               horizontal
             />
           </View>
-          
+
           <ValueDisplay
             unit={unit}
             currentSelectedValue={currentSelectedValue}
@@ -305,7 +320,7 @@ export const RulerPicker = ({
             unitTextStyle={unitTextStyle}
             stepTextRef={stepTextRef}
           />
-          
+
           <View
             style={[
               styles.centerIndicator,
@@ -332,53 +347,59 @@ interface ValueDisplayProps {
   stepTextRef: React.RefObject<TextInput | null>;
 }
 
-const ValueDisplay = React.memo<ValueDisplayProps>(({
-  unit,
-  currentSelectedValue,
-  fractionDigits,
-  valueTextStyle,
-  unitTextStyle,
-  stepTextRef,
-}) => (
-  <View style={[styles.indicator, styles.indicatorCenter]}>
-    <View style={[
-      styles.displayTextContainer,
-      { height: valueTextStyle?.fontSize ?? styles.valueText.fontSize }
-    ]}>
-      {unit && (
-        <View style={styles.unitContainer}>
-          <Text style={[styles.unitText, unitTextStyle, styles.transparentText]}>
-            {unit}
-          </Text>
-        </View>
-      )}
-      
-      <Text
-        ref={stepTextRef}
+const ValueDisplay = React.memo<ValueDisplayProps>(
+  ({
+    unit,
+    currentSelectedValue,
+    fractionDigits,
+    valueTextStyle,
+    unitTextStyle,
+    stepTextRef,
+  }) => (
+    <View style={[styles.indicator, styles.indicatorCenter]}>
+      <View
         style={[
-          styles.valueText,
-          valueTextStyle,
-          styles.tabularFont,
-          {
-            lineHeight: valueTextStyle?.fontSize ?? styles.valueText.fontSize,
-          },
+          styles.displayTextContainer,
+          { height: valueTextStyle?.fontSize ?? styles.valueText.fontSize },
         ]}
       >
-        {fractionDigits === 0
-          ? Math.round(currentSelectedValue).toString()
-          : currentSelectedValue.toFixed(fractionDigits)}
-      </Text>
-      
-      {unit && (
-        <View style={styles.unitContainer}>
-          <Text style={[styles.unitText, unitTextStyle, styles.visibleText]}>
-            {unit}
-          </Text>
-        </View>
-      )}
+        {unit && (
+          <View style={styles.unitContainer}>
+            <Text
+              style={[styles.unitText, unitTextStyle, styles.transparentText]}
+            >
+              {unit}
+            </Text>
+          </View>
+        )}
+
+        <Text
+          ref={stepTextRef}
+          style={[
+            styles.valueText,
+            valueTextStyle,
+            styles.tabularFont,
+            {
+              lineHeight: valueTextStyle?.fontSize ?? styles.valueText.fontSize,
+            },
+          ]}
+        >
+          {fractionDigits === 0
+            ? Math.round(currentSelectedValue).toString()
+            : currentSelectedValue.toFixed(fractionDigits)}
+        </Text>
+
+        {unit && (
+          <View style={styles.unitContainer}>
+            <Text style={[styles.unitText, unitTextStyle, styles.visibleText]}>
+              {unit}
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
-  </View>
-));
+  ),
+);
 
 // Ruler Picker Item Component
 interface RulerPickerItemComponentProps extends RulerPickerItemProps {
@@ -386,81 +407,83 @@ interface RulerPickerItemComponentProps extends RulerPickerItemProps {
   isLast: boolean;
 }
 
-export const RulerPickerItem = React.memo<RulerPickerItemComponentProps>(({
-  isLast,
-  index,
-  gapBetweenSteps,
-  shortStepHeight,
-  longStepHeight,
-  stepWidth,
-  shortStepColor,
-  longStepColor,
-  min = 0,
-  step = 1,
-  initialValue = 0,
-}) => {
-  const currentValue = index * step + min;
-  const isLong = index % 10 === 0;
-  const height = isLong ? longStepHeight : shortStepHeight;
-  const isInitialValue = currentValue === initialValue;
+export const RulerPickerItem = React.memo<RulerPickerItemComponentProps>(
+  ({
+    isLast,
+    index,
+    gapBetweenSteps,
+    shortStepHeight,
+    longStepHeight,
+    stepWidth,
+    shortStepColor,
+    longStepColor,
+    min = 0,
+    step = 1,
+    initialValue = 0,
+    tempTagValue,
+  }) => {
+    const currentValue = index * step + min;
+    const isLong = index % 10 === 0;
+    const height = isLong ? longStepHeight : shortStepHeight;
+    const isTempTagValue = tempTagValue !== undefined && currentValue === tempTagValue;
 
-  return (
-    <View
-      style={[
-        styles.itemContainer,
-        {
-          width: stepWidth,
-          marginRight: isLast ? 0 : gapBetweenSteps,
-          marginTop: shortStepHeight,
-        },
-      ]}
-    >
+    return (
       <View
         style={[
-          styles.stepLine,
+          styles.itemContainer,
           {
-            height: height,
-            backgroundColor: isLong ? longStepColor : shortStepColor,
-            marginTop: isLong ? 0 : shortStepHeight / 2,
+            width: stepWidth,
+            marginRight: isLast ? 0 : gapBetweenSteps,
+            marginTop: shortStepHeight,
           },
         ]}
-      />
-      
-      <View style={styles.labelContainer}>
-        <View style={styles.labelContent}>
-          {isInitialValue ? (
-            <View style={styles.initialValueContainer}>
-              <Icon
-                size={14}
-                name={IconName.temperature}
-                color={Colors.black70}
-              />
-              <Text style={styles.temperatureText}>
-                {`${currentValue}°`}
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.regularValueContainer}>
-              <Text
-                style={[
-                  styles.temperatureText,
-                  {
-                    color:
-                      index % 10 === 0 && Math.abs(currentValue - initialValue) > 2
-                        ? Colors.black70
-                        : 'transparent',
-                  },
-                ]}
-              >
-                {`${currentValue}°`}
-              </Text>
-            </View>
-          )}
+      >
+        <View
+          style={[
+            styles.stepLine,
+            {
+              height: height,
+              backgroundColor: isLong ? longStepColor : shortStepColor,
+              marginTop: isLong ? 0 : shortStepHeight / 2,
+            },
+          ]}
+        />
+
+        <View style={styles.labelContainer}>
+          <View style={styles.labelContent}>
+            {isTempTagValue ? (
+              <View style={styles.initialValueContainer}>
+                <Icon
+                  size={14}
+                  name={IconName.temperature}
+                  color={Colors.black70}
+                />
+                <Text style={styles.temperatureText}>{`${currentValue}°`}</Text>
+              </View>
+            ) : (
+              <View style={styles.regularValueContainer}>
+                <Text
+                  style={[
+                    styles.temperatureText,
+                    {
+                      color:
+                        index % 10 === 0 &&
+                        Math.abs(currentValue - (tempTagValue ?? initialValue)) > 2
+                          ? Colors.black70
+                          : 'transparent',
+                    },
+                  ]}
+                >
+                  {`${currentValue}°`}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
       </View>
-    </View>
-  );
-});
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

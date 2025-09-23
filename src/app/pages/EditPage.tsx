@@ -99,9 +99,12 @@ const EditPage = () => {
 
   // 온도 가져와서 기본 배경색 지정하기
   useEffect(() => {
-    const temperature = Number(colorState.color);
-    setFeelsLikeTemp(temperature);
-    if (!note) {
+    if (note) {
+      setFeelsLikeTemp(note.avg_feels_like_temp);
+      setMyMoodOndo(note.custom_temp);
+    } else {
+      const temperature = Number(colorState.color);
+      setFeelsLikeTemp(temperature);
       setMyMoodOndo(temperature);
     }
   }, [colorState.color, note]);
@@ -113,6 +116,9 @@ const EditPage = () => {
       if (parsedNote) {
         setNote(parsedNote);
         setMyMoodOndo(parsedNote.custom_temp);
+        setMemo(parsedNote.content); // 기존 노트 내용을 memo state에 설정
+
+        console.log(parsedNote);
       }
     }
   }, [noteData]);

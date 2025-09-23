@@ -62,7 +62,8 @@ const ThreadCalendarCell = ({
                 if (isDateToday(note.created_at)) {
                   navigation.navigate('EditPage', {
                     selectedDate: date.toISOString(),
-                    existingNote: JSON.stringify(note),
+                    noteData: JSON.stringify(note),
+                    locationData: JSON.stringify(location),
                   });
                 } else {
                   navigation.navigate('DetailPage', {
