@@ -13,6 +13,7 @@ interface CalendarProps {
   location?: LocationData;
   feelLikeTemp: number;
   onSelectedDateChange?: (selectedDate: Date | null, noteData: any) => void;
+  onRefresh?: (refreshFn: () => void) => void;
 }
 
 const Calendar = ({
@@ -21,6 +22,7 @@ const Calendar = ({
   location,
   feelLikeTemp,
   onSelectedDateChange,
+  onRefresh,
 }: CalendarProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   // 현재 보고 있는 달/년도 (달력 그리기용)
@@ -36,7 +38,14 @@ const Calendar = ({
     setModalVisible(isModalOn);
   };
 
-  const { notes } = useNotes(currentDate);
+  const { notes, reloadNotes } = useNotes(currentDate);
+
+  // 외부에서 onRefresh 콜백으로 reloadNotes 함수 제공
+  useEffect(() => {
+    if (onRefresh) {
+      onRefresh(() => reloadNotes(currentDate));
+    }
+  }, [onRefresh, reloadNotes, currentDate]);
 
   const notesMap = useMemo(() => {
     const map = new Map<number, NoteItem>();
