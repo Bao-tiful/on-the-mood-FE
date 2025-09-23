@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Switch, Alert } from 'react-native';
+import { Switch, Alert, View, StyleSheet } from 'react-native';
 import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { Colors } from '@/styles/Colors';
 import Toast from 'react-native-toast-message';
@@ -136,13 +136,15 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
   return (
     <>
       <SectionContent label="생체인식 사용">
-        <Switch
-          value={isBiometricEnabled}
-          onValueChange={handleToggleBiometric}
-          disabled={isToggling}
-          trackColor={{ false: '#767577', true: Colors.black100 }}
-          thumbColor={Colors.white100}
-        />
+        <View style={styles.switchContainer}>
+          <Switch
+            value={isBiometricEnabled}
+            onValueChange={handleToggleBiometric}
+            disabled={isToggling}
+            trackColor={{ false: '#767577', true: Colors.black100 }}
+            thumbColor={Colors.white100}
+          />
+        </View>
       </SectionContent>
 
       {/* 생체인식 설정 Modal */}
@@ -160,6 +162,11 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
   );
 };
 
-// Styles are now handled by SectionContent component
+const styles = StyleSheet.create({
+  switchContainer: {
+    width: 84,
+    alignItems: 'flex-end',
+  },
+});
 
 export default BiometricSettings;

@@ -77,7 +77,8 @@ const MyPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'MyPage'>>();
   const { colorState } = useBackgroundColor();
-  const displayTemperature = route.params?.currentTemperature || colorState.color; // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
+  const displayTemperature =
+    route.params?.currentTemperature || colorState.color; // index.tsx에서 전달된 온도값 사용, 없으면 colorState 사용
 
   // 알림 기능 초기화
   const {
@@ -257,11 +258,13 @@ const MyPage = () => {
           <View style={styles.section}>
             <SectionTitle label="알림 설정" />
             <SectionContent label="기록 시간 알림">
-              <Switch
-                value={isAlertOn}
-                trackColor={{ true: Colors.black100 }}
-                onValueChange={handleNotificationToggle}
-              />
+              <View style={styles.switchContainer}>
+                <Switch
+                  value={isAlertOn}
+                  trackColor={{ true: Colors.black100 }}
+                  onValueChange={handleNotificationToggle}
+                />
+              </View>
             </SectionContent>
 
             {isAlertOn ? (
@@ -279,11 +282,13 @@ const MyPage = () => {
           <View style={styles.section}>
             <SectionTitle label="화면 잠금" />
             <SectionContent label="비밀번호">
-              <Switch
-                value={isPasswordOn}
-                trackColor={{ true: Colors.black100 }}
-                onValueChange={handlePasswordToggle}
-              />
+              <View style={styles.switchContainer}>
+                <Switch
+                  value={isPasswordOn}
+                  trackColor={{ true: Colors.black100 }}
+                  onValueChange={handlePasswordToggle}
+                />
+              </View>
             </SectionContent>
 
             {isPasswordOn ? (
@@ -412,5 +417,9 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: Colors.black70,
     textDecorationLine: 'underline',
+  },
+  switchContainer: {
+    width: 84,
+    alignItems: 'flex-end',
   },
 });
