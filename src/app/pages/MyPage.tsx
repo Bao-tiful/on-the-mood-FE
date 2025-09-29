@@ -316,16 +316,6 @@ const MyPage = () => {
                     // Optional callback handling if needed
                   }}
                 />
-                <TouchableOpacity
-                  style={styles.withdrawButton}
-                  onPress={() =>
-                    navigation.navigate('WithdrawPage', {
-                      currentTemperature: displayTemperature,
-                    })
-                  }
-                >
-                  <Text style={styles.withdrawLabel}>탈퇴하기</Text>
-                </TouchableOpacity>
               </>
             ) : null}
           </View>
@@ -344,6 +334,16 @@ const MyPage = () => {
               </TouchableOpacity>
             </SectionContent>
           </View>
+          <TouchableOpacity
+            style={styles.withdrawButton}
+            onPress={() =>
+              navigation.navigate('WithdrawPage', {
+                currentTemperature: displayTemperature,
+              })
+            }
+          >
+            <Text style={styles.withdrawLabel}>탈퇴하기</Text>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
       <NotiTimePicker
