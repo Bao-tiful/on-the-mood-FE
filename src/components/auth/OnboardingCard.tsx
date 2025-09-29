@@ -51,23 +51,30 @@ const OnboardingCard = ({ index }: OnboardingCardProps) => {
         ]}
       >
         <View style={{ height: 40 }} />
-        <Image
-          source={getImageSource(index)}
+        <View
           style={{
+            marginHorizontal: index === 1 || index === 2 ? 16 : 0,
+            paddingHorizontal: index === 1 || index === 2 ? 16 : 0,
             width: index === 0 || index === 3 ? 900 : '100%',
             height: index === 0 || index === 3 ? 400 : '100%',
-            paddingHorizontal: index === 0 || index === 3 ? 0 : 16,
           }}
-          resizeMode="contain"
-        />
+        >
+          <Image
+            source={getImageSource(index)}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            resizeMode="contain"
+          />
+        </View>
         {(index === 1 || index === 2) && (
           <LinearGradient
-            colors={['#FFFFFF00', '#FFFFFF00', '#FFFFFF']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
+            colors={['#FFFFFF00', '#FFFFFF']}
+            start={{ x: 0, y: 0.8 }}
+            end={{ x: 0, y: 0.9 }}
             style={{
               position: 'absolute',
-              flex: 1,
               width: '100%',
               height: '100%',
             }}
