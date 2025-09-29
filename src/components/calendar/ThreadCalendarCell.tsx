@@ -4,7 +4,6 @@ import typography from '@/styles/Typography';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon, { IconName } from '../Icon';
-import { ToolbarButton } from '../ToolbarButton';
 import { NoteItem } from '@/models/NoteItem';
 import { isDateToday } from '@/utils/dateUtils';
 import { useNavigation } from '@react-navigation/native';

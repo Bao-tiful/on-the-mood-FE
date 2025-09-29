@@ -57,7 +57,8 @@ const Calendar = ({
     return map;
   }, [notes]);
 
-  // notes가 변경될 때마다 selectedDate를 가장 이른 날짜로 설정 (수동 선택이 아닌 경우에만)
+  // notes가 변경될 때마다 selectedDate를 설정 (수동 선택이 아닌 경우에만)
+  // 우선순위: 오늘 날짜 → 가장 이른 노트 날짜 → 선택 없음
   useEffect(() => {
     // 사용자가 수동으로 선택한 날짜가 있으면 자동 설정하지 않음
     if (isManualSelection) {
@@ -69,8 +70,13 @@ const Calendar = ({
       today.getFullYear() === currentDate.getFullYear() &&
       today.getMonth() === currentDate.getMonth();
 
-    if (notes.length > 0) {
-      // 노트가 있으면 가장 이른 날짜 선택
+    if (isTodayInThisMonth) {
+      // 오늘이 이 달에 있으면 오늘 선택 (최우선)
+      setSelectedDate(today);
+      const todayNoteData = notesMap.get(today.getDate());
+      onSelectedDateChange?.(today, todayNoteData);
+    } else if (notes.length > 0) {
+      // 오늘이 이 달에 없고 노트가 있으면 가장 이른 날짜 선택
       const sortedNotes = notes
         .slice()
         .sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
@@ -82,12 +88,8 @@ const Calendar = ({
       // HomeScreen으로 선택된 날짜와 노트 정보 전달
       const noteData = notesMap.get(earliestDate.getDate());
       onSelectedDateChange?.(earliestDate, noteData);
-    } else if (isTodayInThisMonth) {
-      // 노트가 없고 오늘이 이 달에 있으면 오늘 선택
-      setSelectedDate(today);
-      onSelectedDateChange?.(today, null);
     } else {
-      // 노트도 없고 오늘도 아니면 선택 없음
+      // 오늘도 아니고 노트도 없으면 선택 없음
       setSelectedDate(null);
       onSelectedDateChange?.(null, null);
     }
