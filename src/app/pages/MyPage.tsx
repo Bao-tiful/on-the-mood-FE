@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   switchContainer: {
-    width: 84,
+    width: 100,
     alignItems: 'flex-end',
   },
 });

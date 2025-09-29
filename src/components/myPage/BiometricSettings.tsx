@@ -31,7 +31,7 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
   useFocusEffect(
     useCallback(() => {
       loadBiometricEnabled();
-    }, [loadBiometricEnabled])
+    }, [loadBiometricEnabled]),
   );
 
   const handleToggleBiometric = async (value: boolean) => {
@@ -43,7 +43,7 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
         Alert.alert(
           '생체인식 사용 불가',
           '이 기기에서는 생체인식을 사용할 수 없습니다.\n설정에서 생체인식을 등록해주세요.',
-          [{ text: '확인' }]
+          [{ text: '확인' }],
         );
         return;
       }
@@ -58,11 +58,11 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
   const handleBiometricEnable = async () => {
     setShowBiometricModal(false);
     setIsToggling(true);
-    
+
     try {
       // 먼저 생체인증을 요청 (설정용 - 활성화 상태와 무관)
       const authResult = await authenticateBiometricForSetup();
-      
+
       if (authResult.success) {
         // 생체인증 성공 시 설정 저장
         const success = await setBiometricEnabled(true);
@@ -78,7 +78,7 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
           Alert.alert(
             '설정 실패',
             '생체인식 설정을 저장하는 중 오류가 발생했습니다.',
-            [{ text: '확인' }]
+            [{ text: '확인' }],
           );
         }
       } else {
@@ -106,23 +106,21 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
 
     try {
       const success = await setBiometricEnabled(false);
-      
+
       if (success) {
         onBiometricSettingsChange?.(false);
       } else {
         Alert.alert(
           '설정 저장 실패',
           '생체인식 설정을 저장하는 중 오류가 발생했습니다.',
-          [{ text: '확인' }]
+          [{ text: '확인' }],
         );
       }
     } catch (error) {
       console.error('생체인식 설정 변경 중 오류:', error);
-      Alert.alert(
-        '오류 발생',
-        '설정 변경 중 오류가 발생했습니다.',
-        [{ text: '확인' }]
-      );
+      Alert.alert('오류 발생', '설정 변경 중 오류가 발생했습니다.', [
+        { text: '확인' },
+      ]);
     } finally {
       setIsToggling(false);
     }
@@ -164,7 +162,7 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
 
 const styles = StyleSheet.create({
   switchContainer: {
-    width: 84,
+    width: 100,
     alignItems: 'flex-end',
   },
 });
