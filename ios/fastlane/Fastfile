@@ -54,13 +54,17 @@ platform :ios do
     # 빌드
     build_app(
       scheme: "onthemood",
-      export_method: "ad-hoc",
+      export_method: "development",
       output_directory: "./builds",
       export_team_id: "JPL38XBHJ4", # Development Team ID
       export_options: {
         teamID: "JPL38XBHJ4",
         signingStyle: "automatic",
-        method: "ad-hoc"
+        method: "development",
+        destination: "export",
+        compileBitcode: false,
+        stripSwiftSymbols: true,
+        thinning: "<none>"
       }
     )
     
