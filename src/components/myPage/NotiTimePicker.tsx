@@ -41,14 +41,15 @@ export const NotiTimePicker = ({
         setModalVisible={changeModalVisible}
       >
         <View style={styles.bottomSheetContainer}>
-          <Text style={styles.titleLable}>다른 날짜 일기 보기</Text>
+          <Text style={styles.titleLable}>알람 시간 변경</Text>
           <View style={styles.pickerContainer}>
             <Picker
-              style={styles.datePicker}
+              style={[styles.datePicker, styles.pickerStyle]}
               selectedValue={meridiem}
               onValueChange={(itemValue: Meridiem) => {
                 setMeridiem(itemValue);
               }}
+              itemStyle={styles.pickerItemStyle}
             >
               <Picker.Item
                 label="오전"
@@ -72,11 +73,12 @@ export const NotiTimePicker = ({
               />
             </Picker>
             <Picker
-              style={styles.datePicker}
+              style={[styles.datePicker, styles.pickerStyle]}
               selectedValue={hour}
               onValueChange={(itemValue: number) => {
                 setHour(itemValue);
               }}
+              itemStyle={styles.pickerItemStyle}
             >
               {Array.from({ length: 12 }, (_, i) => ({
                 label: `${(i + 1).toString().padStart(2, '0')}`, // 01부터 12까지
@@ -97,11 +99,12 @@ export const NotiTimePicker = ({
               ))}
             </Picker>
             <Picker
-              style={styles.datePicker}
+              style={[styles.datePicker, styles.pickerStyle]}
               selectedValue={minute}
               onValueChange={(itemValue: number) => {
                 setMinute(itemValue);
               }}
+              itemStyle={styles.pickerItemStyle}
             >
               {Array.from({ length: 6 }, (_, i) => ({
                 label: `${(i * 10).toString().padStart(2, '0')}`,
@@ -174,10 +177,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 40,
   },
   datePicker: {
     flex: 1,
+  },
+  pickerStyle: {
+    backgroundColor: Colors.white100,
+    color: Colors.black100,
+  },
+  pickerItemStyle: {
+    ...typography.body,
+    fontWeight: '600',
+    color: Colors.black100,
+    fontSize: 18,
+    height: 120,
   },
   titleLable: {
     ...typography.headline,

@@ -46,11 +46,11 @@ const NoteEditor = ({
   };
   return (
     <View style={styles.noteEditorContainer}>
+      <Keywords
+        keywordList={keywordList}
+        onKeywordPress={insertKeywordAtCursor}
+      />
       <View style={{ flex: 1 }}>
-        <Keywords
-          keywordList={keywordList}
-          onKeywordPress={insertKeywordAtCursor}
-        />
         <TextInput
           ref={textInputRef}
           value={memo}
@@ -70,6 +70,7 @@ const NoteEditor = ({
           }}
         />
       </View>
+
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
         <Text style={styles.noteCountingLabel}>{memo.length}</Text>
         <Text style={styles.noteMaxLabel}> /100</Text>
