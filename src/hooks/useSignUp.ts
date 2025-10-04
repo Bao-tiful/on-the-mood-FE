@@ -86,7 +86,10 @@ export const useSignUp = () => {
     try {
       await completeSignUp({ email: email, password: password });
       Alert.alert('회원가입 완료', '로그인 페이지로 이동합니다.');
-      navigation.navigate('SignIn');
+      navigation.reset({
+        index: 1,
+        routes: [{ name: 'Entrance' }, { name: 'SignIn' }],
+      });
     } catch (error) {
       setErrorMessage('회원가입 중 오류가 발생했습니다.');
     } finally {
