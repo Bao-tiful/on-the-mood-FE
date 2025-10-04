@@ -13,6 +13,7 @@ type TemperatureSliderProps = {
 
 const TemperatureSlider = ({
   feelsLikeTemp,
+  myMoodOndo,
   changeMoodTemp,
 }: TemperatureSliderProps) => {
   const minValue = -40;
@@ -41,7 +42,8 @@ const TemperatureSlider = ({
       height={120}
       min={minValue}
       max={maxValue}
-      initialValue={feelsLikeTemp}
+      initialValue={myMoodOndo}
+      tempTagValue={feelsLikeTemp}
       gapBetweenSteps={8}
       step={1}
       indicatorHeight={40}

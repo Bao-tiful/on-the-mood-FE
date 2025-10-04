@@ -52,9 +52,7 @@ const TodayNoteCell = ({ location, temperature }: TodayNoteCellProps) => {
           alignItems: 'center',
         }}
       >
-        <Text style={styles.todayCellTitle}>{'무드온도\n일기'}</Text>
         <TouchableOpacity
-          style={styles.todayWriteButton}
           onPress={() => {
             const today = new Date();
             navigation.navigate('EditPage', {
@@ -63,7 +61,11 @@ const TodayNoteCell = ({ location, temperature }: TodayNoteCellProps) => {
             });
           }}
         >
-          <Icon name={IconName.plus} size={24} />
+          <Text style={styles.todayCellTitle}>{'무드온도\n일기'}</Text>
+
+          <View style={styles.todayWriteButton}>
+            <Icon name={IconName.plus} size={24} />
+          </View>
         </TouchableOpacity>
         <Text style={styles.todayCellDescription}>
           {'버튼을 눌러\n오늘 하루를 기록해보세요\n* 당일에만 기록할 수 있어요'}

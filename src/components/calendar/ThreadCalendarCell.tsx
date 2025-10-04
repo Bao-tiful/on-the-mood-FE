@@ -2,9 +2,8 @@ import { LocationData } from '@/api/endpoints/weather';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon, { IconName } from '../Icon';
-import { ToolbarButton } from '../ToolbarButton';
 import { NoteItem } from '@/models/NoteItem';
 import { isDateToday } from '@/utils/dateUtils';
 import { useNavigation } from '@react-navigation/native';
@@ -51,35 +50,45 @@ const ThreadCalendarCell = ({
   );
 
   const NoteCell = (
-    <View style={[styles.todayCell]}>
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={styles.todayCellTitle}>{'무드온도\n일기'}</Text>
+    <TouchableOpacity
+      style={[styles.todayCell]}
+      onPress={() => {
+        if (note) {
+          if (isDateToday(note.created_at)) {
+            navigation.navigate('EditPage', {
+              selectedDate: date.toISOString(),
+              noteData: JSON.stringify(note),
+              locationData: JSON.stringify(location),
+            });
+          } else {
+            navigation.navigate('DetailPage', {
+              noteData: JSON.stringify(note),
+            });
+          }
+        }
+      }}
+    >
+      <View style={styles.diaryHeader}>
+        <View>
+          <Text style={[styles.label, typography.label1]}>무드온도</Text>
+          <Text style={[styles.label, typography.label1]}>일기</Text>
+        </View>
         {note !== undefined ? (
-          <ToolbarButton
-            name={IconName.arrow}
-            onPress={() => {
-              if (note) {
-                if (isDateToday(note.created_at)) {
-                  navigation.navigate('EditPage', {
-                    selectedDate: date.toISOString(),
-                    existingNote: JSON.stringify(note),
-                  });
-                } else {
-                  navigation.navigate('DetailPage', {
-                    noteData: JSON.stringify(note),
-                  });
-                }
-              }
-            }}
-          />
+          <View style={styles.iconContainer}>
+            <Icon name={IconName.arrow} />
+          </View>
         ) : (
           <View />
         )}
       </View>
-      <View style={{ width: '100%' }}>
-        <Text style={styles.todayCellContent}>{note?.content}</Text>
-      </View>
-    </View>
+      <Text
+        style={[styles.diaryText, typography.body2]}
+        numberOfLines={5}
+        ellipsizeMode="tail"
+      >
+        {note?.content}
+      </Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -110,6 +119,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.white40,
     borderRadius: 16,
+  },
+  diaryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: '100%',
+  },
+  label: {
+    color: Colors.black100,
+  },
+  diaryText: {
+    marginTop: 8,
+    color: Colors.black70,
+    maxHeight: 105,
+    overflow: 'hidden',
+    width: '100%',
+    textAlign: 'left',
+  },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 1000,
+    backgroundColor: Colors.black18,
   },
   todayCellTitle: {
     flex: 1,

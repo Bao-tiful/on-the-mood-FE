@@ -12,24 +12,15 @@ import Icon from '@/components/Icon';
 import { ToolbarButton } from '@/components/ToolbarButton';
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
-import type { RootStackParamList } from '@/types/navigation';
-import { useBackgroundColor } from '@/hooks/useBackgroundColor';
 import { ActionButton } from '@/components/ActionButton';
 import { withdraw } from '@/api/endpoints/auth';
-import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 
 const WithdrawPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'WithdrawPage'>>();
-  const { currentTemperature } = route.params || {};
-  const { colorState } = useBackgroundColor();
   const [isWithdrawEnabled, setIsWithdrawEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  // MyPage에서 전달된 온도값 사용, 없으면 colorState 사용
-  const displayTemperature = currentTemperature ?? colorState.color;
 
   const handleWithdraw = async () => {
     if (!isWithdrawEnabled || isLoading) return;
@@ -51,11 +42,7 @@ const WithdrawPage = () => {
   };
 
   return (
-    <AnimatedColorView
-      style={{ flex: 1 }}
-      activeIndex={displayTemperature + 40} // index.tsx에서 전달된 온도값 사용
-      duration={300} // 부드러운 애니메이션
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         {/* Toolbar */}
         <View style={styles.topToolbar}>
@@ -135,13 +122,17 @@ const WithdrawPage = () => {
           />
         </View>
       </SafeAreaView>
-    </AnimatedColorView>
+    </View>
   );
 };
 
 export default WithdrawPage;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.lightGray, // light gray 배경색
+  },
   safeArea: {
     gap: 20,
     margin: 16,

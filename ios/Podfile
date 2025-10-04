@@ -57,6 +57,13 @@ target 'onthemood' do
       # if target.name == "RCT-Folly-RCT-Folly_privacy"
       #   target.remove_from_project
       # end
+      
+      # Fix iOS deployment target for all pods
+      target.build_configurations.each do |config|
+        if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 12.0
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+        end
+      end
     end
   end
 end

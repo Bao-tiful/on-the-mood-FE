@@ -20,7 +20,7 @@ export type RootStackParamList = {
   };
   EditPage: {
     selectedDate?: string;
-    existingNote?: string;
+    noteData?: string;
     locationData?: string;
   };
 
