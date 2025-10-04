@@ -6,6 +6,7 @@ import { VerificationStep } from '@/components/auth/VerificationStep';
 import { PasswordStep } from '@/components/auth/PasswordStep';
 import { useForgotPassword } from '@/hooks/useForgotPassword';
 import { EmailStep } from '@/components/auth/EmailStep';
+import { Colors } from '@/styles/Colors';
 
 const ForgotPassword = () => {
   const {
@@ -125,13 +126,14 @@ export default ForgotPassword;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 16,
+    backgroundColor: Colors.white100,
   },
   topToolbar: {
     position: 'relative',
     width: '100%',
     paddingVertical: 12,
     alignItems: 'center',
+    marginHorizontal: 16,
   },
   backButton: {
     position: 'absolute',

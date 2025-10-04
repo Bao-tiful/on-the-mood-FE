@@ -193,10 +193,11 @@ export default SignIn;
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    margin: 16,
+    backgroundColor: Colors.white100,
   },
   container: {
     flex: 1,
+    paddingHorizontal: 8,
   },
   topSection: {
     flex: 1,
@@ -221,7 +222,9 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
     paddingVertical: 12,
+    paddingHorizontal: 16, // 툴바에도 padding 추가
     alignItems: 'center',
+    marginHorizontal: 16,
   },
   backButton: {
     position: 'absolute',
