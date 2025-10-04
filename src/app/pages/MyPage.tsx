@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -28,6 +27,7 @@ import { SectionContent, SectionTitle } from '@/components/myPage/SectionItem';
 import NotiTimeButton from '@/components/myPage/NotiTimeButton';
 import AnimatedColorView from '@/components/editpage/AnimatedColorView';
 import BiometricSettings from '@/components/myPage/BiometricSettings';
+import CustomSwitch from '@/components/CustomSwitch';
 
 import { Meridiem, NotiTime } from '@/models/NotiTime';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -259,9 +259,8 @@ const MyPage = () => {
             <SectionTitle label="알림 설정" />
             <SectionContent label="기록 시간 알림">
               <View style={styles.switchContainer}>
-                <Switch
+                <CustomSwitch
                   value={isAlertOn}
-                  trackColor={{ true: Colors.black100 }}
                   onValueChange={handleNotificationToggle}
                 />
               </View>
@@ -283,9 +282,8 @@ const MyPage = () => {
             <SectionTitle label="화면 잠금" />
             <SectionContent label="비밀번호">
               <View style={styles.switchContainer}>
-                <Switch
+                <CustomSwitch
                   value={isPasswordOn}
-                  trackColor={{ true: Colors.black100 }}
                   onValueChange={handlePasswordToggle}
                 />
               </View>

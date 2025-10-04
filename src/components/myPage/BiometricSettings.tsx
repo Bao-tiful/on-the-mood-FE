@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Switch, Alert, View, StyleSheet } from 'react-native';
+import { Alert, View, StyleSheet } from 'react-native';
 import { useBiometricAuth } from '@/hooks/useBiometricAuth';
-import { Colors } from '@/styles/Colors';
 import Toast from 'react-native-toast-message';
 import { SectionContent } from '@/components/myPage/SectionItem';
 import { useFocusEffect } from '@react-navigation/native';
 import AlertModal from '@/components/feedback/AlertModal';
+import CustomSwitch from '@/components/CustomSwitch';
 
 interface BiometricSettingsProps {
   onBiometricSettingsChange?: (enabled: boolean) => void;
@@ -135,12 +135,10 @@ const BiometricSettings: React.FC<BiometricSettingsProps> = ({
     <>
       <SectionContent label="생체인식 사용">
         <View style={styles.switchContainer}>
-          <Switch
+          <CustomSwitch
             value={isBiometricEnabled}
             onValueChange={handleToggleBiometric}
             disabled={isToggling}
-            trackColor={{ false: '#767577', true: Colors.black100 }}
-            thumbColor={Colors.white100}
           />
         </View>
       </SectionContent>
