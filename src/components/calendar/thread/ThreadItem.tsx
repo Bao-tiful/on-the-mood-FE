@@ -30,7 +30,7 @@ const TemperatureSection = React.memo(
       </View>
       <View>
         <View style={styles.locationContainer}>
-          <Icon name={IconName.location} size={16} color="#fff" />
+          <Icon name={IconName.location} size={16} color={Colors.black70} />
           <Text style={[styles.location, typography.label1]}>
             {thread.location}
           </Text>
@@ -140,12 +140,16 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'space-between',
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: Colors.black18,
   },
   rightBox: {
     flex: 1,
     justifyContent: 'space-between',
     padding: 16,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: Colors.black18,
   },
   locationContainer: {
     flexDirection: 'row',

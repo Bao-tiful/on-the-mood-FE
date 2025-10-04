@@ -1,4 +1,11 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { OndoColors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
@@ -46,11 +53,11 @@ const PasswordUnlockPage = () => {
   // 생체인식 인증 처리
   const handleBiometricAuth = async (isAutomatic = false) => {
     if (biometricAttempted && isAutomatic) return; // 자동 시도는 한 번만
-    
+
     try {
       setBiometricAttempted(true);
       const result = await authenticateBiometric();
-      
+
       if (result.success) {
         // 생체인식 인증 성공 시 Home으로 이동
         navigation.reset({
@@ -153,7 +160,9 @@ const PasswordUnlockPage = () => {
               disabled={isBiometricLoading}
             >
               <Text style={styles.biometricButtonText}>
-                {isBiometricLoading ? '인증 중...' : `${getBiometricTypeName()}로 다시 시도`}
+                {isBiometricLoading
+                  ? '인증 중...'
+                  : `${getBiometricTypeName()}로 다시 시도`}
               </Text>
             </TouchableOpacity>
           ) : (
@@ -166,7 +175,7 @@ const PasswordUnlockPage = () => {
           <PasswordKeypad
             onNextInput={newInput => {
               if (isError) return; // 에러 상태일 때는 입력 무시
-              
+
               switch (true) {
                 case newInput >= 0:
                   setPasswordInput(passwordInput.concat(newInput.toString()));

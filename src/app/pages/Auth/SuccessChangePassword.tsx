@@ -12,7 +12,10 @@ const SuccessChangePassword = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleGoToSignIn = () => {
-    navigation.navigate('SignIn');
+    navigation.reset({
+      index: 1,
+      routes: [{ name: 'Entrance' }, { name: 'SignIn' }],
+    });
   };
 
   return (

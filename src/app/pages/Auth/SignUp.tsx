@@ -6,6 +6,7 @@ import { VerificationStep } from '@/components/auth/VerificationStep';
 import { PasswordStep } from '@/components/auth/PasswordStep';
 import { useSignUp } from '@/hooks/useSignUp';
 import { EmailStep } from '@/components/auth/EmailStep';
+import { Colors } from '@/styles/Colors';
 
 const SignUp = () => {
   const {
@@ -89,13 +90,15 @@ export default SignUp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 16,
+    paddingHorizontal: 8,
+    backgroundColor: Colors.white100,
   },
   topToolbar: {
     position: 'relative',
     width: '100%',
     paddingVertical: 12,
     alignItems: 'center',
+    marginHorizontal: 16,
   },
   backButton: {
     position: 'absolute',
