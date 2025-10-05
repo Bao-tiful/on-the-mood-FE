@@ -96,6 +96,7 @@ const EditPage = () => {
   const [note, setNote] = useState<NoteItem | undefined>(undefined);
   const [location, setLocation] = useState<LocationData | undefined>(undefined);
   const [isAlertModalVisible, setIsAlertModalVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // 온도 가져와서 기본 배경색 지정하기
   useEffect(() => {
@@ -117,9 +118,12 @@ const EditPage = () => {
         setNote(parsedNote);
         setMyMoodOndo(parsedNote.custom_temp);
         setMemo(parsedNote.content); // 기존 노트 내용을 memo state에 설정
+        setIsEditMode(false); // 기존 노트가 있으면 편집 모드가 아닌 상태로 시작
 
         console.log(parsedNote);
       }
+    } else {
+      setIsEditMode(true); // 새 노트인 경우 편집 모드로 시작
     }
   }, [noteData]);
 
@@ -200,6 +204,10 @@ const EditPage = () => {
     setIsAlertModalVisible(false);
   }, []);
 
+  const handleEditPress = useCallback(() => {
+    setIsEditMode(true);
+  }, []);
+
   return (
     <AnimatedColorView
       style={styles.animatedContainer}
@@ -208,7 +216,7 @@ const EditPage = () => {
     >
       <View style={styles.container}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={isEditMode ? (Platform.OS === 'ios' ? 'padding' : 'height') : undefined}
           style={styles.keyboardAvoidingView}
         >
           <SafeAreaView style={styles.safeAreaContainer}>
@@ -217,10 +225,17 @@ const EditPage = () => {
               <View style={styles.topToolbar}>
                 <ToolbarButton name={IconName.back} onPress={handleBackPress} />
                 <Text style={typography.heading2}>{toDateString(date)}</Text>
-                <ToolbarButton
-                  name={IconName.check}
-                  onPress={handleSavePress}
-                />
+                {isEditMode ? (
+                  <ToolbarButton
+                    name={IconName.check}
+                    onPress={handleSavePress}
+                  />
+                ) : (
+                  <ToolbarButton
+                    name={IconName.edit}
+                    onPress={handleEditPress}
+                  />
+                )}
               </View>
               <LocationAndTemperature
                 location={location?.name_ko ?? ''}
@@ -239,7 +254,11 @@ const EditPage = () => {
                 feelsLikeTemp={feelsLikeTemp}
                 myMoodOndo={myMoodOndo}
                 changeMoodTemp={handleTemperatureChange}
+                disabled={!isEditMode}
               />
+              {!isEditMode && (
+                <View style={styles.sliderDisabledOverlay} />
+              )}
             </View>
 
             {/* Note Editor */}
@@ -249,7 +268,8 @@ const EditPage = () => {
                 memo={memo}
                 onMemoChanged={handleMemoChange}
                 defaultValue={note?.content}
-                autoFocus={!note}
+                autoFocus={isEditMode && !note}
+                disabled={!isEditMode}
               />
             </View>
           </SafeAreaView>
@@ -300,6 +320,16 @@ const styles = StyleSheet.create({
   sliderContainer: {
     marginTop: 8,
     marginBottom: 16,
+    position: 'relative',
+  },
+  sliderDisabledOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    zIndex: 999,
   },
   editorContainer: {
     flex: 1,

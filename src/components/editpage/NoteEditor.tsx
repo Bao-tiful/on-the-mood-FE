@@ -10,6 +10,7 @@ type NoteEditorProps = {
   onMemoChanged: (memo: string) => void;
   autoFocus?: boolean;
   defaultValue?: string;
+  disabled?: boolean;
 };
 
 const NoteEditor = ({
@@ -17,12 +18,15 @@ const NoteEditor = ({
   memo,
   onMemoChanged,
   autoFocus = true,
+  disabled = false,
 }: NoteEditorProps) => {
   const textInputRef = useRef<TextInput>(null);
   const [selectionStart, setSelectionStart] = useState(0);
 
   // 키워드 삽입 함수
   const insertKeywordAtCursor = (keyword: string) => {
+    if (disabled) return;
+    
     const currentText = memo;
     const beforeCursor = currentText.substring(0, selectionStart);
     const afterCursor = currentText.substring(selectionStart);
@@ -49,6 +53,7 @@ const NoteEditor = ({
       <Keywords
         keywordList={keywordList}
         onKeywordPress={insertKeywordAtCursor}
+        disabled={disabled}
       />
       <View style={{ flex: 1 }}>
         <TextInput
@@ -59,15 +64,18 @@ const NoteEditor = ({
           numberOfLines={3}
           maxLength={100}
           placeholder={
-            '오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요.'
+            disabled
+              ? ''
+              : '오늘 나만의 온도는 어땠나요?\n오늘의 하루를 컬러와 간단한 문장으로 표현해보세요.'
           }
           placeholderTextColor={Colors.black40}
-          autoFocus={autoFocus}
-          onChangeText={onMemoChanged}
-          onSelectionChange={event => {
+          autoFocus={autoFocus && !disabled}
+          editable={!disabled}
+          onChangeText={disabled ? undefined : onMemoChanged}
+          onSelectionChange={disabled ? undefined : (event => {
             const newSelection = event.nativeEvent.selection.start;
             setSelectionStart(newSelection);
-          }}
+          })}
         />
       </View>
 
