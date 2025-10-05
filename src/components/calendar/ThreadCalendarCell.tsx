@@ -37,12 +37,12 @@ const ThreadCalendarCell = ({
           <Text style={[styles.todayWeatherLocation]}>{location?.name_ko}</Text>
         </View>
         <Text style={[styles.temperature, typography.title1]}>
-          {note?.avg_feels_like_temp}°
+          {note?.custom_temp}°
         </Text>
         <View style={styles.feelsLikeBox}>
           <Icon name={IconName.temperature} size={16} />
           <Text style={[styles.feelsLikeText, typography.label2]}>
-            체감 {note?.custom_temp}°
+            체감 {note?.avg_feels_like_temp}°
           </Text>
         </View>
       </View>
