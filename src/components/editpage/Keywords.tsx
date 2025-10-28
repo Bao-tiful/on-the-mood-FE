@@ -6,17 +6,22 @@ import typography from '@/styles/Typography';
 type KeywordsProps = {
   keywordList: string[];
   onKeywordPress?: (keyword: string) => void;
+  disabled?: boolean;
 };
 
-const Keywords = ({ keywordList, onKeywordPress }: KeywordsProps) => {
+const Keywords = ({ keywordList, onKeywordPress, disabled = false }: KeywordsProps) => {
   return (
     <View style={styles.keywordContainer}>
       {Array.from(keywordList).map((keyword, index) => (
         <TouchableOpacity 
           key={index}
-          style={styles.keywordCell} 
-          onPress={() => onKeywordPress?.(keyword)}
-          activeOpacity={0.7}
+          style={[
+            styles.keywordCell,
+            disabled && styles.keywordCellDisabled
+          ]} 
+          onPress={disabled ? undefined : () => onKeywordPress?.(keyword)}
+          activeOpacity={disabled ? 1 : 0.7}
+          disabled={disabled}
         >
           <Text style={styles.keywordLabel}>{keyword}</Text>
         </TouchableOpacity>
@@ -42,5 +47,8 @@ const styles = StyleSheet.create({
   },
   keywordLabel: {
     ...typography.label2,
+  },
+  keywordCellDisabled: {
+    opacity: 0.5,
   },
 });

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { Colors } from '@/styles/Colors';
 import typography from '@/styles/Typography';
 import { View, StyleSheet, Text, Dimensions, Pressable } from 'react-native';
@@ -161,13 +162,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   whiteToastContainer: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 16,
     paddingVertical: 16,
     borderRadius: 12,
-    width: '100%',
     backgroundColor: Colors.white100,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   whiteToastLabel: {
     ...typography.body,

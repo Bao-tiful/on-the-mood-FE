@@ -9,17 +9,21 @@ type TemperatureSliderProps = {
   feelsLikeTemp: number;
   myMoodOndo: number;
   changeMoodTemp: (temperature: number) => void;
+  disabled?: boolean;
 };
 
 const TemperatureSlider = ({
   feelsLikeTemp,
   myMoodOndo,
   changeMoodTemp,
+  disabled = false,
 }: TemperatureSliderProps) => {
   const minValue = -40;
   const maxValue = 40;
 
   const onTemperatureChanged = (number: number) => {
+    if (disabled) return;
+    
     // 매우 약한 햅틱 피드백 - 기본 Vibration만 사용 (RNHapticFeedback은 라이브러리만 유지)
     if (Platform.OS === 'ios') {
       // iOS에서 아주 약한 진동 (10ms)
